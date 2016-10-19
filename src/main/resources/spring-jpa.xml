@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+   xmlns:aop="http://www.springframework.org/schema/aop"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xmlns:tx="http://www.springframework.org/schema/tx"
+   xmlns:util="http://www.springframework.org/schema/util"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/data/jpa
+     http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx.xsd
+     http://www.springframework.org/schema/context 
+     http://www.springframework.org/schema/context/spring-context-3.0.xsd
+     
+     http://www.springframework.org/schema/util
+     http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+     
+    <context:component-scan base-package="com.feng"/>
+	
+	<jpa:repositories base-package="com.feng.repositories"/>
+	
+	<!-- spring启动时扫描项目路径下的properties文件,后续用${key}方式取出对应值,这样可以代码解耦和，后续只需修改properties文件即可 -->
+	
+    <!-- 数据源配置,使用应用内的DBCP数据库连接池 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"  init-method="init" destroy-method="close">
+        <!--property name="driverClassName" value="${db.driverClass}"/-->
+      	<property name="url" value="${url}" />  
+        <property name="username" value="${username}" />  
+        <property name="password" value="${password}" />  
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="1" /> 
+        <property name="minIdle" value="1" /> 
+        <property name="maxActive" value="20" /> 
+        <!-- 配置获取连接等待超时的时间 --> 
+        <property name="maxWait" value="60000" />
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="3000" />  
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="300000" /> 
+        <property name="validationQuery" value="SELECT 'x' from dual" />
+        <property name="testWhileIdle" value="true" />
+        <property name="testOnBorrow" value="false" />
+        <property name="testOnReturn" value="false" />
+        <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+        <!-- mysql 不支持 poolPreparedStatements-->
+        <!--  
+        <property name="poolPreparedStatements" value="${db.poolPreparedStatements}" /> 
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="${db.maxPoolPreparedStatementPerConnectionSize}" />
+        -->
+        <!-- 开启Druid的监控统计功能 -->  
+        <property name="filters" value="stat"/>  
+    </bean>
+    
+	<!-- JPA EntityManagerFactory -->
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
+		<property name="persistenceUnitName" value="Spring_Security"/>
+		<property name="packagesToScan" value="com.feng.entity"/>
+	</bean>
+	     
+	<bean id="jpaVendorAdapter" 
+		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+		<property name="database" value="${database}"/>
+		<property name="showSql" value="${showSql}"/>
+		<!-- 是否自动建表 -->
+        <property name="generateDdl" value="${generateDdl}"/>
+	</bean>
+	
+	<!-- Jpa 事务管理器  -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+     <!-- 启动对@AspectJ（面向切面）注解的支持 --> 
+    <aop:aspectj-autoproxy />
+    
+    <!-- 根据不同的Spring.profile加载不同的文件 -->
+    <beans profile="local"> 
+    	<util:properties id="settings" location="classpath:propertie/local.properties"/>
+		<bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	        <property name="locations">
+	            <list>
+	                <!-- dataSourse连接池相关属性，代码不在此贴出，会放在打包好的项目里面 -->
+	                <value>classpath:propertie/local.properties</value>
+	            </list>
+	        </property>
+	    </bean>
+	</beans>
+	
+	<beans profile="product"> 
+		<util:properties id="settings" location="classpath:propertie/product.properties"/>
+		<bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	        <property name="locations">
+	            <list>
+	                <!-- dataSourse连接池相关属性，代码不在此贴出，会放在打包好的项目里面 -->
+	                <value>classpath:propertie/product.properties</value>
+	            </list>
+	        </property>
+	    </bean>
+	</beans>
+    
+</beans>
