@@ -7,13 +7,13 @@ WORKDIR /code
 RUN echo "Asia/Shanghai" > /etc/timezone && \
         dpkg-reconfigure -f noninteractive tzdata
 
-RUN rm -r /usr/local/tomcat/webapps/*
+RUN rm -r /tomcat/webapps/*
 
 ADD pom.xml /code/pom.xml 
 RUN mvn dependency:resolve 
 
 ADD . /code
-RUN mvn package && cp -r target/ROOT.war /usr/local/tomcat/webapps/
+RUN mvn package && cp -r target/ROOT.war /tomcat/webapps/
 
 # Start Tomcat
-CMD ["/usr/local/tomcat/bin/catalina.sh", "run"]
+CMD ["/tomcat/bin/catalina.sh", "run"]
