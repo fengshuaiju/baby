@@ -7,7 +7,7 @@
            http://www.springframework.org/schema/security
            http://www.springframework.org/schema/security/spring-security.xsd
            http://www.springframework.org/schema/security/oauth2
-           http://www.springframework.org/schema/security/spring-security-oauth2-2.0.xsd">
+           http://www.springframework.org/schema/security/spring-security-oauth2-2.0.xsd" default-lazy-init="true">
            
     <!-- /oauth/token 的http 配置, 用于监听该URL的请求, 核心 -->
 	<http pattern="/oauth/token" create-session="stateless" authentication-manager-ref="oauth2AuthenticationManager"  
