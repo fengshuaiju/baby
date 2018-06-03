@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: baby
+  profiles:
+    active: development
+server:
+  context-path: "/api/baby"
+
