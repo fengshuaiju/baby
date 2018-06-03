@@ -5,4 +5,7 @@ spring:
     active: development
 server:
   context-path: "/api/baby"
-
+  tomcat:
+    protocol-header-https-value: "https"
+    protocol-header: "X-Forwarded-Proto"
+    remote-ip-header: "X-Forwarded-For"
