@@ -1,11 +1,29 @@
+server:
+  port: 9000
+  context-path: /api/baby
+
+info:
+  component: Service Registration and Discovery
+
 spring:
-  application:
-    name: baby
   profiles:
     active: development
-server:
-  context-path: "/api/baby"
-  tomcat:
-    protocol-header-https-value: "https"
-    protocol-header: "X-Forwarded-Proto"
-    remote-ip-header: "X-Forwarded-For"
+  devtools.livereload.enabled: false
+  jmx.default-domain: ${spring.application.name}
+  output.ansi.enabled: always
+
+eureka:
+  instance:
+    metadataMap:
+      instanceId:
+        ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    fetchRegistry: true
+    healthcheck:
+      enabled: true
+
+security:
+  oauth2:
+    resource:
+      jwt:
+        key-value: staging

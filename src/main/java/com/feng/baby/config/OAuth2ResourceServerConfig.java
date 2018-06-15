@@ -9,16 +9,11 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 @EnableResourceServer
 public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-
-    public OAuth2ResourceServerConfig(){
-        System.err.println("sssssssssssssssssssssssssssssssssssssssssssssss");
-    }
-
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/apidocs/**").permitAll()
-//                .anyRequest().authenticated();
-        .anyRequest().permitAll();
+                .antMatchers("/open/**").permitAll()
+                .anyRequest().authenticated();
     }
 }

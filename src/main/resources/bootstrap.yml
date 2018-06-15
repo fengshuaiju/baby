@@ -1,0 +1,3 @@
+spring:
+  application.name: baby-server
+  profiles.default: development
