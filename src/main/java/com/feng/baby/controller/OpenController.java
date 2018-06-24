@@ -14,11 +14,6 @@ import java.util.Map;
 @RestController
 public class OpenController {
 
-    @GetMapping("/check-token")
-    public Map<String,Object> checkToken(){
-        return ImmutableMap.of("code", 0, "msg", "ok");
-    }
-
     @GetMapping("/open/info")
     public Map<String,Object> info(){
         return ImmutableMap.of("code", 0, "msg", "ok");
