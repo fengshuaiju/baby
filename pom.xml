@@ -33,9 +33,27 @@
 		</dependency>
 
 		<dependency>
+			<groupId>io.vavr</groupId>
+			<artifactId>vavr</artifactId>
+			<version>0.9.2</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>24.1-jre</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.0</version>
 		</dependency>
 
 		<dependency>
@@ -73,6 +91,14 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jooq</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-stream-rabbit</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -114,12 +140,90 @@
 	</dependencyManagement>
 
 	<build>
+
 		<plugins>
+
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+
+			<plugin>
+				<groupId>org.jooq</groupId>
+				<artifactId>jooq-codegen-maven</artifactId>
+				<version>${jooq.version}</version>
+
+				<executions>
+					<execution>
+
+						<id>generate-mysql</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+
+						<configuration>
+
+							<jdbc>
+								<driver>com.mysql.jdbc.Driver</driver>
+								<url>jdbc:mysql://broker:3306/baby</url>
+								<user>root</user>
+								<password>fengshuaiju</password>
+							</jdbc>
+
+							<generator>
+								<database>
+									<name>org.jooq.util.mysql.MySQLDatabase</name>
+									<includes>.*</includes>
+									<excludes />
+									<!--inputSchema即为数据库名-->
+									<inputSchema>uaa</inputSchema>
+									<forcedTypes>
+										<forcedType>
+											<name>BOOLEAN</name>
+											<types>(?i:TINYINT(\s*\(\d+\))?(\s*UNSIGNED)?)</types>
+										</forcedType>
+									</forcedTypes>
+								</database>
+								<generate>
+									<deprecated>false</deprecated>
+								</generate>
+								<target>
+									<packageName>sprout.jooq.generate</packageName>
+									<directory>target/generated-sources</directory>
+								</target>
+								<generate>
+									<!--
+                                    <pojos>false</pojos>
+                                    <daos>false</daos>
+                                    -->
+									<records>true</records>
+									<relations>true</relations>
+									<deprecated>false</deprecated>
+									<immutablePojos>true</immutablePojos>
+									<fluentSetters>true</fluentSetters>
+								</generate>
+							</generator>
+
+						</configuration>
+					</execution>
+				</executions>
+
+				<dependencies>
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>${mysql.version}</version>
+					</dependency>
+				</dependencies>
+
+			</plugin>
+
+
 		</plugins>
+
 	</build>
 
 	<repositories>

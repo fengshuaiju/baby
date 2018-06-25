@@ -1,4 +1,4 @@
-package com.feng.baby.controller;
+package com.feng.baby.adapter.controller;
 
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;

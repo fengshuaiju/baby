@@ -23,7 +23,7 @@
  *
  */
 
-package com.feng.baby.util;
+package com.feng.baby.support.utils;
 
 /**
  * Thrown when an application attempts to use {@code null} in a

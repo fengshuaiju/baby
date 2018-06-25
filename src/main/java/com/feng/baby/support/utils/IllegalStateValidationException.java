@@ -23,7 +23,7 @@
  *
  */
 
-package com.feng.baby.util;
+package com.feng.baby.support.utils;
 
 /**
  * Signals that a method has been invoked at an illegal or

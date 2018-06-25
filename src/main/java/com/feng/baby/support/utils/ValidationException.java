@@ -1,4 +1,4 @@
-package com.feng.baby.util;
+package com.feng.baby.support.utils;
 
 public class ValidationException extends RuntimeException {
 

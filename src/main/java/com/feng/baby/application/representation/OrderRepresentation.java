@@ -1,4 +1,4 @@
-package com.feng.baby.representation;
+package com.feng.baby.application.representation;
 
 import lombok.Builder;
 import lombok.Data;

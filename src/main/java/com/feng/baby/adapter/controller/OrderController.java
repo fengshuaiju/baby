@@ -1,6 +1,6 @@
-package com.feng.baby.controller;
+package com.feng.baby.adapter.controller;
 
-import com.feng.baby.representation.OrderRepresentation;
+import com.feng.baby.application.representation.OrderRepresentation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

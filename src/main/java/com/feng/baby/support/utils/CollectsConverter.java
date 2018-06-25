@@ -1,4 +1,4 @@
-package com.feng.baby.util;
+package com.feng.baby.support.utils;
 
 import javax.persistence.AttributeConverter;
 import java.util.Set;

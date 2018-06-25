@@ -23,7 +23,7 @@
  *
  */
 
-package com.feng.baby.util;
+package com.feng.baby.support.utils;
 
 /**
  * Thrown to indicate that an index of some sort (such as to an array, to a

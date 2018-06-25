@@ -1,6 +1,6 @@
 package com.feng.baby.config;
 
-import com.feng.baby.util.ValidationException;
+import com.feng.baby.support.utils.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
