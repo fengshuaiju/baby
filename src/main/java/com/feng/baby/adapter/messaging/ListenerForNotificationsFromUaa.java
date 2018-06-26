@@ -9,18 +9,17 @@ import org.springframework.cloud.stream.annotation.StreamListener;
  */
 @Slf4j
 @EnableBinding(InputChannels.class)
-public class ListenerForNotificationsFromSelf {
+public class ListenerForNotificationsFromUaa {
 
-    @StreamListener(InputChannels.INPUT_FROM_SELF)
+    @StreamListener(InputChannels.INPUT_FROM_UAA)
     public void handleNotificationsFromSelf(Notification notification) {
 
-        log.error("Notification from self received: {}", notification.toString());
+        log.error("Notification from uaa received: {}", notification.toString());
 
         try {
             EventReader eventReader = new EventReader(notification.getContent());
-
             switch (notification.getTypeName()) {
-                case "com.feng.accounts.model.TenantApproved": {
+                case "com.feng.accounts.model.event.TenantApproved": {
                     String chineseName = eventReader.stringValue("chineseName").get();
                     log.info("get content info > chineseName :{}", chineseName);
                     break;

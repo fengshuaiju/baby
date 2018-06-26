@@ -9,8 +9,13 @@ import org.springframework.messaging.SubscribableChannel;
 public interface InputChannels {
 
     String INPUT_FROM_SELF = "from-self";
+    String INPUT_FROM_UAA = "from-uaa";
+
 
     @Input(InputChannels.INPUT_FROM_SELF)
     SubscribableChannel inputFromSelf();
+
+    @Input(InputChannels.INPUT_FROM_UAA)
+    SubscribableChannel inputFromUaa();
 
 }

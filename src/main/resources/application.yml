@@ -1,5 +1,5 @@
 server:
-  port: 9000
+  port: 9100
   context-path: /api/baby
 
 info:
@@ -31,6 +31,9 @@ spring:
         from-self:
           group: feng.baby
           destination: feng.baby.notifications
+        from-uaa:
+          group: feng.baby
+          destination: feng.uaa.notifications
 
   rabbitmq:
     host: broker
