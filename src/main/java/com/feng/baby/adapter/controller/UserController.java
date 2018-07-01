@@ -1,7 +1,7 @@
 package com.feng.baby.adapter.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,7 +64,7 @@ public class UserController {
     //page	int	获取第几页数据，不传默认为1	X
     //pageSize	int	每页获取多少条数据，不传默认为50	X
     @GetMapping("/withDraw/list")
-    public String withDrawList(Page page){
+    public String withDrawList(Pageable page){
         return "{\"code\":0,\"data\":[{\"dateAdd\":\"2017-10-23 10:42:32\",\"dateUpdate\":\"2017-10-23 10:42:32\",\"id\":16,\"money\":1,\"moneyFee\":0.01,\"number\":\"TX1710232021319455\",\"status\":0,\"statusStr\":\"申请中\",\"uid\":28598,\"userId\":951},{\"dateAdd\":\"2017-10-23 10:42:29\",\"dateUpdate\":\"2017-10-23 10:42:29\",\"id\":7,\"money\":1,\"moneyFee\":0.01,\"number\":\"TX1710232067790417\",\"status\":0,\"statusStr\":\"申请中\",\"uid\":28598,\"userId\":951}],\"msg\":\"success\"}";
     }
 

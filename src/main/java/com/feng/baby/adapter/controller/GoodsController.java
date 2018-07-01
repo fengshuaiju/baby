@@ -1,7 +1,7 @@
 package com.feng.baby.adapter.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -88,7 +88,7 @@ public class GoodsController {
     //    pageSize	int	每页显示多少条数据，不传默认50	X
     @GetMapping("/reputation")
     public String reputation(@RequestParam int goodsId,
-                             Page page){
+                             Pageable page){
         return "{\"code\":0,\"data\":[{\"goods\":{\"amount\":1998,\"goodsId\":11,\"goodsName\":\"无物流无规格商品测试\",\"id\":19,\"number\":2,\"orderId\":14,\"pic\":\"https://cdn.it120.cc/apifactory/2017/03/27/dce24d7c6f0f6e8256fdbf9c43b84d9e.jpeg\"}},{\"goods\":{\"amount\":1998,\"goodsId\":11,\"goodsName\":\"无物流无规格商品测试\",\"id\":17,\"number\":2,\"orderId\":13}},{\"goods\":{\"amount\":1998,\"goodsId\":11,\"goodsName\":\"无物流无规格商品测试\",\"id\":15,\"number\":2,\"orderId\":12}},{\"goods\":{\"amount\":1998,\"goodsId\":11,\"goodsName\":\"无物流无规格商品测试\",\"id\":13,\"number\":2,\"orderId\":11,\"uid\":3},\"user\":{\"avatarUrl\":\"https://cdn.it120.cc/apifactory/2017/03/27/dce24d7c6f0f6e8256fdbf9c43b84d9e.jpeg\",\"city\":\"Hangzhou\",\"dateAdd\":\"2017-02-16 14:47:02\",\"dateLogin\":\"2017-04-26 19:18:36\",\"id\":3,\"ipAdd\":\"127.0.0.1\",\"ipLogin\":\"122.233.161.18\",\"nick\":\"张三\",\"province\":\"Zhejiang\",\"source\":0,\"sourceStr\":\"小程序\",\"status\":0,\"statusStr\":\"默认\"}},{\"goods\":{\"amount\":1998,\"goodsId\":11,\"goodsName\":\"无物流无规格商品测试\",\"id\":8,\"number\":2,\"orderId\":8,\"uid\":3},\"user\":{\"avatarUrl\":\"https://cdn.it120.cc/apifactory/2017/03/27/dce24d7c6f0f6e8256fdbf9c43b84d9e.jpeg\",\"city\":\"Hangzhou\",\"dateAdd\":\"2017-02-16 14:47:02\",\"dateLogin\":\"2017-04-26 19:18:36\",\"id\":3,\"ipAdd\":\"127.0.0.1\",\"ipLogin\":\"122.233.161.18\",\"nick\":\"张三\",\"province\":\"Zhejiang\",\"source\":0,\"sourceStr\":\"小程序\",\"status\":0,\"statusStr\":\"默认\"}},{\"goods\":{\"amount\":1998,\"goodsId\":11,\"goodsName\":\"无物流无规格商品测试\",\"id\":7,\"number\":2,\"orderId\":7,\"uid\":3},\"user\":{\"avatarUrl\":\"https://cdn.it120.cc/apifactory/2017/03/27/dce24d7c6f0f6e8256fdbf9c43b84d9e.jpeg\",\"city\":\"Hangzhou\",\"dateAdd\":\"2017-02-16 14:47:02\",\"dateLogin\":\"2017-04-26 19:18:36\",\"id\":3,\"ipAdd\":\"127.0.0.1\",\"ipLogin\":\"122.233.161.18\",\"nick\":\"张三\",\"province\":\"Zhejiang\",\"source\":0,\"sourceStr\":\"小程序\",\"status\":0,\"statusStr\":\"默认\"}},{\"goods\":{\"amount\":1998,\"goodsId\":11,\"goodsName\":\"无物流无规格商品测试\",\"id\":6,\"number\":2,\"orderId\":6,\"uid\":3},\"user\":{\"avatarUrl\":\"https://cdn.it120.cc/apifactory/2017/03/27/dce24d7c6f0f6e8256fdbf9c43b84d9e.jpeg\",\"city\":\"Hangzhou\",\"dateAdd\":\"2017-02-16 14:47:02\",\"dateLogin\":\"2017-04-26 19:18:36\",\"id\":3,\"ipAdd\":\"127.0.0.1\",\"ipLogin\":\"122.233.161.18\",\"nick\":\"张三\",\"province\":\"Zhejiang\",\"source\":0,\"sourceStr\":\"小程序\",\"status\":0,\"statusStr\":\"默认\"}},{\"goods\":{\"amount\":1998,\"goodsId\":11,\"goodsName\":\"无物流无规格商品测试\",\"id\":4,\"number\":2,\"orderId\":4,\"uid\":3},\"user\":{\"avatarUrl\":\"https://cdn.it120.cc/apifactory/2017/03/27/dce24d7c6f0f6e8256fdbf9c43b84d9e.jpeg\",\"city\":\"Hangzhou\",\"dateAdd\":\"2017-02-16 14:47:02\",\"dateLogin\":\"2017-04-26 19:18:36\",\"id\":3,\"ipAdd\":\"127.0.0.1\",\"ipLogin\":\"122.233.161.18\",\"nick\":\"张三\",\"province\":\"Zhejiang\",\"source\":0,\"sourceStr\":\"小程序\",\"status\":0,\"statusStr\":\"默认\"}}],\"msg\":\"success\"}";
     }
 
@@ -166,7 +166,7 @@ public class GoodsController {
     //page	int	获取第几页数据，默认1	X
     //pageSize	int	每页显示多少数据，默认50	X
     @GetMapping("/kanjia/list")
-    public String kanjiaList(Page page){
+    public String kanjiaList(Pageable pageable){
         return "{\"code\":0,\"data\":{\"result\":[{\"dateAdd\":\"2018-03-31 20:09:16\",\"dateEnd\":\"2018-08-31 12:00:00\",\"goodsId\":1,\"id\":2,\"minPrice\":4,\"number\":2,\"originalPrice\":3}],\"totalRow\":1,\"totalPage\":1},\"msg\":\"success\"}";
     }
 
