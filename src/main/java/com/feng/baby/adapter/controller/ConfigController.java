@@ -16,7 +16,12 @@ public class ConfigController {
 
     @GetMapping("/get-value")
     public String getValue(@RequestParam String key){
-        return "{\"code\":0,\"data\":{\"creatAt\":\"2017-01-16 12:09:31\",\"dateType\":0,\"id\":4,\"key\":\"test\",\"remark\":\"测试\",\"updateAt\":\"2017-01-16 12:09:31\",\"userId\":2,\"value\":\"sjkhdskjfhkjsdh\"},\"msg\":\"success\"}";
+        if("mallName".equals(key)){
+            return "{\"code\":0,\"data\":{\"creatAt\":\"2017-01-16 12:09:31\",\"dateType\":0,\"id\":4,\"key\":\"test\",\"remark\":\"测试\",\"updateAt\":\"2017-01-16 12:09:31\",\"userId\":2,\"value\":\"sjkhdskjfhkjsdh\"},\"msg\":\"success\"}";
+        }else if("recharge_amount_min".equals(key)){
+            return "{\"code\":404,\"msg\":\"暂无数据\"}";
+        }
+        return null;
     }
 
 }
