@@ -1,5 +1,6 @@
 package com.feng.baby.adapter.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,8 +70,12 @@ public class ScoreController {
     //参数名	数据类型	备注	必填
     //code	String	编码	X
     @GetMapping("/send/rule")
-    public String sendRule(@RequestParam String code){
-        return "{\"code\":0,\"data\":[{\"code\":\"RECHARGE\",\"codeStr\":\"充值送\",\"confine\":1000,\"score\":10},{\"code\":\"CONSUME\",\"codeStr\":\"消费送\",\"confine\":1000,\"score\":100},{\"code\":\"REG\",\"codeStr\":\"注册送\",\"confine\":0,\"score\":10}],\"msg\":\"success\"}";
+    public JSONObject sendRule(@RequestParam String code){
+        if("goodReputation".equals(code)){
+            return JSONObject.parseObject("{\"code\":0,\"data\":[{\"code\":\"goodReputation\",\"codeStr\":\"好评送\",\"confine\":1.00,\"score\":5}],\"msg\":\"success\"}");
+        }else{
+            return null;
+        }
     }
 
 

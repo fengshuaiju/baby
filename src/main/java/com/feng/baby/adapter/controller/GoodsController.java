@@ -1,5 +1,6 @@
 package com.feng.baby.adapter.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -166,8 +167,9 @@ public class GoodsController {
     //page	int	获取第几页数据，默认1	X
     //pageSize	int	每页显示多少数据，默认50	X
     @GetMapping("/kanjia/list")
-    public String kanjiaList(Pageable pageable){
-        return "{\"code\":0,\"data\":{\"result\":[{\"dateAdd\":\"2018-03-31 20:09:16\",\"dateEnd\":\"2018-08-31 12:00:00\",\"goodsId\":1,\"id\":2,\"minPrice\":4,\"number\":2,\"originalPrice\":3}],\"totalRow\":1,\"totalPage\":1},\"msg\":\"success\"}";
+    public JSONObject kanjiaList(Pageable pageable){
+        //return JSONObject.parseObject("{\"code\":0,\"data\":{\"result\":[{\"dateAdd\":\"2018-03-31 20:09:16\",\"dateEnd\":\"2018-08-31 12:00:00\",\"goodsId\":1,\"id\":2,\"minPrice\":4,\"number\":2,\"originalPrice\":3}],\"totalRow\":1,\"totalPage\":1},\"msg\":\"success\"}");
+        return JSONObject.parseObject("{\"code\":700,\"msg\":\"暂无数据\"}");
     }
 
 
