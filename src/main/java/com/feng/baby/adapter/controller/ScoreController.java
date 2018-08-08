@@ -1,5 +1,6 @@
 package com.feng.baby.adapter.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -70,9 +71,9 @@ public class ScoreController {
     //参数名	数据类型	备注	必填
     //code	String	编码	X
     @GetMapping("/send/rule")
-    public JSONObject sendRule(@RequestParam String code){
+    public JSON sendRule(@RequestParam String code){
         if("goodReputation".equals(code)){
-            return JSONObject.parseObject("{\"code\":0,\"data\":[{\"code\":\"goodReputation\",\"codeStr\":\"好评送\",\"confine\":1.00,\"score\":5}],\"msg\":\"success\"}");
+            return JSONObject.parseArray("[{\"score\":5,\"code\":\"goodReputation\",\"codeStr\":\"好评送\",\"confine\":1}]");
         }else{
             return null;
         }
@@ -81,8 +82,8 @@ public class ScoreController {
 
     //获取签到赠送积分规则
     @GetMapping("/sign/rules")
-    public String rules(){
-        return "{\"code\":0,\"data\":[{\"continuous\":1,\"score\":1}],\"msg\":\"success\"}";
+    public JSON rules(){
+        return JSONObject.parseArray("[{\"continuous\":1,\"score\":1},{\"continuous\":2,\"score\":1},{\"continuous\":3,\"score\":1},{\"continuous\":4,\"score\":2},{\"continuous\":5,\"score\":2},{\"continuous\":6,\"score\":2},{\"continuous\":7,\"score\":10}]");
     }
 
 }
