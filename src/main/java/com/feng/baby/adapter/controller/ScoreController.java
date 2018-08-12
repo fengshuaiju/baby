@@ -67,17 +67,7 @@ public class ScoreController {
         return "{\"code\":0,\"data\":{\"result\":[{\"behavior\":0,\"behaviorStr\":\"收入\",\"dateAdd\":\"2017-11-22 17:41:03\",\"remark\":\"签到送积分\",\"score\":1,\"scoreLeft\":25,\"type\":2,\"typeStr\":\"每日签到\"},{\"behavior\":0,\"behaviorStr\":\"收入\",\"dateAdd\":\"2017-11-13 08:11:24\",\"remark\":\"签到送积分\",\"score\":1,\"scoreLeft\":24,\"type\":2,\"typeStr\":\"每日签到\"}],\"totalRow\":24,\"totalPage\":1},\"msg\":\"success\"}";
     }
 
-    //获取积分赠送规则
-    //参数名	数据类型	备注	必填
-    //code	String	编码	X
-    @GetMapping("/send/rule")
-    public JSON sendRule(@RequestParam String code){
-        if("goodReputation".equals(code)){
-            return JSONObject.parseArray("[{\"score\":5,\"code\":\"goodReputation\",\"codeStr\":\"好评送\",\"confine\":1}]");
-        }else{
-            return null;
-        }
-    }
+
 
 
     //获取签到赠送积分规则

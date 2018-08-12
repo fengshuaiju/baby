@@ -28,6 +28,22 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.qcloud</groupId>
+            <artifactId>cos_api</artifactId>
+            <version>5.4.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
@@ -214,6 +230,18 @@
                             <excludes/>
                             <!--inputSchema即为数据库名-->
                             <inputSchema>baby</inputSchema>
+                            <forcedTypes>
+
+                                <forcedType>
+                                    <!-- Specify the Java type of your custom type. This corresponds to the Converter's <U> type. -->
+                                    <userType>java.time.LocalDateTime</userType>
+                                    <!-- Associate that custom type with your converter. -->
+                                    <converter>com.feng.baby.support.persistence.JooqTimestampToLocalDateTimeConverter</converter>
+                                    <expression>.*_AT</expression>
+                                    <types>.*</types>
+                                </forcedType>
+
+                            </forcedTypes>
                         </database>
                         <target>
                             <packageName>sprout.jooq.generate</packageName>

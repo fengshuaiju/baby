@@ -23,6 +23,9 @@ spring:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: true
       WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS: false
+    deserialization:
+      READ_DATE_TIMESTAMPS_AS_NANOSECONDS: false
+    date-format: yyyy-MM-dd
   cloud:
     stream:
       bindings:
@@ -54,3 +57,17 @@ security:
     resource:
       jwt:
         key-value: staging
+
+appId: 1252541513
+secretId: AKIDNaYIn4btRmtlPoHuc5KK6dz6xYt2NYv2
+secretKey: 2pNgngLn13rRoyud8QVM0RffT1IK5apo
+tencent.file.path: https://fengshuaiju-1252541513.cos.ap-beijing.myqcloud.com
+
+---
+spring:
+  profiles: staging
+
+appId: 1252541513
+secretId: AKIDNaYIn4btRmtlPoHuc5KK6dz6xYt2NYv2
+secretKey: 2pNgngLn13rRoyud8QVM0RffT1IK5apo
+tencent.file.path: https://fengshuaiju-1252541513.cos.ap-beijing.myqcloud.com

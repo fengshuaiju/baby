@@ -2,7 +2,9 @@ package com.feng.baby.adapter.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.feng.baby.application.service.DiscountsService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/discounts")
 public class DiscountsController {
+
+    @Autowired
+    private DiscountsService discountsService;
 
     //检索可领取优惠券
     //参数名	数据类型	备注	必填
@@ -37,10 +42,9 @@ public class DiscountsController {
     //token	String	调用登录接口获取的登录凭证	Y
     //detect	String	如果传了该参数，并且是 true ，则不获取优惠券，而是检测当前用户是否可以获取	X
     @GetMapping("/fetch")
-    public String fetch(@RequestParam int id,
-                        @RequestParam(required = false) String pwd,
-                        @RequestParam(required = false) String detect) {
-        return "{\"code\":0,\"data\":{\"dateEnd\":\"2017-08-27 00:00:00\",\"dateStart\":\"2017-08-16 13:46:47\",\"id\":1,\"money\":10,\"moneyHreshold\":20,\"name\":\"万圣节大优惠\",\"pid\":5,\"type\":\"shop\"},\"msg\":\"success\"}";
+    public void fetch(@RequestParam String openId,
+                        @RequestParam String couponId) {
+        discountsService.fetchCoupon(openId, couponId);
     }
 
     //我的优惠券

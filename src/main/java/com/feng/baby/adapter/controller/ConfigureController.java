@@ -2,9 +2,15 @@ package com.feng.baby.adapter.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.feng.baby.application.service.ConfigureService;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * Created by fengshuaiju on 2018-06-23.
@@ -12,15 +18,14 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/open/config")
-public class ConfigController {
+public class ConfigureController {
+
+    @Autowired
+    private ConfigureService configureService;
 
     @GetMapping("/get-value")
     @ResponseStatus(HttpStatus.OK)
     public JSONObject getValue(@RequestParam String key){
-
-        if("mallName".equals(key)){
-            return JSON.parseObject("{\"creatAt\":\"2018-01-23 08:19:23\",\"dateType\":0,\"dateUpdate\":\"2018-05-12 18:40:15\",\"updateAt\":\"2018-01-23 08:19:23\",\"remark\":\"\",\"id\":2014,\"userId\":797,\"value\":\"清欢严选\",\"key\":\"mallName\"}");
-        }
 
         if("recharge_amount_min".equals(key)){
             return JSON.parseObject("{\"code\":404,\"msg\":\"暂无数据\"}");
@@ -43,6 +48,40 @@ public class ConfigController {
         }
 
         return null;
+    }
+
+    @GetMapping("/starter")
+    public Map<String, String> starterPage(){
+        return configureService.starterPage();
+    }
+
+
+    @GetMapping("/mall-name")
+    public Map<String, String> mallName(){
+        return ImmutableMap.of("value", "帅帅小店");
+    }
+
+    //获取积分赠送规则
+    @GetMapping("/send-score/rule")
+    public Map<String, String> sendRule(@RequestParam String code){
+        if("goodReputation".equals(code)){
+            return ImmutableMap.of(
+                "score", "5",
+                "code", "goodReputation",
+                "codeStr", "好评送",
+                "confine", "1"
+            );
+        }else{
+            return null;
+        }
+    }
+
+
+    @GetMapping("/send-score/recharge-amount-min")
+    public Map<String, String> rechargeAmountMin(){
+        return ImmutableMap.of(
+                "value", "0"
+        );
     }
 
 }
