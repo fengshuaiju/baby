@@ -33,8 +33,6 @@ public class DiscountsService {
         Optional<CouponsRepresentation> couponsRepresentation = jooq.selectFrom(COUPONS_USERS.leftJoin(COUPONS).on(COUPONS_USERS.COUPON_ID.eq(COUPONS.COUPON_ID)))
                 .where(COUPONS.TYPE.eq(CouponsType.WELCOME.name())).fetchOptionalInto(CouponsRepresentation.class);
 
-        System.err.println(couponsRepresentation);
-
        if(!couponsRepresentation.isPresent())
            return jooq.selectFrom(COUPONS)
                    .where(COUPONS.TYPE.eq(CouponsType.WELCOME.name()))

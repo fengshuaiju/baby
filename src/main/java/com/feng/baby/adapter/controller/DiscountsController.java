@@ -1,7 +1,5 @@
 package com.feng.baby.adapter.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.feng.baby.application.service.DiscountsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,20 +18,6 @@ public class DiscountsController {
 
     @Autowired
     private DiscountsService discountsService;
-
-    //检索可领取优惠券
-    //参数名	数据类型	备注	必填
-    //type	String	优惠券类型	X
-    //refId	int	优惠券使用对象	X
-    @GetMapping("/coupons")
-    public JSON coupons(@RequestParam(required = false) String type,
-                        @RequestParam(required = false) Integer refId) {
-        if ("shop".equals(type)) {
-            return JSONObject.parseArray("[{\"dateAdd\":\"2018-03-12 20:54:24\",\"dateEndDays\":10,\"dateEndType\":1,\"dateStartType\":1,\"dateUpdate\":\"2018-08-08 10:56:42\",\"id\":1409,\"moneyHreshold\":288,\"moneyMax\":5,\"moneyMin\":5,\"name\":\"上面口令输入 666  \",\"needScore\":0,\"needSignedContinuous\":0,\"numberGit\":1062,\"numberGitNumber\":650,\"numberLeft\":38,\"numberPersonMax\":3,\"numberTotle\":327,\"numberUsed\":22,\"refId\":30164,\"status\":0,\"statusStr\":\"正常\",\"type\":\"shop\"},{\"dateAdd\":\"2018-03-12 20:53:22\",\"dateEndDays\":10,\"dateEndType\":1,\"dateStartType\":1,\"dateUpdate\":\"2018-08-08 10:15:28\",\"id\":1408,\"moneyHreshold\":99,\"moneyMax\":10,\"moneyMin\":10,\"name\":\"20积分兑换超值礼券\",\"needScore\":20,\"needSignedContinuous\":0,\"numberGit\":479,\"numberGitNumber\":479,\"numberLeft\":589,\"numberPersonMax\":2,\"numberTotle\":1000,\"numberUsed\":15,\"status\":0,\"statusStr\":\"正常\",\"type\":\"shop\"}]");
-        }
-
-        return null;
-    }
 
     //领取优惠券
     //参数名	数据类型	备注	必填

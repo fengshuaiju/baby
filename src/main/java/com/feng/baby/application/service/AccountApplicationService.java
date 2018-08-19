@@ -26,7 +26,7 @@ public class AccountApplicationService {
     public void createAccount(String userName, String nickName) {
 
         jooq.insertInto(USER_INFO).set(USER_INFO.USER_NAME, userName)
-                .set(USER_INFO.NICKNAME, nickName)
+                .set(USER_INFO.NICK_NAME, nickName)
                 .set(USER_INFO.WECHAT_OPEN_ID, userName)
                 .execute();
         log.info("create account success, userName :{}", userName);

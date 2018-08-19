@@ -179,7 +179,7 @@
                 </executions>
                 <!-- 指定Flyway迁移脚本文件目录 -->
                 <configuration>
-                    <url>jdbc:mysql://localhost:3306/baby</url>
+                    <url>jdbc:mysql://localhost:3306/baby?characterEncoding=utf-8</url>
                     <schemas>baby</schemas>
                     <user>root</user>
                     <password>fengshuaiju</password>

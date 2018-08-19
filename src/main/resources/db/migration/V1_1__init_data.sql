@@ -1,4 +1,14 @@
 # --------------- Mysql ---------------
+
+# 用户信息
+INSERT INTO user_info(
+  user_name, cellphone, wechat_open_id
+)VALUES (
+  'olIcM5KAax4vDCGbc-6R5Oyuvv_I' , '18930061430', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I'
+);
+
+
+# 主页滚动图片
 INSERT INTO slide_container (goods_id, pic_url, status, orders)
 VALUES (30164, 'https://cdn.it120.cc/apifactory/2018/05/09/2e8638183135b207c97490ed95fb44ba.jpg', TRUE, 1);
 
@@ -11,7 +21,7 @@ VALUES (30164, 'https://cdn.it120.cc/apifactory/2018/05/09/dc11f00add7f97ee549b4
 INSERT INTO slide_container (goods_id, pic_url, status, orders)
 VALUES (30164, 'https://cdn.it120.cc/apifactory/2018/05/09/62c5fb354ced6e13c06d554cde479679.jpg', TRUE, 1);
 
-
+-- 签到按钮
 INSERT INTO function_menus (link_url, pic_url, status, title, orders)
 VALUES
   ('/pages/score/index', 'https://cdn.it120.cc/apifactory/2018/05/09/0630c87c94e2f1a4f213f7ffb5845e6d.png', TRUE, '签到',
@@ -42,3 +52,232 @@ INSERT INTO coupons (coupon_id, pic_url, link_url, coupon_name, amount_of_money,
 VALUES ('1ba413178d361771f25332ebd04f3bf7', 'https://cdn.it120.cc/apifactory/2018/05/18/8b5875faf90d1b2fdc353dfbc5d6d1b3.png',
         'https://cdn.it120.cc/apifactory/2018/06/26/f1e90deac271101c805f1db52f9ba5da.png', '新人优惠券', 5, 35, '2018-09-09',
         '新人优惠券,满35元可用', TRUE, 'DISCOUNT');
+
+
+# 分类页面
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (1, '家居生活', 0, TRUE , '', 1);
+
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (1, '配件装饰', 0, TRUE , '', 2);
+
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (1, '新品服装', 0, TRUE , '', 3);
+
+
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '床品', 1, TRUE , 'https://cdn.it120.cc/apifactory/2018/05/24/772862baa0197b71c5eee745542c956f.png', 1);
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '布艺', 1, TRUE , 'https://cdn.it120.cc/apifactory/2018/05/24/fd91b4091346a46acdabe22712a969c4.png', 2);
+
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '收纳', 1, TRUE , 'https://cdn.it120.cc/apifactory/2018/05/24/4d951246d110116e16ca028437664a27.png', 3);
+
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '宠物', 1, TRUE , 'https://cdn.it120.cc/apifactory/2018/04/02/f8a757674a02ed90bd7be8f20302d043.png', 4);
+
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '装饰', 1, TRUE , 'https://cdn.it120.cc/apifactory/2018/04/02/9657ee1e7cff3c65b696b05dc9ff5ad2.png', 5);
+
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '家具', 1, TRUE , 'https://cdn.it120.cc/apifactory/2018/04/02/ccbb08b5dec9146e69bad924516bbe43.png', 6);
+
+
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '男包', 2, TRUE , 'https://cdn.it120.cc/apifactory/2018/04/02/9b48f6a3c770cdc91cebe594d1c9dc9c.png', 1);
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '女包', 2, TRUE , 'https://cdn.it120.cc/apifactory/2018/04/02/f47c4a127a2252fb7ddda391fa439bfa.png', 2);
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '围巾', 2, TRUE , 'https://cdn.it120.cc/apifactory/2018/04/02/6ba34412fdbb97a11346c36545b1e946.png', 3);
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '拖鞋', 2, TRUE , 'https://cdn.it120.cc/apifactory/2018/04/02/ba9b544de8f486ebb3ba4044d77ff323.png', 4);
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '眼镜', 2, TRUE , 'https://cdn.it120.cc/apifactory/2018/04/02/64237e0b117f7880a8b711ce72e32bf2.png', 5);
+
+
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '衬衫', 3, TRUE , 'https://cdn.it120.cc/apifactory/2018/04/02/f236825564bc5a27becdf26fa856782e.png', 1);
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, 'T恤', 3, TRUE , 'https://cdn.it120.cc/apifactory/2018/04/02/d0353c59382cbd8a6ff7c0e7d365b813.png', 2);
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '卫衣', 3, TRUE , 'https://cdn.it120.cc/apifactory/2018/04/02/70f0ab3b4d26c3da3e42a65e4ce0fcac.png', 3);
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '针织', 3, TRUE , 'https://cdn.it120.cc/apifactory/2018/04/02/33f86e8983a60ca971e1a5f3d7c78bb4.png', 4);
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '内衣', 3, TRUE , 'https://cdn.it120.cc/apifactory/2018/04/02/982ab7b5cdd9c11b22d31c39429e190d.png', 5);
+
+INSERT INTO category (level, name, pid, is_use, icon, indexs)
+VALUES (2, '内裤', 3, TRUE , 'https://cdn.it120.cc/apifactory/2018/04/02/a59e6679df4618800d74515d29b8267c.png', 6);
+
+
+# 商品信息
+INSERT INTO goods (
+  goods_id, category_id, name, characteristic, main_pic, original_price, min_price, pingtuan_price, status, pingtuan, remark, content, views, number_fav, number_reputation, stores, number_orders
+)VALUES (
+    '30164', '4', '清欢严选商城小程序端模版（API工厂授权版）', '全场模版使用优惠券立减88元', 'https://cdn.it120.cc/apifactory/2018/05/19/84833eee6df34fa550cd7644b2242cf5.png', 699, 488, 366, TRUE , TRUE , '提供接口服务',
+  '<p style=\"text-align: left;\"><span style=\"color: rgb(255, 0, 0);\">虚拟产品因为具备可复制性，所以一经售出概不退换！</span><br/></p><p style=\"text-align: left;\"><span style=\"color: rgb(255, 0, 0); font-size: 16px;\">虚拟产品因为具备可复制性，所以一经售出概不<span style=\"color: rgb(255, 0, 0); font-size: 16px;\"><span style=\"color: rgb(255, 0, 0);\">退换</span>！</span></span></p><p style=\"text-align: left;\"><span style=\"color: rgb(255, 0, 0); font-size: 16px;\">虚拟产品因为具备可复制性，所以一经售出概不<span style=\"color: rgb(255, 0, 0); font-size: 16px;\"><span style=\"color: rgb(255, 0, 0);\">退换</span>！</span></span></p><p><br/></p><p><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">购买须知（购买模版证明您知悉并同意以下条件）：</span></p><p><span style=\"font-size: 14px;\"><span style=\"font-size: 14px; color: rgb(255, 0, 0);\">1、</span><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">技术支持仅限对于现有代码，部署或配置有疑问的解答服务（不包含远程支持服务）；</span></span></p><p style=\"white-space: normal;\"><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">2、技术支持不包含页面源码修改或者新增功能的服务；</span></p><p style=\"white-space: normal;\"><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">3、购买后只要已经发送源码给您，不接受任何理由的退款和换货行为；</span></p><p><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">4、版本更新属于bug修复更新，不包括功能更新，各个功能接口属于增值项目，需要单独购买；</span></p><p><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">5、该版本为授权版本，一个工厂后台对应一套模版，如果您要多个小程序使用，需要单独购买授权；</span></p><p><br/></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">购买此模版您可以得到：</span></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">1、清欢严选商城小程序端整套模版源码（<strong>不包含服务端源码</strong>）；</span></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">2、清欢严选商城API工厂后台配置说明文档；</span></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">3、清欢模版VIP微信群加入权限；</span></p><p><span style=\"color: rgb(0, 0, 0);\"><span style=\"font-size: 14px;\">4、一周</span><strong><span style=\"font-size: 14px; text-decoration: none;\">QQ或微信在线解答模版配置相关问题</span></strong><span style=\"font-size: 14px;\">的技术支持服务；</span></span></p><p><br/></p><p><span style=\"font-size: 14px;\">怎么样购买这套模版？</span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;1、小程序体验该模版的整个交互流程和呈现界面；<br/></span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;2、在首页领取优惠券，或者去礼券中心领取优惠券；<br/></span></p><p><span style=\"font-size: 14px;\">&nbsp; &nbsp; 3、您有两种购买方式：一是直接购买，二是拼团购买；</span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;4、拼团只有拼团成功后才进行发货，否则视为拼团失败；<br/></span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;5、购买后请保存好订单付款截图，然后联系丸子君；</span><br/></p><p><br/></p><p style=\"text-align: center;\"><span style=\"color: rgb(255, 0, 0); font-size: 20px;\">再次感谢您选择丸子，支持正版！</span></p><p style=\"text-align: center;\"><span style=\"color: rgb(255, 0, 0); font-size: 20px;\">丸子QQ：1172007555</span></p><p><br/></p><p><br/></p>',
+  78, 66, 13, 109, 111
+);
+
+INSERT INTO goods (
+  goods_id, category_id, name, characteristic, main_pic, original_price, min_price, pingtuan_price, status, pingtuan, remark, content, views, number_fav, number_reputation, stores, number_orders
+)VALUES (
+  '36888', '4', '唤自然 仲夏椰香四件套', '100%全棉，椰林自然设计', 'https://cdn.it120.cc/apifactory/2018/04/02/0eaf91e4696b51e326313efaec5e9b11.jpg', 345, 234, 134, TRUE , FALSE , '让您有舒适睡眠',
+           '<p style=\"text-align: left;\"><span style=\"color: rgb(255, 0, 0);\">虚拟产品因为具备可复制性，所以一经售出概不退换！</span><br/></p><p style=\"text-align: left;\"><span style=\"color: rgb(255, 0, 0); font-size: 16px;\">虚拟产品因为具备可复制性，所以一经售出概不<span style=\"color: rgb(255, 0, 0); font-size: 16px;\"><span style=\"color: rgb(255, 0, 0);\">退换</span>！</span></span></p><p style=\"text-align: left;\"><span style=\"color: rgb(255, 0, 0); font-size: 16px;\">虚拟产品因为具备可复制性，所以一经售出概不<span style=\"color: rgb(255, 0, 0); font-size: 16px;\"><span style=\"color: rgb(255, 0, 0);\">退换</span>！</span></span></p><p><br/></p><p><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">购买须知（购买模版证明您知悉并同意以下条件）：</span></p><p><span style=\"font-size: 14px;\"><span style=\"font-size: 14px; color: rgb(255, 0, 0);\">1、</span><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">技术支持仅限对于现有代码，部署或配置有疑问的解答服务（不包含远程支持服务）；</span></span></p><p style=\"white-space: normal;\"><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">2、技术支持不包含页面源码修改或者新增功能的服务；</span></p><p style=\"white-space: normal;\"><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">3、购买后只要已经发送源码给您，不接受任何理由的退款和换货行为；</span></p><p><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">4、版本更新属于bug修复更新，不包括功能更新，各个功能接口属于增值项目，需要单独购买；</span></p><p><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">5、该版本为授权版本，一个工厂后台对应一套模版，如果您要多个小程序使用，需要单独购买授权；</span></p><p><br/></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">购买此模版您可以得到：</span></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">1、清欢严选商城小程序端整套模版源码（<strong>不包含服务端源码</strong>）；</span></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">2、清欢严选商城API工厂后台配置说明文档；</span></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">3、清欢模版VIP微信群加入权限；</span></p><p><span style=\"color: rgb(0, 0, 0);\"><span style=\"font-size: 14px;\">4、一周</span><strong><span style=\"font-size: 14px; text-decoration: none;\">QQ或微信在线解答模版配置相关问题</span></strong><span style=\"font-size: 14px;\">的技术支持服务；</span></span></p><p><br/></p><p><span style=\"font-size: 14px;\">怎么样购买这套模版？</span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;1、小程序体验该模版的整个交互流程和呈现界面；<br/></span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;2、在首页领取优惠券，或者去礼券中心领取优惠券；<br/></span></p><p><span style=\"font-size: 14px;\">&nbsp; &nbsp; 3、您有两种购买方式：一是直接购买，二是拼团购买；</span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;4、拼团只有拼团成功后才进行发货，否则视为拼团失败；<br/></span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;5、购买后请保存好订单付款截图，然后联系丸子君；</span><br/></p><p><br/></p><p style=\"text-align: center;\"><span style=\"color: rgb(255, 0, 0); font-size: 20px;\">再次感谢您选择丸子，支持正版！</span></p><p style=\"text-align: center;\"><span style=\"color: rgb(255, 0, 0); font-size: 20px;\">丸子QQ：1172007555</span></p><p><br/></p><p><br/></p>',
+  78, 66, 13, 109, 111
+);
+
+INSERT INTO goods (
+  goods_id, category_id, name, characteristic, main_pic, original_price, min_price, pingtuan_price, status, pingtuan, remark, content, views, number_fav, number_reputation, stores, number_orders
+)VALUES (
+  '40601', '4', '清欢食光机Plus小程序端模版（API工厂授权版）', '全场模版使用优惠券立减88元', 'https://cdn.it120.cc/apifactory/2018/04/12/42c001a698072b3bae9ac71f65ca2cfc.jpg', 839, 421, 134, TRUE , FALSE , '我们提供点餐服务',
+           '<p style=\"text-align: left;\"><span style=\"color: rgb(255, 0, 0);\">虚拟产品因为具备可复制性，所以一经售出概不退换！</span><br/></p><p style=\"text-align: left;\"><span style=\"color: rgb(255, 0, 0); font-size: 16px;\">虚拟产品因为具备可复制性，所以一经售出概不<span style=\"color: rgb(255, 0, 0); font-size: 16px;\"><span style=\"color: rgb(255, 0, 0);\">退换</span>！</span></span></p><p style=\"text-align: left;\"><span style=\"color: rgb(255, 0, 0); font-size: 16px;\">虚拟产品因为具备可复制性，所以一经售出概不<span style=\"color: rgb(255, 0, 0); font-size: 16px;\"><span style=\"color: rgb(255, 0, 0);\">退换</span>！</span></span></p><p><br/></p><p><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">购买须知（购买模版证明您知悉并同意以下条件）：</span></p><p><span style=\"font-size: 14px;\"><span style=\"font-size: 14px; color: rgb(255, 0, 0);\">1、</span><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">技术支持仅限对于现有代码，部署或配置有疑问的解答服务（不包含远程支持服务）；</span></span></p><p style=\"white-space: normal;\"><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">2、技术支持不包含页面源码修改或者新增功能的服务；</span></p><p style=\"white-space: normal;\"><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">3、购买后只要已经发送源码给您，不接受任何理由的退款和换货行为；</span></p><p><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">4、版本更新属于bug修复更新，不包括功能更新，各个功能接口属于增值项目，需要单独购买；</span></p><p><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">5、该版本为授权版本，一个工厂后台对应一套模版，如果您要多个小程序使用，需要单独购买授权；</span></p><p><br/></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">购买此模版您可以得到：</span></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">1、清欢严选商城小程序端整套模版源码（<strong>不包含服务端源码</strong>）；</span></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">2、清欢严选商城API工厂后台配置说明文档；</span></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">3、清欢模版VIP微信群加入权限；</span></p><p><span style=\"color: rgb(0, 0, 0);\"><span style=\"font-size: 14px;\">4、一周</span><strong><span style=\"font-size: 14px; text-decoration: none;\">QQ或微信在线解答模版配置相关问题</span></strong><span style=\"font-size: 14px;\">的技术支持服务；</span></span></p><p><br/></p><p><span style=\"font-size: 14px;\">怎么样购买这套模版？</span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;1、小程序体验该模版的整个交互流程和呈现界面；<br/></span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;2、在首页领取优惠券，或者去礼券中心领取优惠券；<br/></span></p><p><span style=\"font-size: 14px;\">&nbsp; &nbsp; 3、您有两种购买方式：一是直接购买，二是拼团购买；</span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;4、拼团只有拼团成功后才进行发货，否则视为拼团失败；<br/></span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;5、购买后请保存好订单付款截图，然后联系丸子君；</span><br/></p><p><br/></p><p style=\"text-align: center;\"><span style=\"color: rgb(255, 0, 0); font-size: 20px;\">再次感谢您选择丸子，支持正版！</span></p><p style=\"text-align: center;\"><span style=\"color: rgb(255, 0, 0); font-size: 20px;\">丸子QQ：1172007555</span></p><p><br/></p><p><br/></p>',
+  78, 66, 13, 109, 111
+);
+
+INSERT INTO goods (
+  goods_id, category_id, name, characteristic, main_pic, original_price, min_price, pingtuan_price, status, pingtuan, remark, content, views, number_fav, number_reputation, stores, number_orders
+)VALUES (
+  '43223', '4', '清欢素雅小程序端模版（API工厂授权版）', '全场模版使用优惠券立减88元', 'https://cdn.it120.cc/apifactory/2018/04/18/14569682d80bf52cd8ff4c3c116758a7.png', 578, 346, 258, TRUE , FALSE , '清新素雅供您选择',
+           '<p style=\"text-align: left;\"><span style=\"color: rgb(255, 0, 0);\">虚拟产品因为具备可复制性，所以一经售出概不退换！</span><br/></p><p style=\"text-align: left;\"><span style=\"color: rgb(255, 0, 0); font-size: 16px;\">虚拟产品因为具备可复制性，所以一经售出概不<span style=\"color: rgb(255, 0, 0); font-size: 16px;\"><span style=\"color: rgb(255, 0, 0);\">退换</span>！</span></span></p><p style=\"text-align: left;\"><span style=\"color: rgb(255, 0, 0); font-size: 16px;\">虚拟产品因为具备可复制性，所以一经售出概不<span style=\"color: rgb(255, 0, 0); font-size: 16px;\"><span style=\"color: rgb(255, 0, 0);\">退换</span>！</span></span></p><p><br/></p><p><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">购买须知（购买模版证明您知悉并同意以下条件）：</span></p><p><span style=\"font-size: 14px;\"><span style=\"font-size: 14px; color: rgb(255, 0, 0);\">1、</span><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">技术支持仅限对于现有代码，部署或配置有疑问的解答服务（不包含远程支持服务）；</span></span></p><p style=\"white-space: normal;\"><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">2、技术支持不包含页面源码修改或者新增功能的服务；</span></p><p style=\"white-space: normal;\"><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">3、购买后只要已经发送源码给您，不接受任何理由的退款和换货行为；</span></p><p><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">4、版本更新属于bug修复更新，不包括功能更新，各个功能接口属于增值项目，需要单独购买；</span></p><p><span style=\"color: rgb(255, 0, 0); font-size: 14px;\">5、该版本为授权版本，一个工厂后台对应一套模版，如果您要多个小程序使用，需要单独购买授权；</span></p><p><br/></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">购买此模版您可以得到：</span></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">1、清欢严选商城小程序端整套模版源码（<strong>不包含服务端源码</strong>）；</span></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">2、清欢严选商城API工厂后台配置说明文档；</span></p><p><span style=\"font-size: 14px; color: rgb(0, 0, 0);\">3、清欢模版VIP微信群加入权限；</span></p><p><span style=\"color: rgb(0, 0, 0);\"><span style=\"font-size: 14px;\">4、一周</span><strong><span style=\"font-size: 14px; text-decoration: none;\">QQ或微信在线解答模版配置相关问题</span></strong><span style=\"font-size: 14px;\">的技术支持服务；</span></span></p><p><br/></p><p><span style=\"font-size: 14px;\">怎么样购买这套模版？</span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;1、小程序体验该模版的整个交互流程和呈现界面；<br/></span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;2、在首页领取优惠券，或者去礼券中心领取优惠券；<br/></span></p><p><span style=\"font-size: 14px;\">&nbsp; &nbsp; 3、您有两种购买方式：一是直接购买，二是拼团购买；</span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;4、拼团只有拼团成功后才进行发货，否则视为拼团失败；<br/></span></p><p><span style=\"font-size: 14px;\">&nbsp;&nbsp;&nbsp;&nbsp;5、购买后请保存好订单付款截图，然后联系丸子君；</span><br/></p><p><br/></p><p style=\"text-align: center;\"><span style=\"color: rgb(255, 0, 0); font-size: 20px;\">再次感谢您选择丸子，支持正版！</span></p><p style=\"text-align: center;\"><span style=\"color: rgb(255, 0, 0); font-size: 20px;\">丸子QQ：1172007555</span></p><p><br/></p><p><br/></p>',
+  78, 66, 13, 109, 111
+);
+
+INSERT INTO goods_media(
+  goods_id, url, type
+)VALUES (
+    '30164', 'https://cdn.it120.cc/apifactory/2018/05/19/84833eee6df34fa550cd7644b2242cf5.png', 'pic'
+);
+
+INSERT INTO goods_media(
+  goods_id, url, type
+)VALUES (
+  '30164', 'https://cdn.it120.cc/apifactory/2018/05/19/84833eee6df34fa550cd7644b2242cf5.png', 'pic'
+);
+
+INSERT INTO goods_category (
+  category_id, name, is_use, icon
+) VALUES (
+    4, '布艺', TRUE, ''
+);
+
+
+INSERT INTO properties (
+  indexs, name
+)
+VALUES (
+    1, '选择版本'
+);
+
+INSERT INTO properties (
+  indexs, name
+)
+VALUES (
+  2, '选择服务'
+);
+
+
+INSERT INTO properties_detail (
+  properties_id, indexs, name, remark
+) VALUES (
+    1, 1, '授权版（加密版本）', ''
+);
+
+INSERT INTO properties_detail (
+  properties_id, indexs, name, remark
+) VALUES (
+  1, 2, '开发版（未加密版本）', ''
+);
+
+
+INSERT INTO properties_detail (
+  properties_id, indexs, name, remark
+) VALUES (
+  2, 1, '不要服务', ''
+);
+
+INSERT INTO properties_detail (
+  properties_id, indexs, name, remark
+) VALUES (
+  2, 2, '部署上线一条龙服务', ''
+);
+
+# 喜欢的商品
+INSERT INTO goods_fav (
+  username, goods_id
+) VALUES (
+    'olIcM5KAax4vDCGbc-6R5Oyuvv_I', '30164'
+);
+
+
+# 已拼团的商品
+INSERT INTO goods_pintuan(
+  pintuan_id, goods_id, number_require, number_succcess, timeout_hours
+)VALUES (
+  '1', '30164', 2, 228,24
+);
+
+INSERT INTO goods_pintuan(
+  pintuan_id, goods_id, number_require, number_succcess, timeout_hours
+)VALUES (
+  '2', '36888', 2, 453,24
+);
+
+INSERT INTO goods_pintuan(
+  pintuan_id, goods_id, number_require, number_succcess, timeout_hours
+)VALUES (
+  '3', '40601', 2, 756,24
+);
+
+INSERT INTO goods_pintuan(
+  pintuan_id, goods_id, number_require, number_succcess, timeout_hours
+)VALUES (
+  '4', '43223', 2, 234,24
+);
+
+
+
+# 已拼团列表
+INSERT INTO pintuan_user(
+  goods_id, username, number_require, number_left, finished, nick, avatar_url
+)VALUES (
+  '30164', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', 2, 1, FALSE , '丸子','https://wx.qlogo.cn/mmopen/vi_32/XOqGlHkydicVWUW5OjnvtuoJ5uDg70Bz0xiaoQRwM6h6BF74C9JRZhaIzxS7RjYrDu8VVHAE6ASCrCm2SXzQT7EA/0'
+);
+
+INSERT INTO pintuan_user(
+  goods_id, username, number_require, number_left, finished, nick, avatar_url
+)VALUES (
+  '30164', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', 2, 1, FALSE , '菇凉', 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqJVZ7GAyickbcvHPc0cac9jeSajCmxVhLKevLBYibN1L7dWDYVHX9AI3vvKqian4lqW6j0YKaHRK4hQ/132'
+);
+
+INSERT INTO pintuan_user(
+  goods_id, username, number_require, number_left, finished, nick, avatar_url
+)VALUES (
+  '30164', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', 2, 1, FALSE , '阔爱', 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erSEPq6PFPicKkFsgvnK8mgOrnKgYicQS24pgs3b362IuELD8upkh0W7UbnCI6z1HEvl2hvfOII6BIg/132'
+);
+
+
+# 推荐商品
+INSERT INTO goods_recommend (goods_id) VALUES ('30164');
+INSERT INTO goods_recommend (goods_id) VALUES ('36888');
+INSERT INTO goods_recommend (goods_id) VALUES ('40601');
+INSERT INTO goods_recommend (goods_id) VALUES ('43223');
