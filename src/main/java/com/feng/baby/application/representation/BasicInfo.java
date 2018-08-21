@@ -11,9 +11,7 @@ public class BasicInfo {
     private String name;
     private String characteristic;
     private String mainPic;
-    private Double originalPrice;
-    private Double minPrice;
-    private Double pingtuanPrice;
+
     private boolean status;
     private boolean pingtuan;
     private String content;
@@ -23,4 +21,16 @@ public class BasicInfo {
     private Integer stores;
     private Integer numberOrders;
     private String remark;
+
+
+    //价格制定
+
+    //原价
+    private Double originalPrice;
+    //最低价,供砍价使用
+    private Double minPrice;
+    //拼团起步价，不同型号的商品中，给出最低的价格
+    private Double pingtuanPrice;
+    //优惠价
+    private Double concessionalPrice;
 }

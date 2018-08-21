@@ -4,10 +4,7 @@ import com.feng.baby.application.representation.*;
 import com.feng.baby.support.utils.ResourceNotFoundException;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.DSLContext;
-import org.jooq.Record1;
-import org.jooq.Record8;
-import org.jooq.Result;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -33,13 +30,12 @@ public class GoodsService {
     }
 
 
-    public GoodsInfo goodsDetails(Integer id) {
+    public GoodsInfo goodsDetails(String goodsId) {
         //查找主信息
-        BasicInfo basicInfo = jooq.selectFrom(GOODS).where(GOODS.GOODS_ID.eq(id.toString())).fetchOptionalInto(BasicInfo.class).get();
+        BasicInfo basicInfo = jooq.selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOptionalInto(BasicInfo.class)
+                .orElseThrow(ResourceNotFoundException::new);
 
-        Result<Record1<Integer>> fetch = jooq.select(PROPERTIES.INDEXS).from(PROPERTIES).fetch();
-
-        //查找类型信息
+        //查找类型信息(尺寸、颜色...)
         Result<Record8<Integer, Integer, String, Integer, Integer, Integer, String, String>> result = jooq.select(
                 PROPERTIES.ID,
                 PROPERTIES.INDEXS,
@@ -51,6 +47,7 @@ public class GoodsService {
                 PROPERTIES_DETAIL.REMARK.as("detail_remark"))
                 .from(PROPERTIES)
                 .innerJoin(PROPERTIES_DETAIL).on(PROPERTIES.ID.eq(PROPERTIES_DETAIL.PROPERTIES_ID))
+                .where(PROPERTIES.GOODS_ID.eq(goodsId))
                 .fetch();
 
         Map<PropertiesRecord, Result<Record8<Integer, Integer, String, Integer, Integer, Integer, String, String>>> propertiesRecordResultMap = result.intoGroups(PROPERTIES);
@@ -72,7 +69,7 @@ public class GoodsService {
         }).collect(Collectors.toList());
 
         //查找媒体信息
-        List<GoodsMedia> goodsMedia = jooq.selectFrom(GOODS_MEDIA).where(GOODS_MEDIA.GOODS_ID.eq(id.toString())).fetchInto(GoodsMedia.class);
+        List<GoodsMedia> goodsMedia = jooq.selectFrom(GOODS_MEDIA).where(GOODS_MEDIA.GOODS_ID.eq(goodsId)).fetchInto(GoodsMedia.class);
 
         return new GoodsInfo(basicInfo, properties, goodsMedia);
     }
@@ -112,6 +109,31 @@ public class GoodsService {
         int count = jooq.fetchCount(GOODS.leftJoin(GOODS_PINTUAN).on(GOODS.GOODS_ID.eq(GOODS_PINTUAN.GOODS_ID)));
 
         List<BasicInfo> basicInfos = jooq.selectFrom(GOODS.leftJoin(GOODS_PINTUAN).on(GOODS.GOODS_ID.eq(GOODS_PINTUAN.GOODS_ID)))
+                .offset(pageable.getOffset()).limit(pageable.getPageSize())
+                .fetchInto(BasicInfo.class);
+
+        return new PageImpl<>(basicInfos, pageable, count);
+    }
+
+    public Page<BasicInfo> cutdown(Pageable pageable) {
+        int count = jooq.fetchCount(GOODS.leftJoin(GOODS_CUT_DOWN).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN.GOODS_ID)));
+
+        List<BasicInfo> basicInfos = jooq.selectFrom(GOODS.leftJoin(GOODS_CUT_DOWN).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN.GOODS_ID)))
+                .offset(pageable.getOffset()).limit(pageable.getPageSize())
+                .fetchInto(BasicInfo.class);
+
+        return new PageImpl<>(basicInfos, pageable, count);
+    }
+
+
+    public Page<BasicInfo> similar(Integer categoryId, Pageable pageable) {
+
+        Condition condition = GOODS.CATEGORY_ID.eq(categoryId);
+
+        int count = jooq.fetchCount(GOODS.leftJoin(GOODS_CUT_DOWN).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN.GOODS_ID)), condition);
+
+        List<BasicInfo> basicInfos = jooq.selectFrom(GOODS.leftJoin(GOODS_CUT_DOWN).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN.GOODS_ID)))
+                .where(condition)
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetchInto(BasicInfo.class);
 

@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.feng.baby.application.command.CouponsRepresentation;
 import com.feng.baby.application.representation.BasicInfo;
+import com.feng.baby.application.representation.CmsRepresentation;
 import com.feng.baby.application.representation.FunctionMenus;
 import com.feng.baby.application.representation.SlideContainer;
 import com.feng.baby.application.service.BannerService;
+import com.feng.baby.application.service.CmsService;
 import com.feng.baby.application.service.DiscountsService;
 import com.feng.baby.application.service.GoodsService;
 import com.google.common.collect.ImmutableMap;
@@ -17,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -38,9 +39,9 @@ public class BannerController {
     @Autowired
     private GoodsService goodsService;
 
-    //App Banner管理接口
-    //参数名	数据类型	备注	必填
-    //type	String	Banner类型，后台自定义	X
+    @Autowired
+    private CmsService cmsService;
+
     //key
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
@@ -106,6 +107,17 @@ public class BannerController {
         return goodsService.toptuan(pageable);
     }
 
+    //全民砍价
+    @GetMapping("/cutdown")
+    public Page<BasicInfo> cutdown(Pageable pageable){
+        return goodsService.cutdown(pageable);
+    }
+
+    //精选主题
+    @GetMapping("/toptopic")
+    public Page<CmsRepresentation> topic(Pageable pageable){
+        return cmsService.topic(pageable);
+    }
 
 
 }
