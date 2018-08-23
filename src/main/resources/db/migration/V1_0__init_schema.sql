@@ -1,5 +1,6 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+SET GLOBAL TIME_ZONE = '+8:00';
 
 -- ----------------------------
 -- Table structure for category
@@ -398,14 +399,94 @@ CREATE TABLE `goods_recommend` (
   COLLATE = utf8_bin;
 
 -- ----------------------------
--- Table structure for goods_recommend
+-- Table structure for goods_cut_down_info
 -- ----------------------------
-DROP TABLE IF EXISTS `goods_cut_down`;
-CREATE TABLE `goods_cut_down` (
-  `id`       INT(11) NOT NULL             AUTO_INCREMENT,
-  `goods_id` VARCHAR(64) COLLATE utf8_bin DEFAULT NULL,
-  KEY `fk_goods_cut_down_goods` (`goods_id`),
-  CONSTRAINT `fk_goods_cut_down_goods` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`goods_id`),
+DROP TABLE IF EXISTS `goods_cut_down_info`;
+CREATE TABLE `goods_cut_down_info` (
+  `id`                 INT(11) NOT NULL             AUTO_INCREMENT,
+  `goods_id`           VARCHAR(64) COLLATE utf8_bin DEFAULT NULL,
+
+  # 每砍一刀最高金额
+  `max_amount_per_cut` DOUBLE                       DEFAULT NULL,
+  #  每砍一刀最低金额
+  `min_amount_per_cut` DOUBLE                       DEFAULT NULL,
+  # 有效时间，按小时计算
+  `effective_time`     INT                          DEFAULT NULL,
+  # 该商品最高可砍金额
+  `max_cut_down`       DOUBLE                       DEFAULT NULL,
+
+  #   最高多少人帮忙砍
+  `max_helper`         INT(11)                      DEFAULT NULL,
+
+  KEY `fk_goods_cut_down_info_goods` (`goods_id`),
+  CONSTRAINT `fk_goods_cut_down_info_goods` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`goods_id`),
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
+-- ----------------------------
+-- Table structure for goods_cut_down_list
+-- ----------------------------
+DROP TABLE IF EXISTS `goods_cut_downs`;
+CREATE TABLE `goods_cut_downs` (
+  `id`               INT(11)                             NOT NULL              AUTO_INCREMENT,
+
+  `cut_down_id`      VARCHAR(64) COLLATE utf8_bin UNIQUE NOT NULL,
+
+  `created_at`       TIMESTAMP                           NOT NULL              DEFAULT CURRENT_TIMESTAMP,
+  `expiry_time_at`   TIMESTAMP                           NOT NULL              DEFAULT CURRENT_TIMESTAMP,
+  #   发起人
+  `initiator`        VARCHAR(255) COLLATE utf8_bin                             DEFAULT NULL,
+  #   当前价格
+  `current_price`    DOUBLE                                                    DEFAULT NULL,
+  #   已经砍掉的价格
+  `cut_total_amount` DOUBLE                                                    DEFAULT NULL,
+  #   帮忙砍价的人数
+  `helper_number`    INT(11)                                                   DEFAULT NULL,
+  #   原价
+  `original_price`   DOUBLE                                                    DEFAULT NULL,
+  # 底价
+  `base_price`       DOUBLE                                                    DEFAULT NULL,
+  # 商品图片
+  `goods_pic`        VARCHAR(255) COLLATE utf8_bin                             DEFAULT NULL,
+  # 商品名称
+  `goods_name`       VARCHAR(255) COLLATE utf8_bin                             DEFAULT NULL,
+
+  `goods_id`         VARCHAR(64) COLLATE utf8_bin                              DEFAULT NULL,
+
+  `finished`         BOOLEAN                                                   DEFAULT FALSE,
+
+  KEY `fk_goods_cut_downs_goods` (`goods_id`),
+  CONSTRAINT `fk_goods_cut_downs_goods` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`goods_id`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cut_downs_goods` (`initiator`, `goods_id`)
+
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
+-- ----------------------------
+-- Table structure for goods_cut_down_helper_list
+-- ----------------------------
+DROP TABLE IF EXISTS `goods_cut_down_helper`;
+CREATE TABLE `goods_cut_down_helper` (
+  `id`             INT(11)   NOT NULL              AUTO_INCREMENT,
+
+  `cut_down_id`    VARCHAR(64) COLLATE utf8_bin    DEFAULT NULL,
+
+  `created_at`     TIMESTAMP NOT NULL              DEFAULT CURRENT_TIMESTAMP,
+  #   参与者
+  `participant`    VARCHAR(255) COLLATE utf8_bin   DEFAULT NULL,
+  #  砍掉的金额
+  `cut_down_price` DOUBLE                          DEFAULT NULL,
+
+
+  KEY `fk_goods_cut_down_helper_cur_down` (`cut_down_id`),
+  CONSTRAINT `fk_goods_cut_down_helper_cur_down` FOREIGN KEY (`cut_down_id`) REFERENCES `goods_cut_downs` (`cut_down_id`),
+
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB

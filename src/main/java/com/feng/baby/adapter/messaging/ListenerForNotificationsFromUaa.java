@@ -1,6 +1,6 @@
 package com.feng.baby.adapter.messaging;
 
-import com.feng.baby.application.service.AccountApplicationService;
+import com.feng.baby.application.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -14,7 +14,7 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 public class ListenerForNotificationsFromUaa {
 
     @Autowired
-    private AccountApplicationService accountApplicationService;
+    private AccountService accountService;
 
     @StreamListener(InputChannels.INPUT_FROM_UAA)
     public void handleNotificationsFromSelf(Notification notification) {
@@ -28,7 +28,7 @@ public class ListenerForNotificationsFromUaa {
 
                     String userName = eventReader.stringValue("userName").get();
                     String nickName = eventReader.stringValue("nickName").orElse(userName);
-                    accountApplicationService.createAccount(userName, nickName);
+                    accountService.createAccount(userName, nickName);
                     break;
                 }
                 case "com.feng.accounts.model.event.TenantApproved": {

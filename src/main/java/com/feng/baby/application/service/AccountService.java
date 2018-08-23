@@ -1,5 +1,6 @@
 package com.feng.baby.application.service;
 
+import com.feng.baby.application.representation.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.InsertSetMoreStep;
@@ -13,12 +14,12 @@ import static sprout.jooq.generate.Tables.USER_INFO;
 
 @Slf4j
 @Service
-public class AccountApplicationService {
+public class AccountService {
 
     private final DSLContext jooq;
 
     @Autowired
-    AccountApplicationService(DSLContext jooq){
+    AccountService(DSLContext jooq){
         this.jooq = jooq;
     }
 
@@ -30,6 +31,10 @@ public class AccountApplicationService {
                 .set(USER_INFO.WECHAT_OPEN_ID, userName)
                 .execute();
         log.info("create account success, userName :{}", userName);
+    }
+
+    public UserInfo getUserInfoByUserName(String username) {
+        return jooq.selectFrom(USER_INFO).where(USER_INFO.USER_NAME.eq(username)).fetchOptionalInto(UserInfo.class).orElseThrow(IllegalArgumentException::new);
     }
 }
 

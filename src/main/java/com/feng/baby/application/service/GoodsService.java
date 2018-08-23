@@ -116,9 +116,9 @@ public class GoodsService {
     }
 
     public Page<BasicInfo> cutdown(Pageable pageable) {
-        int count = jooq.fetchCount(GOODS.leftJoin(GOODS_CUT_DOWN).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN.GOODS_ID)));
+        int count = jooq.fetchCount(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)));
 
-        List<BasicInfo> basicInfos = jooq.selectFrom(GOODS.leftJoin(GOODS_CUT_DOWN).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN.GOODS_ID)))
+        List<BasicInfo> basicInfos = jooq.selectFrom(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetchInto(BasicInfo.class);
 
@@ -130,9 +130,9 @@ public class GoodsService {
 
         Condition condition = GOODS.CATEGORY_ID.eq(categoryId);
 
-        int count = jooq.fetchCount(GOODS.leftJoin(GOODS_CUT_DOWN).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN.GOODS_ID)), condition);
+        int count = jooq.fetchCount(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)), condition);
 
-        List<BasicInfo> basicInfos = jooq.selectFrom(GOODS.leftJoin(GOODS_CUT_DOWN).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN.GOODS_ID)))
+        List<BasicInfo> basicInfos = jooq.selectFrom(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)))
                 .where(condition)
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetchInto(BasicInfo.class);

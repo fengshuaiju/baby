@@ -2,9 +2,11 @@
 
 # 用户信息
 INSERT INTO user_info (
-  user_name, cellphone, wechat_open_id
+  user_name, cellphone, wechat_open_id, avatar_url, nick_name
 ) VALUES (
-  'olIcM5KAax4vDCGbc-6R5Oyuvv_I', '18930061430', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I'
+  'olIcM5KAax4vDCGbc-6R5Oyuvv_I', '18930061430', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I',
+  'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqJVZ7GAyickbcvHPc0cac9jeSajCmxVhLKevLBYibN1L7dWDYVHX9AI3vvKqian4lqW6j0YKaHRK4hQ/132',
+  '阔爱'
 );
 
 # 主页滚动图片
@@ -420,7 +422,11 @@ INSERT INTO goods_recommend (goods_id) VALUES ('40601');
 INSERT INTO goods_recommend (goods_id) VALUES ('43223');
 
 # 砍价
-INSERT INTO goods_cut_down (goods_id) VALUES ('30164');
-INSERT INTO goods_cut_down (goods_id) VALUES ('36888');
-INSERT INTO goods_cut_down (goods_id) VALUES ('40601');
-INSERT INTO goods_cut_down (goods_id) VALUES ('43223');
+INSERT INTO goods_cut_down_info (goods_id, max_amount_per_cut, min_amount_per_cut, max_helper, effective_time, max_cut_down)
+VALUES ('30164', 5, 0.5, 100, 28, 120);
+INSERT INTO goods_cut_down_info (goods_id, max_amount_per_cut, min_amount_per_cut, max_helper, effective_time, max_cut_down)
+VALUES ('36888', 5, 0.5, 100, 28, 120);
+INSERT INTO goods_cut_down_info (goods_id, max_amount_per_cut, min_amount_per_cut, max_helper, effective_time, max_cut_down)
+VALUES ('40601', 5, 0.5, 100, 28, 120);
+INSERT INTO goods_cut_down_info (goods_id, max_amount_per_cut, min_amount_per_cut, max_helper, effective_time, max_cut_down)
+VALUES ('43223', 5, 0.5, 100, 28, 120);

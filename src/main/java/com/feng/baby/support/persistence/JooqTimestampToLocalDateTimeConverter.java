@@ -9,7 +9,7 @@ public class JooqTimestampToLocalDateTimeConverter implements Converter<Timestam
 
     @Override
     public LocalDateTime from(Timestamp timestamp) {
-        return timestamp == null ? null : timestamp.toLocalDateTime();
+        return timestamp == null ? null : timestamp.toLocalDateTime().atZone(ZoneId.of("Asia/Shanghai")).toLocalDateTime();
     }
 
     @Override

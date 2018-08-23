@@ -113,81 +113,74 @@ public class GoodsController {
 
     //////////////砍价////////////////////////
 
-    //帮忙砍价信息
-    //参数名	数据类型	备注	必填
-    //token	String	登录接口返回的登录凭证	Y
-    //kjid	int	砍价ID	Y
-    //joinerUser	int	砍价参与用户ID	Y
-    @GetMapping("/kanjia/myHelp")
-    public String kanjiaMyHelp(@RequestParam int kjid,
-                               @RequestParam int joinerUser) {
-        boolean 未帮忙砍价 = false;
+//    //帮忙砍价信息
+//    //参数名	数据类型	备注	必填
+//    //token	String	登录接口返回的登录凭证	Y
+//    //kjid	int	砍价ID	Y
+//    //joinerUser	int	砍价参与用户ID	Y
+//    @GetMapping("/kanjia/myHelp")
+//    public String kanjiaMyHelp(@RequestParam int kjid,
+//                               @RequestParam int joinerUser) {
+//        boolean 未帮忙砍价 = false;
+//
+//        if (未帮忙砍价) {
+//            return "{\"code\":700,\"msg\":\"暂无数据\"}";
+//        } else {
+//            return "{\"code\":0,\"data\":{\"cutPrice\":14.77,\"goodsId\":1},\"msg\":\"success\"}";
+//        }
+//    }
 
-        if (未帮忙砍价) {
-            return "{\"code\":700,\"msg\":\"暂无数据\"}";
-        } else {
-            return "{\"code\":0,\"data\":{\"cutPrice\":14.77,\"goodsId\":1},\"msg\":\"success\"}";
-        }
-    }
-
-    //获取砍价详情
-    //参数名	数据类型	备注	必填
-    //kjid	int	砍价ID	Y
-    //joiner	int	参与者ID	Y
-    @GetMapping("/kanjia/info")
-    public String kanjiaInfo(@RequestParam int kjid,
-                             @RequestParam int joinerUser) {
-        return "{\"code\":0,\"data\":{\"kanjiaInfo\":{\"curPrice\":985.23,\"dateAdd\":\"2018-04-01 08:47:29\",\"dateUpdate\":\"2018-04-01 16:36:41\",\"goodsId\":1,\"helpNumber\":1,\"kjId\":2,\"minPrice\":100,\"status\":0,\"statusStr\":\"进行中\",\"uid\":4},\"joiner\":{\"nick\":\"test\"},\"helps\":[{\"nick\":\"test\",\"dateAdd\":\"2018-04-01 16:36:41\",\"remark\":\"收\",\"cutPrice\":14.77}]},\"msg\":\"success\"}";
-    }
-
-    //加入砍价
-    //参数名	数据类型	备注	必填
-    //kjid	int	砍价设置ID	Y
-    //token	String	登录接口返回的登录凭证	Y
-    @GetMapping("/kanjia/join")
-    public String kanjiaJoin(@RequestParam int kjid) {
-        return "{\"code\":0,\"data\":{\"curPrice\":3,\"dateAdd\":\"2018-04-01 08:47:29\",\"dateUpdate\":\"2018-04-01 08:47:29\",\"goodsId\":1,\"helpNumber\":0,\"kjId\":2,\"minPrice\":4,\"status\":0},\"msg\":\"success\"}";
-    }
-
-    //我的砍价
-    //参数名	数据类型	备注	必填
-    //kjid	int	砍价ID	Y
-    //token	String	登录接口返回的凭证	Y
-    @GetMapping("/kanjia/my")
-    public String kanjiaMy(@RequestParam String kjid) {
-        Boolean 参与砍价 = false;
-
-        if (参与砍价) {
-            return "{\"code\":0,\"data\":{\"curPrice\":3.00,\"goodsId\":1,\"id\":1,\"kjId\":2,\"minPrice\":4.00},\"msg\":\"success\"}\n";
-        } else {
-            return "{\"code\":700,\"msg\":\"暂无数据\"}\n";
-        }
-    }
-
-    //帮人砍一刀
-    //参数名	数据类型	备注	必填
-    //token	String	登录接口返回的登录凭证	Y
-    //kjid	int	砍价ID	Y
-    //joinerUser	int	砍价参与用户ID	Y
-    //remark	String	砍价留言，选填项	X
-    @GetMapping("/kanjia/help")
-    public String kanjiaHelp(@RequestParam int kjid,
-                             @RequestParam int joinerUser) {
-        return "{\"code\":0,\"data\":{\"cutPrice\":14.77,\"goodsId\":1},\"msg\":\"success\"}";
-    }
+//    //获取砍价详情
+//    //参数名	数据类型	备注	必填
+//    //kjid	int	砍价ID	Y
+//    //joiner	int	参与者ID	Y
+//    @GetMapping("/kanjia/info")
+//    public String kanjiaInfo(@RequestParam int kjid,
+//                             @RequestParam int joinerUser) {
+//        return "{\"code\":0,\"data\":{\"kanjiaInfo\":{\"curPrice\":985.23,\"dateAdd\":\"2018-04-01 08:47:29\",\"dateUpdate\":\"2018-04-01 16:36:41\",\"goodsId\":1,\"helpNumber\":1,\"kjId\":2,\"minPrice\":100,\"status\":0,\"statusStr\":\"进行中\",\"uid\":4},\"joiner\":{\"nick\":\"test\"},\"helps\":[{\"nick\":\"test\",\"dateAdd\":\"2018-04-01 16:36:41\",\"remark\":\"收\",\"cutPrice\":14.77}]},\"msg\":\"success\"}";
+//    }
 
 
-    //获取砍价信息
-    //请求参数说明:
-    //参数名	数据类型	备注	必填
-    //page	int	获取第几页数据，默认1	X
-    //pageSize	int	每页显示多少数据，默认50	X
-    @GetMapping("/kanjia/list")
-    public JSONObject kanjiaList(Pageable pageable) {
-        //return JSONObject.parseObject("{\"code\":0,\"data\":{\"result\":[{\"dateAdd\":\"2018-03-31 20:09:16\",\"dateEnd\":\"2018-08-31 12:00:00\",\"goodsId\":1,\"id\":2,\"minPrice\":4,\"number\":2,\"originalPrice\":3}],\"totalRow\":1,\"totalPage\":1},\"msg\":\"success\"}");
-        //return JSONObject.parseObject("{\"code\":700,\"msg\":\"暂无数据\"}");
-        return JSONObject.parseObject("{\"result\":[{\"dateAdd\":\"2018-05-10 12:40:35\",\"dateEnd\":\"2018-08-31 12:00:00\",\"goodsId\":38759,\"id\":149,\"minPrice\":99,\"number\":18,\"numberBuy\":8,\"originalPrice\":359},{\"dateAdd\":\"2018-05-10 12:40:05\",\"dateEnd\":\"2018-08-31 12:00:00\",\"goodsId\":38772,\"id\":148,\"minPrice\":299,\"number\":68,\"numberBuy\":6,\"originalPrice\":399},{\"dateAdd\":\"2018-05-10 12:39:23\",\"dateEnd\":\"2018-08-31 12:00:00\",\"goodsId\":38932,\"id\":147,\"minPrice\":79,\"number\":100,\"numberBuy\":3,\"originalPrice\":259}],\"totalRow\":3,\"totalPage\":1}");
-    }
+
+//    //我的砍价
+//    //参数名	数据类型	备注	必填
+//    //kjid	int	砍价ID	Y
+//    //token	String	登录接口返回的凭证	Y
+//    @GetMapping("/kanjia/my")
+//    public String kanjiaMy(@RequestParam String kjid) {
+//        Boolean 参与砍价 = false;
+//
+//        if (参与砍价) {
+//            return "{\"code\":0,\"data\":{\"curPrice\":3.00,\"goodsId\":1,\"id\":1,\"kjId\":2,\"minPrice\":4.00},\"msg\":\"success\"}\n";
+//        } else {
+//            return "{\"code\":700,\"msg\":\"暂无数据\"}\n";
+//        }
+//    }
+
+//    //帮人砍一刀
+//    //参数名	数据类型	备注	必填
+//    //token	String	登录接口返回的登录凭证	Y
+//    //kjid	int	砍价ID	Y
+//    //joinerUser	int	砍价参与用户ID	Y
+//    //remark	String	砍价留言，选填项	X
+//    @GetMapping("/kanjia/help")
+//    public String kanjiaHelp(@RequestParam int kjid,
+//                             @RequestParam int joinerUser) {
+//        return "{\"code\":0,\"data\":{\"cutPrice\":14.77,\"goodsId\":1},\"msg\":\"success\"}";
+//    }
+
+
+//    //获取砍价信息
+//    //请求参数说明:
+//    //参数名	数据类型	备注	必填
+//    //page	int	获取第几页数据，默认1	X
+//    //pageSize	int	每页显示多少数据，默认50	X
+//    @GetMapping("/kanjia/list")
+//    public JSONObject kanjiaList(Pageable pageable) {
+//        //return JSONObject.parseObject("{\"code\":0,\"data\":{\"result\":[{\"dateAdd\":\"2018-03-31 20:09:16\",\"dateEnd\":\"2018-08-31 12:00:00\",\"goodsId\":1,\"id\":2,\"minPrice\":4,\"number\":2,\"originalPrice\":3}],\"totalRow\":1,\"totalPage\":1},\"msg\":\"success\"}");
+//        //return JSONObject.parseObject("{\"code\":700,\"msg\":\"暂无数据\"}");
+//        return JSONObject.parseObject("{\"result\":[{\"dateAdd\":\"2018-05-10 12:40:35\",\"dateEnd\":\"2018-08-31 12:00:00\",\"goodsId\":38759,\"id\":149,\"minPrice\":99,\"number\":18,\"numberBuy\":8,\"originalPrice\":359},{\"dateAdd\":\"2018-05-10 12:40:05\",\"dateEnd\":\"2018-08-31 12:00:00\",\"goodsId\":38772,\"id\":148,\"minPrice\":299,\"number\":68,\"numberBuy\":6,\"originalPrice\":399},{\"dateAdd\":\"2018-05-10 12:39:23\",\"dateEnd\":\"2018-08-31 12:00:00\",\"goodsId\":38932,\"id\":147,\"minPrice\":79,\"number\":100,\"numberBuy\":3,\"originalPrice\":259}],\"totalRow\":3,\"totalPage\":1}");
+//    }
 
 
     /////////////收藏///////////
