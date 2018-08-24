@@ -80,21 +80,6 @@ public class GoodsService {
         return ImmutableMap.of("fav", isPresent);
     }
 
-    public PintuanInfo pingtuanInfo(String goodsId) {
-        return jooq.selectFrom(GOODS_PINTUAN)
-                .where(GOODS_PINTUAN.GOODS_ID.eq(goodsId))
-                .fetchOptionalInto(PintuanInfo.class).
-                orElseThrow(ResourceNotFoundException::new);
-    }
-
-    public List<PintuanUsers> pingtuanList(String goodsId) {
-        List<PintuanUsers> pintuanUsers = jooq.selectFrom(PINTUAN_USER)
-                .where(PINTUAN_USER.GOODS_ID.eq(goodsId))
-                .and(PINTUAN_USER.FINISHED.isFalse())
-                .fetchInto(PintuanUsers.class);
-        return pintuanUsers.isEmpty() ? null : pintuanUsers;
-    }
-
     public Page<BasicInfo> topgoods(Pageable pageable) {
         int count = jooq.fetchCount(GOODS.leftJoin(GOODS_RECOMMEND).on(GOODS.GOODS_ID.eq(GOODS_RECOMMEND.GOODS_ID)));
 
@@ -106,9 +91,9 @@ public class GoodsService {
     }
 
     public Page<BasicInfo> toptuan(Pageable pageable) {
-        int count = jooq.fetchCount(GOODS.leftJoin(GOODS_PINTUAN).on(GOODS.GOODS_ID.eq(GOODS_PINTUAN.GOODS_ID)));
-
-        List<BasicInfo> basicInfos = jooq.selectFrom(GOODS.leftJoin(GOODS_PINTUAN).on(GOODS.GOODS_ID.eq(GOODS_PINTUAN.GOODS_ID)))
+        int count = jooq.fetchCount(GOODS.leftJoin(GROUP_BOOKING).on(GOODS.GOODS_ID.eq(GROUP_BOOKING.GOODS_ID)));
+        
+        List<BasicInfo> basicInfos = jooq.selectFrom(GOODS.leftJoin(GROUP_BOOKING).on(GOODS.GOODS_ID.eq(GROUP_BOOKING.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetchInto(BasicInfo.class);
 

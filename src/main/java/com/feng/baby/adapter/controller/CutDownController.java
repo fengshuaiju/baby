@@ -33,7 +33,7 @@ public class CutDownController {
     //token	String	登录接口返回的登录凭证	Y
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public Map<String, String> kanjiaJoin(@RequestBody CreateCutDown createCutDown) {
+    public Map<String, Object> kanjiaJoin(@RequestBody CreateCutDown createCutDown) {
         return cutDownService.establishCutDown(createCutDown.getGoodsId(), createCutDown.getUsername());
 //        return "{\"code\":0,\"data\":{\"curPrice\":3,\"dateAdd\":\"2018-04-01 08:47:29\",\"dateUpdate\":\"2018-04-01 08:47:29\",\"goodsId\":1,\"helpNumber\":0,\"kjId\":2,\"minPrice\":4,\"status\":0},\"msg\":\"success\"}";
     }

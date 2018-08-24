@@ -224,17 +224,21 @@ CREATE TABLE `goods_media` (
   COLLATE = utf8_bin;
 
 -- ----------------------------
--- Table structure for pintuan
+-- Table structure for group_booking_properties
 -- ----------------------------
-DROP TABLE IF EXISTS `pintuan`;
-CREATE TABLE `pintuan` (
-  `id`             INT(11)   NOT NULL            AUTO_INCREMENT,
-  `created_at`     TIMESTAMP NOT NULL            DEFAULT CURRENT_TIMESTAMP,
-  `munbers`        INT(11)                       DEFAULT NULL,
-  `users`          VARCHAR(255) COLLATE utf8_bin DEFAULT NULL,
-  `goods_id`       INT(11)                       DEFAULT NULL,
-  `pingtuan_price` DOUBLE                        DEFAULT NULL,
-  `able_to_join`   INT(11)                       DEFAULT NULL,
+DROP TABLE IF EXISTS `group_booking_properties`;
+CREATE TABLE `group_booking_properties` (
+  `id`              INT(11)                      NOT NULL            AUTO_INCREMENT,
+  `created_at`      TIMESTAMP                    NOT NULL            DEFAULT CURRENT_TIMESTAMP,
+  `goods_id`        VARCHAR(64) COLLATE utf8_bin NOT NULL,
+  `number_require`  INT(11)                                          DEFAULT NULL,
+  `timeout_hours`   INT(11)                                          DEFAULT NULL,
+  `status`          BOOLEAN                                          DEFAULT NULL,
+  # 已经拼成的单数
+  `number_success` INT(11)                                          DEFAULT NULL,
+
+  KEY `fk_group_booking_properties_goods` (`goods_id`),
+  CONSTRAINT `fk_group_booking_properties_goods` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`goods_id`),
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -242,21 +246,29 @@ CREATE TABLE `pintuan` (
   COLLATE = utf8_bin;
 
 -- ----------------------------
--- Table structure for goods_pintuan
+-- Table structure for group_booking
 -- ----------------------------
-DROP TABLE IF EXISTS `goods_pintuan`;
-CREATE TABLE `goods_pintuan` (
-  `id`              INT(11)                      NOT NULL AUTO_INCREMENT,
-  `created_at`      TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `goods_id`        VARCHAR(64) COLLATE utf8_bin NOT NULL,
-  `pintuan_id`      VARCHAR(64) COLLATE utf8_bin NOT NULL,
-  `number_require`  INT(11)                               DEFAULT NULL,
-  `number_succcess` INT(11)                               DEFAULT NULL,
-  `timeout_hours`   INT(11)                               DEFAULT NULL,
+DROP TABLE IF EXISTS `group_booking`;
+CREATE TABLE `group_booking` (
+  `id`               INT(11)                      NOT NULL              AUTO_INCREMENT,
+  `created_at`       TIMESTAMP                    NOT NULL              DEFAULT CURRENT_TIMESTAMP,
+  `expiry_time_at`   TIMESTAMP                    NOT NULL              DEFAULT CURRENT_TIMESTAMP,
+  `goods_id`         VARCHAR(64) COLLATE utf8_bin NOT NULL,
+  `group_booking_id` VARCHAR(64) COLLATE utf8_bin NOT NULL,
+  `number_require`   INT(11)                                            DEFAULT NULL,
+  `number_left`      INT(11)                                            DEFAULT NULL,
+  `opener`           VARCHAR(64) COLLATE utf8_bin NOT NULL,
+  `finished`         BOOLEAN                            DEFAULT NULL,
+
   PRIMARY KEY (`id`),
-  KEY `fk_goods_pintuan_goods` (`goods_id`),
-  KEY `pintuan_id` (`pintuan_id`),
-  CONSTRAINT `fk_goods_pintuan_goods` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`goods_id`)
+  UNIQUE KEY `group_booking_id` (`group_booking_id`),
+
+  KEY `fk_group_booking_goods` (`goods_id`),
+  KEY `fk_group_booking_user` (`opener`),
+
+  CONSTRAINT `fk_group_booking_goods` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`goods_id`),
+  CONSTRAINT `fk_group_booking_user` FOREIGN KEY (`opener`) REFERENCES `user_info` (`user_name`)
+
 )
   ENGINE = InnoDB
   AUTO_INCREMENT = 1
@@ -264,24 +276,24 @@ CREATE TABLE `goods_pintuan` (
   COLLATE = utf8_bin;
 
 -- ----------------------------
--- Table structure for pintuan_user
+-- Table structure for group_booking_joiner
 -- ----------------------------
-DROP TABLE IF EXISTS `pintuan_user`;
-CREATE TABLE `pintuan_user` (
-  `id`             INT(11)                      NOT NULL AUTO_INCREMENT,
-  `created_at`     TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `goods_id`       VARCHAR(64) COLLATE utf8_bin NOT NULL,
-  `username`       VARCHAR(64) COLLATE utf8_bin NOT NULL,
-  `number_require` INT(11)                               DEFAULT NULL,
-  `number_left`    INT(11)                               DEFAULT NULL,
-  `finished`       TINYINT(1)                            DEFAULT NULL,
-  `nick`           VARCHAR(64) COLLATE utf8_bin          DEFAULT NULL,
-  `avatar_url`     VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+DROP TABLE IF EXISTS `group_booking_joiner`;
+CREATE TABLE `group_booking_joiner` (
+  `id`               INT(11)                      NOT NULL AUTO_INCREMENT,
+  `created_at`       TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `goods_id`         VARCHAR(64) COLLATE utf8_bin NOT NULL,
+  `username`         VARCHAR(64) COLLATE utf8_bin NOT NULL,
+  `group_booking_id` VARCHAR(64) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_pintuan_user_goods` (`goods_id`),
-  KEY `fk_pintuan_user_user` (`username`),
-  CONSTRAINT `fk_pintuan_user_goods` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`goods_id`),
-  CONSTRAINT `fk_pintuan_user_user` FOREIGN KEY (`username`) REFERENCES `user_info` (`user_name`)
+  KEY `fk_group_booking_joiner_goods` (`goods_id`),
+  KEY `fk_group_booking_joiner_user` (`username`),
+  KEY `fk_group_booking_id_group_booking` (`group_booking_id`),
+
+  CONSTRAINT `fk_group_booking_joiner_goods` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`goods_id`),
+  CONSTRAINT `fk_group_booking_joiner_user` FOREIGN KEY (`username`) REFERENCES `user_info` (`user_name`),
+  CONSTRAINT `fk_group_booking_id_group_booking` FOREIGN KEY (`group_booking_id`) REFERENCES `group_booking` (`group_booking_id`)
+
 )
   ENGINE = InnoDB
   AUTO_INCREMENT = 1

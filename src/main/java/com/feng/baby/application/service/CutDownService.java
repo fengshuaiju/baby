@@ -39,7 +39,7 @@ public class CutDownService {
     private final DSLContext jooq;
 
 
-    public Map<String, String> establishCutDown(String goodsId, String username) {
+    public Map<String, Object> establishCutDown(String goodsId, String username) {
         //查找砍价配置信息 goods_cut_down;
         //验证该商品是可以砍价的商品
         GoodsCutDownInfoRecord goodsCutDownInfo = jooq.selectFrom(GOODS_CUT_DOWN_INFO)
@@ -52,7 +52,7 @@ public class CutDownService {
                 .where(GOODS_CUT_DOWNS.GOODS_ID.eq(goodsId)).and(GOODS_CUT_DOWNS.INITIATOR.eq(username))
                 .fetchOptional(GOODS_CUT_DOWNS.CUT_DOWN_ID).orElse(null);
         if (isExistCutDownId != null) {
-            return ImmutableMap.of("cutDownId", isExistCutDownId);
+            return ImmutableMap.of("cutDownId", isExistCutDownId, "isNew", false);
         }
 
 
@@ -65,7 +65,7 @@ public class CutDownService {
         jooq.insertInto(GOODS_CUT_DOWNS).set(GOODS_CUT_DOWNS.GOODS_ID, goodsId)
                 .set(GOODS_CUT_DOWNS.GOODS_PIC, goodsRecord.getMainPic())
                 .set(GOODS_CUT_DOWNS.GOODS_NAME, goodsRecord.getName())
-                .set(GOODS_CUT_DOWNS.CUT_DOWN_ID, UUID.randomUUID().toString())
+                .set(GOODS_CUT_DOWNS.CUT_DOWN_ID, cutDownsId)
                 .set(GOODS_CUT_DOWNS.INITIATOR, username)
                 .set(GOODS_CUT_DOWNS.CURRENT_PRICE, goodsRecord.getMinPrice())
                 .set(GOODS_CUT_DOWNS.ORIGINAL_PRICE, goodsRecord.getMinPrice())
@@ -77,7 +77,7 @@ public class CutDownService {
                         LocalDateTime.now().plusHours(goodsCutDownInfo.getEffectiveTime()))
                 .execute();
 
-        return ImmutableMap.of("cutDownId", cutDownsId);
+        return ImmutableMap.of("cutDownId", cutDownsId, "isNew", true);
 
     }
 
@@ -157,8 +157,6 @@ public class CutDownService {
         double currentCutDown = new BigDecimal
                 (Math.random() * (maxAmountPerCut - minAmountPerCut) + minAmountPerCut)
                 .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-
-        log.error("current currentCutDown : {}", currentCutDown);
 
         if ((cutTotalAmount + currentCutDown) > canMaxCutDown) {
             currentCutDown = canMaxCutDown - currentCutDown;

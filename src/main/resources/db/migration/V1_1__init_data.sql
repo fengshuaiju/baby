@@ -368,52 +368,66 @@ INSERT INTO goods_fav (
   'olIcM5KAax4vDCGbc-6R5Oyuvv_I', '30164'
 );
 
-# 已拼团的商品
-INSERT INTO goods_pintuan (
-  pintuan_id, goods_id, number_require, number_succcess, timeout_hours
-) VALUES (
-  '1', '30164', 2, 228, 24
-);
+# 拼团商品配置信息
+INSERT INTO group_booking_properties (goods_id, number_require, number_success, timeout_hours, status)
+VALUES ('30164', 2, 234, 23, TRUE);
 
-INSERT INTO goods_pintuan (
-  pintuan_id, goods_id, number_require, number_succcess, timeout_hours
-) VALUES (
-  '2', '36888', 2, 453, 24
-);
+INSERT INTO group_booking_properties (goods_id, number_require, number_success, timeout_hours, status)
+VALUES ('36888', 2, 564, 23, TRUE);
 
-INSERT INTO goods_pintuan (
-  pintuan_id, goods_id, number_require, number_succcess, timeout_hours
-) VALUES (
-  '3', '40601', 2, 756, 24
-);
+INSERT INTO group_booking_properties (goods_id, number_require, number_success, timeout_hours, status)
+VALUES ('40601', 2, 356, 23, TRUE);
 
-INSERT INTO goods_pintuan (
-  pintuan_id, goods_id, number_require, number_succcess, timeout_hours
-) VALUES (
-  '4', '43223', 2, 234, 24
-);
+INSERT INTO group_booking_properties (goods_id, number_require, number_success, timeout_hours, status)
+VALUES ('43223', 2, 215, 23, TRUE);
 
-# 已拼团列表
-INSERT INTO pintuan_user (
-  goods_id, username, number_require, number_left, finished, nick, avatar_url
-) VALUES (
-  '30164', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', 2, 1, FALSE, '丸子',
-  'https://wx.qlogo.cn/mmopen/vi_32/XOqGlHkydicVWUW5OjnvtuoJ5uDg70Bz0xiaoQRwM6h6BF74C9JRZhaIzxS7RjYrDu8VVHAE6ASCrCm2SXzQT7EA/0'
-);
 
-INSERT INTO pintuan_user (
-  goods_id, username, number_require, number_left, finished, nick, avatar_url
-) VALUES (
-  '30164', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', 2, 1, FALSE, '菇凉',
-  'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqJVZ7GAyickbcvHPc0cac9jeSajCmxVhLKevLBYibN1L7dWDYVHX9AI3vvKqian4lqW6j0YKaHRK4hQ/132'
-);
-
-INSERT INTO pintuan_user (
-  goods_id, username, number_require, number_left, finished, nick, avatar_url
-) VALUES (
-  '30164', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', 2, 1, FALSE, '阔爱',
-  'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erSEPq6PFPicKkFsgvnK8mgOrnKgYicQS24pgs3b362IuELD8upkh0W7UbnCI6z1HEvl2hvfOII6BIg/132'
-);
+# # 已拼团的商品
+# INSERT INTO group_booking (
+#   group_booking_id, goods_id, number_require, opener
+# ) VALUES (
+#   '1', '30164', 2, 'olIcM5KAax4vDCGbc-6R5Oyuvv_I'
+# );
+#
+# INSERT INTO group_booking (
+#   group_booking_id, goods_id, number_require, opener
+# ) VALUES (
+#   '2', '36888', 2, 'olIcM5KAax4vDCGbc-6R5Oyuvv_I'
+# );
+#
+# INSERT INTO group_booking (
+#   group_booking_id, goods_id, number_require, opener
+# ) VALUES (
+#   '3', '40601', 2, 'olIcM5KAax4vDCGbc-6R5Oyuvv_I'
+# );
+#
+# INSERT INTO group_booking (
+#   group_booking_id, goods_id, number_require, opener
+# ) VALUES (
+#   '4', '43223', 2, 'olIcM5KAax4vDCGbc-6R5Oyuvv_I'
+# );
+#
+# # 已拼团列表
+# INSERT INTO group_booking_joiner (
+#   goods_id, username, number_require, number_left, finished, nick, group_booking_id, avatar_url
+# ) VALUES (
+#   '30164', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', 2, 1, FALSE, '丸子', '1',
+#   'https://wx.qlogo.cn/mmopen/vi_32/XOqGlHkydicVWUW5OjnvtuoJ5uDg70Bz0xiaoQRwM6h6BF74C9JRZhaIzxS7RjYrDu8VVHAE6ASCrCm2SXzQT7EA/0'
+# );
+#
+# INSERT INTO group_booking_joiner (
+#   goods_id, username, number_require, number_left, finished, nick, group_booking_id, avatar_url
+# ) VALUES (
+#   '30164', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', 2, 1, FALSE, '菇凉', '1',
+#   'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqJVZ7GAyickbcvHPc0cac9jeSajCmxVhLKevLBYibN1L7dWDYVHX9AI3vvKqian4lqW6j0YKaHRK4hQ/132'
+# );
+#
+# INSERT INTO group_booking_joiner (
+#   goods_id, username, number_require, number_left, finished, nick, group_booking_id, avatar_url
+# ) VALUES (
+#   '30164', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', 2, 1, FALSE, '阔爱', '1',
+#   'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erSEPq6PFPicKkFsgvnK8mgOrnKgYicQS24pgs3b362IuELD8upkh0W7UbnCI6z1HEvl2hvfOII6BIg/132'
+# );
 
 # 推荐商品
 INSERT INTO goods_recommend (goods_id) VALUES ('30164');
