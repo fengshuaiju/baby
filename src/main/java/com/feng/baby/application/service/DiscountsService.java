@@ -1,12 +1,13 @@
 package com.feng.baby.application.service;
 
-import com.feng.baby.application.command.CouponsRepresentation;
+import com.feng.baby.application.command.Coupons;
+import com.feng.baby.application.representation.MyCoupon;
 import com.feng.baby.model.CouponsType;
-import javafx.scene.SubScene;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sprout.jooq.generate.tables.records.CouponsRecord;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,34 +28,54 @@ public class DiscountsService {
     }
 
 
-    public CouponsRepresentation availableNewCoupons(String openId) {
+    public Coupons availableNewCoupons(String openId) {
 
         //是否领取过新人红包
-        Optional<CouponsRepresentation> couponsRepresentation = jooq.selectFrom(COUPONS_USERS.leftJoin(COUPONS).on(COUPONS_USERS.COUPON_ID.eq(COUPONS.COUPON_ID)))
-                .where(COUPONS.TYPE.eq(CouponsType.WELCOME.name())).fetchOptionalInto(CouponsRepresentation.class);
+        Optional<Coupons> couponsRepresentation = jooq.selectFrom(COUPONS_USERS.leftJoin(COUPONS).on(COUPONS_USERS.COUPON_ID.eq(COUPONS.COUPON_ID)))
+                .where(COUPONS.TYPE.eq(CouponsType.WELCOME.name())).fetchOptionalInto(Coupons.class);
 
        if(!couponsRepresentation.isPresent())
            return jooq.selectFrom(COUPONS)
                    .where(COUPONS.TYPE.eq(CouponsType.WELCOME.name()))
-                   .fetchOptionalInto(CouponsRepresentation.class).get();
+                   .fetchOptionalInto(Coupons.class).get();
 
 
         List<String> couponids = jooq.selectFrom(COUPONS_USERS).where(COUPONS_USERS.USER_NAME.eq(openId)).fetch(COUPONS_USERS.COUPON_ID);
 
-        List<CouponsRepresentation> couponsRepresentations = jooq.selectFrom(COUPONS)
+        List<Coupons> coupons = jooq.selectFrom(COUPONS)
                 .where(
                         COUPONS.AVAILABLE.isTrue()
-                                .and(COUPONS.PERIOD_OF_VALIDITY_TO_AT.gt(LocalDateTime.now()))
+                                .and(COUPONS.EXPIRY_TIME_AT.gt(LocalDateTime.now()))
                                 .and(COUPONS.COUPON_ID.notIn(couponids))
-                ).fetchInto(CouponsRepresentation.class);
+                ).fetchInto(Coupons.class);
 
-        return couponsRepresentations.stream().findFirst().orElse(null);
+        return coupons.stream().findFirst().orElse(null);
     }
 
     public void fetchCoupon(String openId, String couponId) {
-        jooq.insertInto(COUPONS_USERS, COUPONS_USERS.USER_NAME, COUPONS_USERS.COUPON_ID)
-                .values(openId, couponId)
-                .onDuplicateKeyIgnore()
+        //查找红包信息
+        CouponsRecord couponsRecord = jooq.selectFrom(COUPONS)
+                .where(COUPONS.COUPON_ID.eq(couponId))
+                .and(COUPONS.EXPIRY_TIME_AT.gt(LocalDateTime.now()))
+                .and(COUPONS.AVAILABLE.isTrue()).fetchOptionalInto(COUPONS)
+                .orElseThrow(IllegalArgumentException::new);
+
+        jooq.insertInto(COUPONS_USERS, COUPONS_USERS.USER_NAME, COUPONS_USERS.COUPON_ID,
+                COUPONS_USERS.USED, COUPONS_USERS.COUPON_NAME, COUPONS_USERS.PIC_URL,
+                COUPONS_USERS.EXPIRY_TIME_AT, COUPONS_USERS.REMARKS, COUPONS_USERS.AMOUNT_OF_MONEY,
+                COUPONS_USERS.REQUIREMENT_CONSUMPTION)
+                .values(openId, couponId, new Byte("0"), couponsRecord.getCouponName(), couponsRecord.getPicUrl(),
+                        LocalDateTime.now().plusDays(couponsRecord.getValidityDay()),couponsRecord.getRemarks(),
+                        couponsRecord.getAmountOfMoney(), couponsRecord.getRequirementConsumption())
+//                .onDuplicateKeyIgnore()
                 .execute();
+    }
+
+    public List<MyCoupon> myCoupons(String username) {
+        return jooq.selectFrom(COUPONS_USERS)
+                .where(COUPONS_USERS.USER_NAME.eq(username))
+                .and(COUPONS_USERS.EXPIRY_TIME_AT.gt(LocalDateTime.now()))
+                .and(COUPONS_USERS.USED.isFalse())
+                .fetchInto(MyCoupon.class);
     }
 }

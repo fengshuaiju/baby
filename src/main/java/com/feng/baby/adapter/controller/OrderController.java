@@ -1,14 +1,26 @@
 package com.feng.baby.adapter.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.feng.baby.application.command.CreateOrderCommand;
+import com.feng.baby.application.command.CreateOrderGoodsInfo;
+import com.feng.baby.application.service.OrderService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created by fengshuaiju on 2018-06-03.
  */
+@Slf4j
 @RestController
 @RequestMapping("/order")
 public class OrderController {
+
+    @Autowired
+    private OrderService orderService;
 
 
     //获取用户所有的订单列表
@@ -35,28 +47,16 @@ public class OrderController {
         return "{\"code\":0,\"data\":{\"orderInfo\":{\"amount\":2748,\"amountLogistics\":6,\"amountReal\":2,\"dateAdd\":\"2017-03-29 09:16:11\",\"dateUpdate\":\"2017-03-30 10:49:54\",\"goodReputation\":2,\"goodReputationRemark\":\"淡饭黄齑桑德环境\",\"goodReputationStr\":\"好评\",\"goodsNumber\":5,\"id\":13,\"orderNumber\":\"OD1703290114478775\",\"remark\":\"买家备注信息\",\"status\":4,\"statusStr\":\"交易成功\",\"type\":0,\"uid\":4,\"userId\":2},\"goods\":[{\"amount\":1998,\"goodsId\":11,\"goodsName\":\"无物流无规格商品测试\",\"id\":17,\"number\":2,\"orderId\":13},{\"amount\":750,\"goodsId\":8,\"goodsName\":\"Mac 2016新款\",\"id\":18,\"number\":3,\"orderId\":13,\"property\":\"内存容量:256G\"}],\"logistics\":{\"address\":\"详细地址\",\"cityId\":330100,\"code\":\"310009\",\"dateUpdate\":\"2017-03-29 16:55:02\",\"districtId\":330108,\"id\":13,\"linkMan\":\"张飞\",\"mobile\":\"13500000001\",\"provinceId\":330000,\"shipperCode\":\"SF\",\"shipperName\":\"顺丰快递\",\"status\":3,\"traces\":\"[{\\\"AcceptStation\\\":\\\"顺丰速运 已收取快件\\\",\\\"AcceptTime\\\":\\\"2017-03-23 16:57:44\\\",\\\"Remark\\\":\\\"\\\"},{\\\"AcceptStation\\\":\\\"快件在【阜阳颍泉区汽车北站营业点】已装车，准备发往 【阜阳开发区集散中心】\\\",\\\"AcceptTime\\\":\\\"2017-03-23 17:21:05\\\",\\\"Remark\\\":\\\"\\\"},{\\\"AcceptStation\\\":\\\"快件到达 【阜阳开发区集散中心】\\\",\\\"AcceptTime\\\":\\\"2017-03-23 19:05:43\\\",\\\"Remark\\\":\\\"\\\"},{\\\"AcceptStation\\\":\\\"快件在【阜阳开发区集散中心】已装车，准备发往 【蚌埠龙子湖集散中心】\\\",\\\"AcceptTime\\\":\\\"2017-03-23 19:05:43\\\",\\\"Remark\\\":\\\"\\\"},{\\\"AcceptStation\\\":\\\"快件到达 【蚌埠龙子湖集散中心】\\\",\\\"AcceptTime\\\":\\\"2017-03-23 22:57:21\\\",\\\"Remark\\\":\\\"\\\"},{\\\"AcceptStation\\\":\\\"快件在【蚌埠龙子湖集散中心】已装车，准备发往 【杭州下沙中转场】\\\",\\\"AcceptTime\\\":\\\"2017-03-23 23:25:26\\\",\\\"Remark\\\":\\\"\\\"},{\\\"AcceptStation\\\":\\\"快件到达 【杭州下沙中转场】\\\",\\\"AcceptTime\\\":\\\"2017-03-24 07:52:11\\\",\\\"Remark\\\":\\\"\\\"},{\\\"AcceptStation\\\":\\\"快件在【杭州下沙中转场】已装车，准备发往 【杭州拱墅小河路营业点】\\\",\\\"AcceptTime\\\":\\\"2017-03-24 10:55:43\\\",\\\"Remark\\\":\\\"\\\"},{\\\"AcceptStation\\\":\\\"快件到达 【杭州拱墅小河路营业点】\\\",\\\"AcceptTime\\\":\\\"2017-03-24 14:13:42\\\",\\\"Remark\\\":\\\"\\\"},{\\\"AcceptStation\\\":\\\"正在派送途中,请您准备签收(派件人:王XX,电话:13500000000)\\\",\\\"AcceptTime\\\":\\\"2017-03-24 14:26:07\\\",\\\"Remark\\\":\\\"\\\"},{\\\"AcceptStation\\\":\\\"快件交给繆xx，正在派送途中（联系电话：13500000000）\\\",\\\"AcceptTime\\\":\\\"2017-03-24 15:42:15\\\",\\\"Remark\\\":\\\"\\\"},{\\\"AcceptStation\\\":\\\"已签收,感谢使用顺丰,期待再次为您服务\\\",\\\"AcceptTime\\\":\\\"2017-03-24 15:42:20\\\",\\\"Remark\\\":\\\"\\\"}]\",\"trackingNumber\":\"974259022676\"},\"logs\":[{\"dateAdd\":\"2017-03-29 09:16:11\",\"id\":17,\"orderId\":13,\"type\":0,\"typeStr\":\"下单\"},{\"dateAdd\":\"2017-03-29 09:38:26\",\"id\":18,\"orderId\":13,\"type\":5,\"typeStr\":\"卖家修改价格\"},{\"dateAdd\":\"2017-03-29 13:59:58\",\"id\":24,\"orderId\":13,\"type\":1,\"typeStr\":\"支付\"},{\"dateAdd\":\"2017-03-29 14:00:07\",\"id\":25,\"orderId\":13,\"type\":2,\"typeStr\":\"发货\"},{\"dateAdd\":\"2017-03-30 10:26:35\",\"id\":31,\"orderId\":13,\"type\":3,\"typeStr\":\"确认收货\"},{\"dateAdd\":\"2017-03-30 10:49:56\",\"id\":32,\"orderId\":13,\"type\":4,\"typeStr\":\"评价\"}]},\"msg\":\"success\"}";
     }
 
-    //商城订单创建接口
-    //参数名	数据类型	备注	必填
-    //token	String	登录接口返回的登录凭证	Y
-    //provinceId	int	收货地址省份编码	X
-    //cityId	int	收货地址城市编码	X
-    //districtId	int	收货地址区县编码	X
-    //address	String	收货地址详细地址	X
-    //linkMan	String	收货地址联系人信息	X
-    //mobile	String	收货地址联系人手机号码	X
-    //code	String	收货地址邮政编码	X
-    //remark	String	下单备注信息	X
-    //couponId	int	使用的优惠券编号	X
-    //calculate	Boolean	true 不实际下单，而是返回价格计算	X
-    //idcard	String	身份证号码【国际件使用】	X
-    //goodsJsonStr	String	购买的商品、规格尺寸、数量信息的数组，如：[{"goodsId":11,"number":2,"propertyChildIds":"","logisticsType":0}, {"goodsId":8,"number":3,"propertyChildIds":"2:9","logisticsType":0, "inviter_id":邀请用户ID}]	Y
-    //payOnDelivery	int	1 为货到付款，其他数字为先支付	X
-    //expireMinutes	int	多少分钟未支付自动关闭本订单，传0不自动关闭订单	X
-    //kjid	int	砍价编号，可直接购买砍价商品	X
-    //pingtuanOpenId	int	拼团购买的团号	X
-    //isCanHx	Boolean	是否支持核销，true 支持，默认不支持	X
+    //创建订单
     @PostMapping("/create")
-    public String orders(@RequestBody CreateOrderCommand createOrderCommand){
+    @ResponseStatus(HttpStatus.CREATED)
+    public String orders(@RequestBody CreateOrderCommand command){
+        log.error(command.toString());
+
+        List<CreateOrderGoodsInfo> goodsInfos = JSON.parseArray(command.getGoodsJsonStr(), CreateOrderGoodsInfo.class);
+
+        orderService.createOrder(command.getUsername(), goodsInfos, command.getAddressId(), command.getCouponId(),  command.getRemark());
+
         return "{\"code\":0,\"data\":{\"amountLogistics\":5,\"goodsNumber\":3,\"isNeedLogistics\":true,\"amountTotle\":1662},\"msg\":\"success\"}";
     }
 

@@ -11,6 +11,7 @@ import java.util.List;
 public class Properties {
 
     private Integer id;
+    private String propertiesId;
     private Integer indexs;
     private String name;
     private List<PropertiesDetail> childsCurGoods;
@@ -18,6 +19,7 @@ public class Properties {
     public static Properties toProperties(PropertiesRecord record){
         return Properties.builder()
                 .id(record.getId())
+                .propertiesId(record.getPropertiesId())
                 .name(record.getName())
                 .indexs(record.getIndexs())
                 .build();

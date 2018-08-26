@@ -20,12 +20,7 @@ public class GroupBookingController {
     @Autowired
     private GroupBookingService groupBookingService;
 
-
-
     //开团
-    //参数名	数据类型	备注	必填
-    //token	String	登录接口返回的登录凭证	Y
-    //goodsId	int	商品编号	Y
     @PostMapping("/open")
     @ResponseStatus(HttpStatus.CREATED)
     public Map<String, String> open(@RequestBody OpenGroupBooking openGroupBooking) {
@@ -34,8 +29,6 @@ public class GroupBookingController {
     }
 
     //加入拼团
-    //参数名	数据类型	备注	必填
-    //tuanId	int	团号	Y
     @GetMapping("/join")
     public void join(@RequestParam int tuanId) {
 

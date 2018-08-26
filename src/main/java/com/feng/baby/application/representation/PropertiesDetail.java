@@ -7,7 +7,8 @@ import lombok.Data;
 @Builder
 public class PropertiesDetail {
     private Integer id;
-    private Integer propertiesId;
+    private String detailId;
+    private String propertiesId;
     private Integer indexs;
     private String name;
     private String remark;

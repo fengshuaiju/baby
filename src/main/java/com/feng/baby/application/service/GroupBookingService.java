@@ -2,6 +2,7 @@ package com.feng.baby.application.service;
 
 import com.feng.baby.application.representation.GroupBookingInfo;
 import com.feng.baby.application.representation.GroupBookingJoiner;
+import com.feng.baby.model.GroupBookingStatus;
 import com.feng.baby.support.utils.ResourceNotFoundException;
 import com.feng.baby.support.utils.Validate;
 import com.google.common.collect.ImmutableMap;
@@ -45,14 +46,14 @@ public class GroupBookingService {
                 GROUP_BOOKING.GROUP_BOOKING_ID,
                 GROUP_BOOKING.NUMBER_REQUIRE,
                 GROUP_BOOKING.NUMBER_LEFT,
-                GROUP_BOOKING.FINISHED,
+                GROUP_BOOKING.STATUS,
                 USER_INFO.NICK_NAME,
                 USER_INFO.AVATAR_URL,
                 GROUP_BOOKING.EXPIRY_TIME_AT)
                 .from(GROUP_BOOKING.leftJoin(GROUP_BOOKING_JOINER).on(GROUP_BOOKING.GROUP_BOOKING_ID.eq(GROUP_BOOKING.GROUP_BOOKING_ID))
                         .leftJoin(USER_INFO).on(GROUP_BOOKING_JOINER.USERNAME.eq(USER_INFO.USER_NAME)))
                 .where(GROUP_BOOKING.GOODS_ID.eq(goodsId))
-                .and(GROUP_BOOKING.FINISHED.isFalse())
+                .and(GROUP_BOOKING.STATUS.eq(GroupBookingStatus.IN_PROGRESS.name()))
                 .fetchInto(GroupBookingJoiner.class);
 
         return groupBookingUsers.stream().map(GroupBookingJoiner::toLeftSecond).collect(Collectors.toList());
@@ -83,6 +84,7 @@ public class GroupBookingService {
                 .set(GROUP_BOOKING.GROUP_BOOKING_ID, groupBookingId)
                 .set(GROUP_BOOKING.NUMBER_REQUIRE, groupBookingProperties.getNumberRequire())
                 .set(GROUP_BOOKING.NUMBER_LEFT, groupBookingProperties.getNumberRequire())
+                .set(GROUP_BOOKING.STATUS, GroupBookingStatus.INIT.name())
                 .set(GROUP_BOOKING.OPENER, username)
                 .execute();
 

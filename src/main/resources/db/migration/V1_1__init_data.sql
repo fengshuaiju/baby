@@ -44,16 +44,16 @@ VALUES
    '专栏', '1');
 
 
-INSERT INTO coupons (coupon_id, pic_url, link_url, coupon_name, amount_of_money, requirement_consumption, period_of_validity_to_at, remarks, available, type)
+INSERT INTO coupons (coupon_id, pic_url, link_url, coupon_name, amount_of_money, requirement_consumption, expiry_time_at, validity_day, remarks, available, type)
 VALUES ('88f45bf6e95ec010f1f945c414e6df03',
         'https://cdn.it120.cc/apifactory/2018/06/26/f1e90deac271101c805f1db52f9ba5da.png',
-        'https://cdn.it120.cc/apifactory/2018/05/18/8b5875faf90d1b2fdc353dfbc5d6d1b3.png', '新人优惠券', 5, 35, '2018-09-09',
+        'https://cdn.it120.cc/apifactory/2018/05/18/8b5875faf90d1b2fdc353dfbc5d6d1b3.png', '新人优惠券', 5, 35, '2018-09-09', 30,
         '新人优惠券,满35元可用', TRUE, 'WELCOME');
 
-INSERT INTO coupons (coupon_id, pic_url, link_url, coupon_name, amount_of_money, requirement_consumption, period_of_validity_to_at, remarks, available, type)
+INSERT INTO coupons (coupon_id, pic_url, link_url, coupon_name, amount_of_money, requirement_consumption, expiry_time_at, validity_day, remarks, available, type)
 VALUES ('1ba413178d361771f25332ebd04f3bf7',
         'https://cdn.it120.cc/apifactory/2018/05/18/8b5875faf90d1b2fdc353dfbc5d6d1b3.png',
-        'https://cdn.it120.cc/apifactory/2018/06/26/f1e90deac271101c805f1db52f9ba5da.png', '新人优惠券', 5, 35, '2018-09-09',
+        'https://cdn.it120.cc/apifactory/2018/06/26/f1e90deac271101c805f1db52f9ba5da.png', '新人优惠券', 5, 35, '2018-09-09', 30,
         '新人优惠券,满35元可用', TRUE, 'DISCOUNT');
 
 # 分类页面
@@ -225,140 +225,165 @@ INSERT INTO goods_category (
 
 # ##############################
 INSERT INTO properties (
-  indexs, name, goods_id
+  properties_id, indexs, name, goods_id
 )
 VALUES (
-  1, '选择版本', '30164'
+  '1', 1, '选择版本', '30164'
 );
 INSERT INTO properties (
-  indexs, name, goods_id
+  properties_id, indexs, name, goods_id
 )
 VALUES (
-  2, '选择服务', '30164'
-);
-
-INSERT INTO properties (
-  indexs, name, goods_id
-)
-VALUES (
-  1, '选择尺寸', '36888'
-);
-INSERT INTO properties (
-  indexs, name, goods_id
-)
-VALUES (
-  2, '选择颜色', '36888'
+  '2', 2, '选择服务', '30164'
 );
 
 INSERT INTO properties (
-  indexs, name, goods_id
+  properties_id, indexs, name, goods_id
 )
 VALUES (
-  1, '选择箱型', '40601'
+  '3', 1, '选择尺寸', '36888'
 );
 INSERT INTO properties (
-  indexs, name, goods_id
+  properties_id, indexs, name, goods_id
 )
 VALUES (
-  2, '选择日期', '40601'
+  '4', 2, '选择颜色', '36888'
 );
 
 INSERT INTO properties (
-  indexs, name, goods_id
+  properties_id, indexs, name, goods_id
 )
 VALUES (
-  1, '选择等级', '43223'
+  '5', 1, '选择箱型', '40601'
 );
 INSERT INTO properties (
-  indexs, name, goods_id
+  properties_id, indexs, name, goods_id
 )
 VALUES (
-  2, '选择毛色', '43223'
+  '6', 2, '选择日期', '40601'
+);
+
+INSERT INTO properties (
+  properties_id, indexs, name, goods_id
+)
+VALUES (
+  '7', 1, '选择等级', '43223'
+);
+INSERT INTO properties (
+  properties_id, indexs, name, goods_id
+)
+VALUES (
+  '8', 2, '选择毛色', '43223'
 );
 
 # ##############
 INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
+  detail_id, properties_id, indexs, name, remark
 ) VALUES (
-  1, 1, '授权版（加密版本）', ''
+  'AA', '1', 1, '授权版（加密版本）', ''
 );
 INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
+  detail_id, properties_id, indexs, name, remark
 ) VALUES (
-  1, 2, '开发版（未加密版本）', ''
+  'BB', '1', 2, '开发版（未加密版本）', ''
 );
 INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
+  detail_id, properties_id, indexs, name, remark
 ) VALUES (
-  2, 1, '不要服务', ''
+  'CC', '2', 1, '不要服务', ''
 );
 INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
+  detail_id, properties_id, indexs, name, remark
 ) VALUES (
-  2, 2, '部署上线一条龙服务', ''
-);
-
-INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
-) VALUES (
-  3, 1, '50寸', ''
-);
-INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
-) VALUES (
-  3, 2, '60寸', ''
-);
-INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
-) VALUES (
-  4, 1, '红色', ''
-);
-INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
-) VALUES (
-  4, 2, '蓝色', ''
+  'DD', '2', 2, '部署上线一条龙服务', ''
 );
 
 INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
+  detail_id, properties_id, indexs, name, remark
 ) VALUES (
-  5, 1, '20GP', ''
+  'EE', '3', 1, '50寸', ''
 );
 INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
+  detail_id, properties_id, indexs, name, remark
 ) VALUES (
-  5, 2, '40GP', ''
+  'FF', '3', 2, '60寸', ''
 );
 INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
+  detail_id, properties_id, indexs, name, remark
 ) VALUES (
-  6, 1, '2018-10-10', ''
+  'GG', '4', 1, '红色', ''
 );
 INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
+  detail_id, properties_id, indexs, name, remark
 ) VALUES (
-  6, 2, '2018-11-11', ''
+  'HH', '4', 2, '蓝色', ''
 );
 
 INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
+  detail_id, properties_id, indexs, name, remark
 ) VALUES (
-  7, 1, '999级', ''
+  'II', '5', 1, '20GP', ''
 );
 INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
+  detail_id, properties_id, indexs, name, remark
 ) VALUES (
-  7, 2, '无限级', ''
+  'JJ', '5', 2, '40GP', ''
 );
 INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
+  detail_id, properties_id, indexs, name, remark
 ) VALUES (
-  8, 1, '棕红色', ''
+  'KK', '6', 1, '2018-10-10', ''
 );
 INSERT INTO properties_detail (
-  properties_id, indexs, name, remark
+  detail_id, properties_id, indexs, name, remark
 ) VALUES (
-  8, 2, '深蓝色', ''
+  'LL', '6', 2, '2018-11-11', ''
+);
+
+INSERT INTO properties_detail (
+  detail_id, properties_id, indexs, name, remark
+) VALUES (
+  'MM', '7', 1, '999级', ''
+);
+INSERT INTO properties_detail (
+  detail_id, properties_id, indexs, name, remark
+) VALUES (
+  'NN', '7', 2, '无限级', ''
+);
+INSERT INTO properties_detail (
+  detail_id, properties_id, indexs, name, remark
+) VALUES (
+  'OO', '8', 1, '棕红色', ''
+);
+INSERT INTO properties_detail (
+  detail_id, properties_id, indexs, name, remark
+) VALUES (
+  'PP', '8', 2, '深蓝色', ''
+);
+
+# 商品价格
+INSERT INTO goods_price (
+  goods_id, properties_joint, price, type
+) VALUES (
+  '30164', 'AA;CC', 667.9, 'pingtuan'
+);
+
+INSERT INTO goods_price (
+  goods_id, properties_joint, price, type
+) VALUES (
+  '30164', 'AA;DD', 223.3, 'pingtuan'
+);
+
+INSERT INTO goods_price (
+  goods_id, properties_joint, price, type
+) VALUES (
+  '30164', 'BB;CC', 248.4, 'pingtuan'
+);
+
+INSERT INTO goods_price (
+  goods_id, properties_joint, price, type
+) VALUES (
+  '30164', 'BB;DD', 430.8, 'pingtuan'
 );
 
 # 喜欢的商品
@@ -380,7 +405,6 @@ VALUES ('40601', 2, 356, 23, TRUE);
 
 INSERT INTO group_booking_properties (goods_id, number_require, number_success, timeout_hours, status)
 VALUES ('43223', 2, 215, 23, TRUE);
-
 
 # # 已拼团的商品
 # INSERT INTO group_booking (
@@ -444,3 +468,10 @@ INSERT INTO goods_cut_down_info (goods_id, max_amount_per_cut, min_amount_per_cu
 VALUES ('40601', 5, 0.5, 100, 28, 120);
 INSERT INTO goods_cut_down_info (goods_id, max_amount_per_cut, min_amount_per_cut, max_helper, effective_time, max_cut_down)
 VALUES ('43223', 5, 0.5, 100, 28, 120);
+
+# 地址信息
+INSERT INTO user_address (
+  user_address_id, username, province, city, area, address, is_default, link_man, mobile, status
+) VALUES (
+  'db072225516140446', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', '河南省', '禹州市', '夏都办事处', '宋庄村3组', TRUE, '冯帅炬', '18930061430', TRUE
+);

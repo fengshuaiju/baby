@@ -1,6 +1,9 @@
 package com.feng.baby.adapter.controller;
 
+import com.feng.baby.application.representation.Address;
+import com.feng.baby.application.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
+    @Autowired
+    private UserService userService;
 
 
     @GetMapping("/amount")
@@ -85,8 +91,9 @@ public class UserController {
     //参数名	数据类型	备注	必填
     //token	String	调用登录接口返回的登录凭证	Y
     @GetMapping("/shipping-address/default")
-    public String addressDefault(){
-        return "{\"code\":0,\"data\":{\"address\":\"详细地址\",\"areaStr\":\"滨江区\",\"cityId\":330100,\"cityStr\":\"杭州市\",\"code\":\"310000\",\"dateAdd\":\"2017-03-31 15:57:06\",\"dateUpdate\":\"2017-03-31 15:57:06\",\"districtId\":330108,\"id\":2,\"isDefault\":false,\"linkMan\":\"张飞\",\"mobile\":\"13500000001\",\"provinceId\":330000,\"provinceStr\":\"浙江省\",\"status\":0,\"uid\":4,\"userId\":2},\"msg\":\"success\"}";
+    public Address addressDefault(@RequestParam String username){
+        return userService.defaultAddress(username);
+        //return "{\"code\":0,\"data\":{\"address\":\"详细地址\",\"areaStr\":\"滨江区\",\"cityId\":330100,\"cityStr\":\"杭州市\",\"code\":\"310000\",\"dateAdd\":\"2017-03-31 15:57:06\",\"dateUpdate\":\"2017-03-31 15:57:06\",\"districtId\":330108,\"id\":2,\"isDefault\":false,\"linkMan\":\"张飞\",\"mobile\":\"13500000001\",\"provinceId\":330000,\"provinceStr\":\"浙江省\",\"status\":0,\"uid\":4,\"userId\":2},\"msg\":\"success\"}";
     }
 
     //获取详细的收货地址

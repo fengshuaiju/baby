@@ -2,7 +2,7 @@ package com.feng.baby.adapter.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.feng.baby.application.command.CouponsRepresentation;
+import com.feng.baby.application.command.Coupons;
 import com.feng.baby.application.representation.BasicInfo;
 import com.feng.baby.application.representation.CmsRepresentation;
 import com.feng.baby.application.representation.FunctionMenus;
@@ -91,7 +91,7 @@ public class BannerController {
 
     //新人红包
     @GetMapping("/newcoupons")
-    public CouponsRepresentation availableNewCoupons(@RequestParam String openId){
+    public Coupons availableNewCoupons(@RequestParam String openId){
         return discountsService.availableNewCoupons(openId);
     }
 

@@ -27,20 +27,20 @@ CREATE TABLE `category` (
 -- ----------------------------
 DROP TABLE IF EXISTS `coupons`;
 CREATE TABLE `coupons` (
-  `id`                       INT(11)                      NOT NULL AUTO_INCREMENT,
-  `created_at`               TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `coupon_id`                VARCHAR(64) COLLATE utf8_bin NOT NULL,
-  `pic_url`                  VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `link_url`                 VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `coupon_name`              VARCHAR(64) COLLATE utf8_bin          DEFAULT NULL,
-  `type`                     VARCHAR(64) COLLATE utf8_bin NOT NULL,
-  `amount_of_money`          DOUBLE                                DEFAULT NULL,
-  `requirement_consumption`  DOUBLE                                DEFAULT NULL,
-  `period_of_validity_to_at` DATETIME                     NOT NULL,
-  `remarks`                  VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `available`                TINYINT(1)                            DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `coupon_id` (`coupon_id`)
+  `id`                      INT(11)                      NOT NULL AUTO_INCREMENT,
+  `created_at`              TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `coupon_id`               VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
+  `pic_url`                 VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `link_url`                VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `coupon_name`             VARCHAR(64) COLLATE utf8_bin          DEFAULT NULL,
+  `type`                    VARCHAR(64) COLLATE utf8_bin NOT NULL,
+  `amount_of_money`         DOUBLE                                DEFAULT NULL,
+  `requirement_consumption` DOUBLE                                DEFAULT NULL,
+  `expiry_time_at`          TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `validity_day`            INT(11)                               DEFAULT NULL,
+  `remarks`                 VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `available`               BOOLEAN                               DEFAULT NULL,
+  PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
   AUTO_INCREMENT = 1
@@ -52,11 +52,16 @@ CREATE TABLE `coupons` (
 -- ----------------------------
 DROP TABLE IF EXISTS `coupons_users`;
 CREATE TABLE `coupons_users` (
-  `user_name` VARCHAR(255) COLLATE utf8_bin NOT NULL,
-  `coupon_id` VARCHAR(64) COLLATE utf8_bin  NOT NULL,
-  `used`      TINYINT(1) DEFAULT NULL,
-  PRIMARY KEY (`user_name`, `coupon_id`),
-  UNIQUE KEY `user_name` (`user_name`)
+  `user_name`               VARCHAR(255) COLLATE utf8_bin NOT NULL,
+  `coupon_id`               VARCHAR(64) COLLATE utf8_bin  NOT NULL,
+  `used`                    BOOLEAN                                DEFAULT NULL,
+  `coupon_name`             VARCHAR(64) COLLATE utf8_bin           DEFAULT NULL,
+  `pic_url`                 VARCHAR(255) COLLATE utf8_bin          DEFAULT NULL,
+  `expiry_time_at`          TIMESTAMP                     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `remarks`                 VARCHAR(255) COLLATE utf8_bin          DEFAULT NULL,
+  `amount_of_money`         DOUBLE                                 DEFAULT NULL,
+  `requirement_consumption` DOUBLE                                 DEFAULT NULL,
+  PRIMARY KEY (`user_name`, `coupon_id`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8
@@ -139,7 +144,7 @@ DROP TABLE IF EXISTS `goods`;
 CREATE TABLE `goods` (
   `id`                 INT(11)                      NOT NULL AUTO_INCREMENT,
   `created_at`         TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `goods_id`           VARCHAR(64) COLLATE utf8_bin NOT NULL,
+  `goods_id`           VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
   `category_id`        INT(11)                               DEFAULT NULL,
   `name`               VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
   `characteristic`     VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
@@ -157,8 +162,7 @@ CREATE TABLE `goods` (
   `number_reputation`  INT(11)                               DEFAULT NULL,
   `stores`             INT(11)                               DEFAULT NULL,
   `remark`             VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `goods_id` (`goods_id`)
+  PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
   AUTO_INCREMENT = 1
@@ -228,12 +232,12 @@ CREATE TABLE `goods_media` (
 -- ----------------------------
 DROP TABLE IF EXISTS `group_booking_properties`;
 CREATE TABLE `group_booking_properties` (
-  `id`              INT(11)                      NOT NULL            AUTO_INCREMENT,
-  `created_at`      TIMESTAMP                    NOT NULL            DEFAULT CURRENT_TIMESTAMP,
-  `goods_id`        VARCHAR(64) COLLATE utf8_bin NOT NULL,
-  `number_require`  INT(11)                                          DEFAULT NULL,
-  `timeout_hours`   INT(11)                                          DEFAULT NULL,
-  `status`          BOOLEAN                                          DEFAULT NULL,
+  `id`             INT(11)                      NOT NULL            AUTO_INCREMENT,
+  `created_at`     TIMESTAMP                    NOT NULL            DEFAULT CURRENT_TIMESTAMP,
+  `goods_id`       VARCHAR(64) COLLATE utf8_bin NOT NULL,
+  `number_require` INT(11)                                          DEFAULT NULL,
+  `timeout_hours`  INT(11)                                          DEFAULT NULL,
+  `status`         BOOLEAN                                          DEFAULT NULL,
   # 已经拼成的单数
   `number_success` INT(11)                                          DEFAULT NULL,
 
@@ -254,14 +258,13 @@ CREATE TABLE `group_booking` (
   `created_at`       TIMESTAMP                    NOT NULL              DEFAULT CURRENT_TIMESTAMP,
   `expiry_time_at`   TIMESTAMP                    NOT NULL              DEFAULT CURRENT_TIMESTAMP,
   `goods_id`         VARCHAR(64) COLLATE utf8_bin NOT NULL,
-  `group_booking_id` VARCHAR(64) COLLATE utf8_bin NOT NULL,
+  `group_booking_id` VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
   `number_require`   INT(11)                                            DEFAULT NULL,
   `number_left`      INT(11)                                            DEFAULT NULL,
   `opener`           VARCHAR(64) COLLATE utf8_bin NOT NULL,
-  `finished`         BOOLEAN                            DEFAULT NULL,
+  `status`           VARCHAR(64) COLLATE utf8_bin NOT NULL,
 
   PRIMARY KEY (`id`),
-  UNIQUE KEY `group_booking_id` (`group_booking_id`),
 
   KEY `fk_group_booking_goods` (`goods_id`),
   KEY `fk_group_booking_user` (`opener`),
@@ -305,11 +308,12 @@ CREATE TABLE `group_booking_joiner` (
 -- ----------------------------
 DROP TABLE IF EXISTS `properties`;
 CREATE TABLE `properties` (
-  `id`         INT(11)   NOT NULL           AUTO_INCREMENT,
-  `created_at` TIMESTAMP NOT NULL           DEFAULT CURRENT_TIMESTAMP,
-  `goods_id`   VARCHAR(64) COLLATE utf8_bin DEFAULT NULL,
-  `indexs`     INT(11)                      DEFAULT NULL,
-  `name`       VARCHAR(64) COLLATE utf8_bin DEFAULT NULL,
+  `id`            INT(11)                      NOT NULL           AUTO_INCREMENT,
+  `created_at`    TIMESTAMP                    NOT NULL           DEFAULT CURRENT_TIMESTAMP,
+  `properties_id` VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
+  `goods_id`      VARCHAR(64) COLLATE utf8_bin                    DEFAULT NULL,
+  `indexs`        INT(11)                                         DEFAULT NULL,
+  `name`          VARCHAR(64) COLLATE utf8_bin                    DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_good_properties_good` (`goods_id`),
   CONSTRAINT `fk_good_properties_good` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`goods_id`)
@@ -324,15 +328,38 @@ CREATE TABLE `properties` (
 -- ----------------------------
 DROP TABLE IF EXISTS `properties_detail`;
 CREATE TABLE `properties_detail` (
-  `id`            INT(11)   NOT NULL            AUTO_INCREMENT,
-  `created_at`    TIMESTAMP NOT NULL            DEFAULT CURRENT_TIMESTAMP,
-  `properties_id` INT(11)                       DEFAULT NULL,
-  `indexs`        INT(11)                       DEFAULT NULL,
-  `name`          VARCHAR(128) COLLATE utf8_bin DEFAULT NULL,
-  `remark`        VARCHAR(128) COLLATE utf8_bin DEFAULT NULL,
+  `id`            INT(11)                      NOT NULL            AUTO_INCREMENT,
+  `created_at`    TIMESTAMP                    NOT NULL            DEFAULT CURRENT_TIMESTAMP,
+  `detail_id`     VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
+  `properties_id` VARCHAR(64) COLLATE utf8_bin                     DEFAULT NULL,
+  `indexs`        INT(11)                                          DEFAULT NULL,
+  `name`          VARCHAR(128) COLLATE utf8_bin                    DEFAULT NULL,
+  `remark`        VARCHAR(128) COLLATE utf8_bin                    DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_properties_detail_properties` (`properties_id`),
-  CONSTRAINT `FK_properties_detail_properties` FOREIGN KEY (`properties_id`) REFERENCES `properties` (`id`)
+  CONSTRAINT `FK_properties_detail_properties` FOREIGN KEY (`properties_id`) REFERENCES `properties` (`properties_id`)
+)
+  ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
+-- ----------------------------
+-- Table structure for goods_price
+-- ----------------------------
+DROP TABLE IF EXISTS `goods_price`;
+CREATE TABLE `goods_price` (
+  `id`               INT(11)   NOT NULL            AUTO_INCREMENT,
+  `created_at`       TIMESTAMP NOT NULL            DEFAULT CURRENT_TIMESTAMP,
+  `goods_id`         VARCHAR(64) COLLATE utf8_bin  DEFAULT NULL,
+  `properties_joint` VARCHAR(128) COLLATE utf8_bin DEFAULT NULL,
+  `price`            DOUBLE                        DEFAULT NULL,
+  # 价格类型、拼团、直接购买
+  `type`             VARCHAR(64) COLLATE utf8_bin  DEFAULT NULL,
+  `remark`           VARCHAR(128) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_goods_price_good` (`goods_id`),
+  CONSTRAINT `fk_goods_price_good` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`goods_id`)
 )
   ENGINE = InnoDB
   AUTO_INCREMENT = 1
@@ -506,6 +533,40 @@ CREATE TABLE `goods_cut_down_helper` (
   COLLATE = utf8_bin;
 
 -- ----------------------------
+-- Table structure for goods_cut_down_helper_list
+-- ----------------------------
+DROP TABLE IF EXISTS `user_address`;
+CREATE TABLE `user_address` (
+  `id`              INT(11)                      NOT NULL              AUTO_INCREMENT,
+  `created_at`      TIMESTAMP                    NOT NULL              DEFAULT CURRENT_TIMESTAMP,
+
+  `user_address_id` VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
+  `username`        VARCHAR(64) COLLATE utf8_bin NOT NULL,
+
+  # 省
+  `province`        VARCHAR(32) COLLATE utf8_bin                       DEFAULT NULL,
+  # 市
+  `city`            VARCHAR(32) COLLATE utf8_bin                       DEFAULT NULL,
+  # 区
+  `area`            VARCHAR(32) COLLATE utf8_bin                       DEFAULT NULL,
+  # 具体地址
+  `address`         VARCHAR(255) COLLATE utf8_bin                      DEFAULT NULL,
+
+  `is_default`      BOOLEAN                                            DEFAULT NULL,
+  `link_man`        VARCHAR(32) COLLATE utf8_bin                       DEFAULT NULL,
+  `mobile`          VARCHAR(32) COLLATE utf8_bin                       DEFAULT NULL,
+
+  `status`          BOOLEAN                                            DEFAULT NULL,
+
+  KEY `fk_user_address_user` (`username`),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_user_address_user` FOREIGN KEY (`username`) REFERENCES `user_info` (`user_name`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
+-- ----------------------------
 -- Table structure for goods_recommend
 -- ----------------------------
 DROP TABLE IF EXISTS `cms`;
@@ -533,5 +594,91 @@ CREATE TABLE `cms` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8
   COLLATE = utf8_bin;
+
+-- ----------------------------
+-- Table structure for orders
+-- ----------------------------
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE `orders` (
+  `id`             INT(11)                      NOT NULL AUTO_INCREMENT,
+  `created_at`     TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  `orders_id`      VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
+  `username`       VARCHAR(64) COLLATE utf8_bin NOT NULL,
+  `status`         VARCHAR(64) COLLATE utf8_bin          DEFAULT NULL,
+  `transport_id`   VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
+  `coupon_id`      VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
+  `original_price` DOUBLE                                DEFAULT NULL,
+  `actual_price`   DOUBLE                                DEFAULT NULL,
+  `remark`         VARCHAR(64) COLLATE utf8_bin          DEFAULT NULL,
+
+  PRIMARY KEY (`id`),
+  KEY `fk_orders_user` (`username`),
+  CONSTRAINT `fk_orders_user` FOREIGN KEY (`username`) REFERENCES `user_info` (`user_name`),
+
+  KEY `fk_orders_transport_id` (`transport_id`),
+  CONSTRAINT `fk_orders_transport_id` FOREIGN KEY (`transport_id`) REFERENCES `order_transport` (`transport_id`),
+
+  KEY `fk_order_coupon_id` (`coupon_id`),
+  CONSTRAINT `fk_order_coupon_id` FOREIGN KEY (`coupon_id`) REFERENCES `coupons` (`coupon_id`)
+
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
+-- ----------------------------
+-- Table structure for order_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `order_detail`;
+CREATE TABLE `order_detail` (
+  `id`          INT(11)                      NOT NULL AUTO_INCREMENT,
+  `created_at`  TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  `detail_id`   VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
+
+  `orders_id`   VARCHAR(64) COLLATE utf8_bin NOT NULL,
+  `goods_name`  VARCHAR(64) COLLATE utf8_bin          DEFAULT NULL,
+  `goods_label` VARCHAR(64) COLLATE utf8_bin          DEFAULT NULL,
+  `number`      INT(11)                               DEFAULT NULL,
+  `unit_price`  DOUBLE                                DEFAULT NULL,
+  `amount`      DOUBLE                                DEFAULT NULL,
+  `goods_id`    VARCHAR(64) COLLATE utf8_bin NOT NULL,
+  `goods_pic`   VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+
+  PRIMARY KEY (`id`),
+  KEY `fk_order_detail_orders` (`orders_id`),
+  CONSTRAINT `fk_order_detail_orders` FOREIGN KEY (`orders_id`) REFERENCES `orders` (`orders_id`)
+
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
+-- ----------------------------
+-- Table structure for order_transport
+-- ----------------------------
+DROP TABLE IF EXISTS `order_transport`;
+CREATE TABLE `order_transport` (
+  `id`           INT(11)                      NOT NULL AUTO_INCREMENT,
+  `created_at`   TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  `transport_id` VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
+
+  `orders_id`    VARCHAR(64) COLLATE utf8_bin NOT NULL,
+
+  `address`      VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `link_man`     VARCHAR(32) COLLATE utf8_bin          DEFAULT NULL,
+  `mobile`       VARCHAR(32) COLLATE utf8_bin          DEFAULT NULL,
+
+  PRIMARY KEY (`id`),
+  KEY `fk_order_transport_orders` (`orders_id`),
+  CONSTRAINT `fk_order_transport_orders` FOREIGN KEY (`orders_id`) REFERENCES `orders` (`orders_id`)
+
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
 
 SET FOREIGN_KEY_CHECKS = 1;

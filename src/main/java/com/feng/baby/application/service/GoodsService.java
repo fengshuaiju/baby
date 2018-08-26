@@ -1,6 +1,7 @@
 package com.feng.baby.application.service;
 
 import com.feng.baby.application.representation.*;
+import com.feng.baby.model.GoodPriceType;
 import com.feng.baby.support.utils.ResourceNotFoundException;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
@@ -36,33 +37,36 @@ public class GoodsService {
                 .orElseThrow(ResourceNotFoundException::new);
 
         //查找类型信息(尺寸、颜色...)
-        Result<Record8<Integer, Integer, String, Integer, Integer, Integer, String, String>> result = jooq.select(
+        Result<Record10<Integer, String, Integer, String, Integer, String, String, Integer, String, String>> result = jooq.select(
                 PROPERTIES.ID,
+                PROPERTIES.PROPERTIES_ID,
                 PROPERTIES.INDEXS,
                 PROPERTIES.NAME,
                 PROPERTIES_DETAIL.ID.as("detail_id"),
+                PROPERTIES_DETAIL.DETAIL_ID.as("detail_detail_id"),
                 PROPERTIES_DETAIL.PROPERTIES_ID.as("detail_properties_id"),
                 PROPERTIES_DETAIL.INDEXS.as("detail_indexs"),
                 PROPERTIES_DETAIL.NAME.as("detail_name"),
                 PROPERTIES_DETAIL.REMARK.as("detail_remark"))
                 .from(PROPERTIES)
-                .innerJoin(PROPERTIES_DETAIL).on(PROPERTIES.ID.eq(PROPERTIES_DETAIL.PROPERTIES_ID))
+                .innerJoin(PROPERTIES_DETAIL).on(PROPERTIES.PROPERTIES_ID.eq(PROPERTIES_DETAIL.PROPERTIES_ID))
                 .where(PROPERTIES.GOODS_ID.eq(goodsId))
                 .fetch();
 
-        Map<PropertiesRecord, Result<Record8<Integer, Integer, String, Integer, Integer, Integer, String, String>>> propertiesRecordResultMap = result.intoGroups(PROPERTIES);
+        Map<PropertiesRecord, Result<Record10<Integer, String, Integer, String, Integer, String, String, Integer, String, String>>> propertiesRecordResultMap = result.intoGroups(PROPERTIES);
 
         List<Properties> properties = propertiesRecordResultMap.entrySet().stream().map(record -> {
             Properties propertie = Properties.toProperties(record.getKey());
             propertie.setChildsCurGoods(
                     record.getValue().stream().map(value ->
-                                 PropertiesDetail.builder()
-                                        .id(value.value4())
-                                        .propertiesId(value.value5())
-                                        .indexs(value.value6())
-                                        .name(value.value7())
-                                        .remark(value.value8())
-                                        .build()
+                            PropertiesDetail.builder()
+                                    .id(value.value5())
+                                    .detailId(value.value6())
+                                    .propertiesId(value.value7())
+                                    .indexs(value.value8())
+                                    .name(value.value9())
+                                    .remark(value.value10())
+                                    .build()
                     ).collect(Collectors.toList())
             );
             return propertie;
@@ -92,7 +96,7 @@ public class GoodsService {
 
     public Page<BasicInfo> toptuan(Pageable pageable) {
         int count = jooq.fetchCount(GOODS.leftJoin(GROUP_BOOKING).on(GOODS.GOODS_ID.eq(GROUP_BOOKING.GOODS_ID)));
-        
+
         List<BasicInfo> basicInfos = jooq.selectFrom(GOODS.leftJoin(GROUP_BOOKING).on(GOODS.GOODS_ID.eq(GROUP_BOOKING.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetchInto(BasicInfo.class);
@@ -123,5 +127,16 @@ public class GoodsService {
                 .fetchInto(BasicInfo.class);
 
         return new PageImpl<>(basicInfos, pageable, count);
+    }
+
+    public Map<String, Double> getPrice(String goodsId, String propertyChildIds, GoodPriceType shopType) {
+
+        Double price = jooq.selectFrom(GOODS_PRICE)
+                .where(GOODS_PRICE.GOODS_ID.eq(goodsId))
+                .and(GOODS_PRICE.TYPE.like( "%" + shopType.name() + "%"))
+                .and(GOODS_PRICE.PROPERTIES_JOINT.eq(propertyChildIds))
+                .fetchOptional(GOODS_PRICE.PRICE).orElse(999.00);
+
+        return ImmutableMap.of("price", price);
     }
 }
