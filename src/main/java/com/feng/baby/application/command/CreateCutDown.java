@@ -6,4 +6,7 @@ import lombok.Data;
 public class CreateCutDown {
     private String goodsId;
     private String username;
+    private Integer buyNumber;
+    private String propertyChildIds;
+    private String goodsLabel;
 }

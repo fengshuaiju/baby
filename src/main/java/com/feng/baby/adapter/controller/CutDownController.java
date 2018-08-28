@@ -18,30 +18,25 @@ import java.util.Map;
 @RequestMapping("/cutdown")
 public class CutDownController {
 
-
     @Autowired
     private CutDownService cutDownService;
 
-    //砍价详情
-    //我发起的砍价
-    //发起一个砍价
-    //砍价最后的底价是多少就可以获得商品了  0元获得  30元获得等
-
-    //加入砍价
-    //参数名	数据类型	备注	必填
-    //kjid	int	砍价设置ID	Y
-    //token	String	登录接口返回的登录凭证	Y
+    //创建一个砍价
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public Map<String, Object> kanjiaJoin(@RequestBody CreateCutDown createCutDown) {
-        return cutDownService.establishCutDown(createCutDown.getGoodsId(), createCutDown.getUsername());
-//        return "{\"code\":0,\"data\":{\"curPrice\":3,\"dateAdd\":\"2018-04-01 08:47:29\",\"dateUpdate\":\"2018-04-01 08:47:29\",\"goodsId\":1,\"helpNumber\":0,\"kjId\":2,\"minPrice\":4,\"status\":0},\"msg\":\"success\"}";
+    public Map<String, Object> newCutDown(@RequestBody CreateCutDown createCutDown) {
+        return cutDownService.newCutDown(createCutDown.getGoodsId(), createCutDown.getUsername(), createCutDown.getPropertyChildIds(), createCutDown.getGoodsLabel());
     }
 
     //获取已被砍信息，砍价发起者，砍价过期时间等
     @GetMapping("/info")
     public CutDownInfo getCutDownInfo(@RequestParam String cutDownId){
         return cutDownService.getCutDownInfo(cutDownId);
+    }
+
+    @GetMapping("/check-exist")
+    public Map<String, Object> checkExist(@RequestParam String username, @RequestParam String goodsId){
+        return cutDownService.checkExist(username, goodsId);
     }
 
     //获取已被砍信息，砍价发起者，砍价过期时间等

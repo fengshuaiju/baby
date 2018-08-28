@@ -24,6 +24,9 @@ public class CutDownInfo {
     private String goodsPic;
     private String goodsName;
 
+    private String goodsLabel;
+    private String propertiesJoint;
+
     private LocalDateTime createdAt;
     private LocalDateTime expiryTimeAt;
 

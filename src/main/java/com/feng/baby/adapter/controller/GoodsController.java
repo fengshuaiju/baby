@@ -6,8 +6,6 @@ import com.feng.baby.application.representation.BasicInfo;
 import com.feng.baby.application.representation.Category;
 import com.feng.baby.application.service.CategoryService;
 import com.feng.baby.application.service.GoodsService;
-import com.feng.baby.model.GoodPriceType;
-import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,9 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by fengshuaiju on 2018-06-29.
@@ -56,13 +52,9 @@ public class GoodsController {
 
     //计算价格
     @GetMapping("/price")
-    public Map<String, Double> price(@RequestParam String goodsId, @RequestParam String propertyChildIds,
-                      @RequestParam GoodPriceType shopType) {
-
-        propertyChildIds = Arrays.asList(propertyChildIds.split(":")).stream().sorted(String::compareTo).collect(Collectors.joining(";"));
-
-        return goodsService.getPrice(goodsId, propertyChildIds, shopType);
-
+    public Map<String, Double> price(@RequestParam String goodsId, @RequestParam String propertyChildIds) {
+        propertyChildIds = Arrays.stream(propertyChildIds.split(":")).sorted(String::compareTo).collect(Collectors.joining(":"));
+        return goodsService.getPrice(goodsId, propertyChildIds);
         //return JSONObject.parseObject("{\"goodsId\":30164,\"id\":491964,\"originalPrice\":1999,\"pingtuanPrice\":789,\"price\":799,\"propertyChildIds\":\"5420:18212,3688:12332,\",\"score\":0,\"stores\":98,\"userId\":797}");
     }
 

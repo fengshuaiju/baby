@@ -1,5 +1,6 @@
 package com.feng.baby.application.command;
 
+import com.feng.baby.model.OrderType;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.ToString;
@@ -19,4 +20,9 @@ public class CreateOrderCommand {
     private String couponId;
     private String remark;
     private String addressId;
+
+    private OrderType orderType;
+
+    private String cutDownId;
+    private String groupBookingId;
 }

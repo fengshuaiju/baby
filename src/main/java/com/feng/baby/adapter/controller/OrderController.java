@@ -55,7 +55,8 @@ public class OrderController {
 
         List<CreateOrderGoodsInfo> goodsInfos = JSON.parseArray(command.getGoodsJsonStr(), CreateOrderGoodsInfo.class);
 
-        orderService.createOrder(command.getUsername(), goodsInfos, command.getAddressId(), command.getCouponId(),  command.getRemark());
+        orderService.createOrder(command.getUsername(), goodsInfos, command.getAddressId(), command.getCouponId(),
+                command.getRemark(), command.getOrderType(), command.getGroupBookingId(), command.getCutDownId());
 
         return "{\"code\":0,\"data\":{\"amountLogistics\":5,\"goodsNumber\":3,\"isNeedLogistics\":true,\"amountTotle\":1662},\"msg\":\"success\"}";
     }

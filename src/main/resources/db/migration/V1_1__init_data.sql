@@ -363,27 +363,75 @@ INSERT INTO properties_detail (
 
 # 商品价格
 INSERT INTO goods_price (
-  goods_id, properties_joint, price, type
+  goods_id, properties_joint, price, type, goods_label
 ) VALUES (
-  '30164', 'AA;CC', 667.9, 'pingtuan'
+  '30164', 'AA:CC', 667.9, 'GROUP_BOOKING', '授权版（加密版本） 不要服务'
 );
 
 INSERT INTO goods_price (
-  goods_id, properties_joint, price, type
+  goods_id, properties_joint, price, type, goods_label
 ) VALUES (
-  '30164', 'AA;DD', 223.3, 'pingtuan'
+  '30164', 'AA:DD', 223.3, 'GROUP_BOOKING', '授权版（加密版本） 部署上线一条龙服务'
 );
 
 INSERT INTO goods_price (
-  goods_id, properties_joint, price, type
+  goods_id, properties_joint, price, type, goods_label
 ) VALUES (
-  '30164', 'BB;CC', 248.4, 'pingtuan'
+  '30164', 'BB:CC', 248.4, 'GROUP_BOOKING', '开发版（未加密版本） 不要服务'
 );
 
 INSERT INTO goods_price (
-  goods_id, properties_joint, price, type
+  goods_id, properties_joint, price, type, goods_label
 ) VALUES (
-  '30164', 'BB;DD', 430.8, 'pingtuan'
+  '30164', 'BB:DD', 430.8, 'GROUP_BOOKING', '开发版（未加密版本） 部署上线一条龙服务'
+);
+
+INSERT INTO goods_price (
+  goods_id, properties_joint, price, type, goods_label
+) VALUES (
+  '30164', 'AA:CC', 324.9, 'CUT_DOWN', '授权版（加密版本） 不要服务'
+);
+
+INSERT INTO goods_price (
+  goods_id, properties_joint, price, type, goods_label
+) VALUES (
+  '30164', 'AA:DD', 937.3, 'CUT_DOWN', '授权版（加密版本） 部署上线一条龙服务'
+);
+
+INSERT INTO goods_price (
+  goods_id, properties_joint, price, type, goods_label
+) VALUES (
+  '30164', 'BB:CC', 275.4, 'CUT_DOWN', '开发版（未加密版本） 不要服务'
+);
+
+INSERT INTO goods_price (
+  goods_id, properties_joint, price, type, goods_label
+) VALUES (
+  '30164', 'BB:DD', 382.8, 'CUT_DOWN', '开发版（未加密版本） 部署上线一条龙服务'
+);
+
+INSERT INTO goods_price (
+  goods_id, properties_joint, price, type, goods_label
+) VALUES (
+  '30164', 'AA:CC', 382.9, 'NORMAL', '授权版（加密版本） 不要服务'
+);
+
+INSERT INTO goods_price (
+  goods_id, properties_joint, price, type, goods_label
+) VALUES (
+  '30164', 'AA:DD', 593.3, 'NORMAL', '授权版（加密版本） 部署上线一条龙服务'
+);
+
+INSERT INTO goods_price (
+  goods_id, properties_joint, price, type, goods_label
+) VALUES (
+  '30164', 'BB:CC', 230.4, 'NORMAL', '开发版（未加密版本） 不要服务'
+);
+
+INSERT INTO goods_price (
+  goods_id, properties_joint, price, type, goods_label
+) VALUES (
+  '30164', 'BB:DD', 109.8, 'NORMAL', '开发版（未加密版本） 部署上线一条龙服务'
 );
 
 # 喜欢的商品
@@ -406,52 +454,6 @@ VALUES ('40601', 2, 356, 23, TRUE);
 INSERT INTO group_booking_properties (goods_id, number_require, number_success, timeout_hours, status)
 VALUES ('43223', 2, 215, 23, TRUE);
 
-# # 已拼团的商品
-# INSERT INTO group_booking (
-#   group_booking_id, goods_id, number_require, opener
-# ) VALUES (
-#   '1', '30164', 2, 'olIcM5KAax4vDCGbc-6R5Oyuvv_I'
-# );
-#
-# INSERT INTO group_booking (
-#   group_booking_id, goods_id, number_require, opener
-# ) VALUES (
-#   '2', '36888', 2, 'olIcM5KAax4vDCGbc-6R5Oyuvv_I'
-# );
-#
-# INSERT INTO group_booking (
-#   group_booking_id, goods_id, number_require, opener
-# ) VALUES (
-#   '3', '40601', 2, 'olIcM5KAax4vDCGbc-6R5Oyuvv_I'
-# );
-#
-# INSERT INTO group_booking (
-#   group_booking_id, goods_id, number_require, opener
-# ) VALUES (
-#   '4', '43223', 2, 'olIcM5KAax4vDCGbc-6R5Oyuvv_I'
-# );
-#
-# # 已拼团列表
-# INSERT INTO group_booking_joiner (
-#   goods_id, username, number_require, number_left, finished, nick, group_booking_id, avatar_url
-# ) VALUES (
-#   '30164', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', 2, 1, FALSE, '丸子', '1',
-#   'https://wx.qlogo.cn/mmopen/vi_32/XOqGlHkydicVWUW5OjnvtuoJ5uDg70Bz0xiaoQRwM6h6BF74C9JRZhaIzxS7RjYrDu8VVHAE6ASCrCm2SXzQT7EA/0'
-# );
-#
-# INSERT INTO group_booking_joiner (
-#   goods_id, username, number_require, number_left, finished, nick, group_booking_id, avatar_url
-# ) VALUES (
-#   '30164', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', 2, 1, FALSE, '菇凉', '1',
-#   'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqJVZ7GAyickbcvHPc0cac9jeSajCmxVhLKevLBYibN1L7dWDYVHX9AI3vvKqian4lqW6j0YKaHRK4hQ/132'
-# );
-#
-# INSERT INTO group_booking_joiner (
-#   goods_id, username, number_require, number_left, finished, nick, group_booking_id, avatar_url
-# ) VALUES (
-#   '30164', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', 2, 1, FALSE, '阔爱', '1',
-#   'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83erSEPq6PFPicKkFsgvnK8mgOrnKgYicQS24pgs3b362IuELD8upkh0W7UbnCI6z1HEvl2hvfOII6BIg/132'
-# );
 
 # 推荐商品
 INSERT INTO goods_recommend (goods_id) VALUES ('30164');
@@ -471,7 +473,7 @@ VALUES ('43223', 5, 0.5, 100, 28, 120);
 
 # 地址信息
 INSERT INTO user_address (
-  user_address_id, username, province, city, area, address, is_default, link_man, mobile, status
+  user_address_id, username, province, province_code, city, city_code, area, area_code, address, is_default, link_man, mobile, is_remove, postal_code
 ) VALUES (
-  'db072225516140446', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', '河南省', '禹州市', '夏都办事处', '宋庄村3组', TRUE, '冯帅炬', '18930061430', TRUE
+  'db072225516140446', 'olIcM5KAax4vDCGbc-6R5Oyuvv_I', '河南省', '410000', '许昌市', '411000', '禹州市', '411081', '宋庄村3组', TRUE, '冯帅炬', '18930061430', FALSE, 461670
 );

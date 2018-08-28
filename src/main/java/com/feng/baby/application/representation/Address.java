@@ -11,12 +11,16 @@ public class Address {
     private LocalDateTime createdAt;
     private String username;
     private String province;
+    private String provinceCode;
     private String city;
+    private String cityCode;
     private String area;
+    private String areaCode;
     private String address;
     private Boolean isDefault;
     private String linkMan;
     private String mobile;
     private Boolean status;
 
+    private String postalCode;
 }

@@ -54,6 +54,7 @@ DROP TABLE IF EXISTS `coupons_users`;
 CREATE TABLE `coupons_users` (
   `user_name`               VARCHAR(255) COLLATE utf8_bin NOT NULL,
   `coupon_id`               VARCHAR(64) COLLATE utf8_bin  NOT NULL,
+  `orders_id`               VARCHAR(64) COLLATE utf8_bin           DEFAULT NULL,
   `used`                    BOOLEAN                                DEFAULT NULL,
   `coupon_name`             VARCHAR(64) COLLATE utf8_bin           DEFAULT NULL,
   `pic_url`                 VARCHAR(255) COLLATE utf8_bin          DEFAULT NULL,
@@ -61,7 +62,9 @@ CREATE TABLE `coupons_users` (
   `remarks`                 VARCHAR(255) COLLATE utf8_bin          DEFAULT NULL,
   `amount_of_money`         DOUBLE                                 DEFAULT NULL,
   `requirement_consumption` DOUBLE                                 DEFAULT NULL,
-  PRIMARY KEY (`user_name`, `coupon_id`)
+  PRIMARY KEY (`user_name`, `coupon_id`),
+  KEY `fk_coupons_users_orders` (`orders_id`),
+  CONSTRAINT `fk_coupons_users_orders` FOREIGN KEY (`orders_id`) REFERENCES `orders` (`orders_id`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8
@@ -353,6 +356,8 @@ CREATE TABLE `goods_price` (
   `created_at`       TIMESTAMP NOT NULL            DEFAULT CURRENT_TIMESTAMP,
   `goods_id`         VARCHAR(64) COLLATE utf8_bin  DEFAULT NULL,
   `properties_joint` VARCHAR(128) COLLATE utf8_bin DEFAULT NULL,
+  # 颜色+尺寸
+  `goods_label`      VARCHAR(128) COLLATE utf8_bin DEFAULT NULL,
   `price`            DOUBLE                        DEFAULT NULL,
   # 价格类型、拼团、直接购买
   `type`             VARCHAR(64) COLLATE utf8_bin  DEFAULT NULL,
@@ -494,6 +499,9 @@ CREATE TABLE `goods_cut_downs` (
   `goods_name`       VARCHAR(255) COLLATE utf8_bin                             DEFAULT NULL,
 
   `goods_id`         VARCHAR(64) COLLATE utf8_bin                              DEFAULT NULL,
+  `properties_joint` VARCHAR(128) COLLATE utf8_bin                             DEFAULT NULL,
+  # 颜色+尺寸
+  `goods_label`      VARCHAR(128) COLLATE utf8_bin                             DEFAULT NULL,
 
   `finished`         BOOLEAN                                                   DEFAULT FALSE,
 
@@ -539,24 +547,21 @@ DROP TABLE IF EXISTS `user_address`;
 CREATE TABLE `user_address` (
   `id`              INT(11)                      NOT NULL              AUTO_INCREMENT,
   `created_at`      TIMESTAMP                    NOT NULL              DEFAULT CURRENT_TIMESTAMP,
-
   `user_address_id` VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
   `username`        VARCHAR(64) COLLATE utf8_bin NOT NULL,
-
-  # 省
+  `province_code`   VARCHAR(8) COLLATE utf8_bin                        DEFAULT NULL,
   `province`        VARCHAR(32) COLLATE utf8_bin                       DEFAULT NULL,
-  # 市
+  `city_code`       VARCHAR(8) COLLATE utf8_bin                        DEFAULT NULL,
   `city`            VARCHAR(32) COLLATE utf8_bin                       DEFAULT NULL,
-  # 区
+  `area_code`       VARCHAR(8) COLLATE utf8_bin                        DEFAULT NULL,
   `area`            VARCHAR(32) COLLATE utf8_bin                       DEFAULT NULL,
-  # 具体地址
   `address`         VARCHAR(255) COLLATE utf8_bin                      DEFAULT NULL,
-
+  #邮政编码
+  `postal_code`     VARCHAR(8) COLLATE utf8_bin                        DEFAULT NULL,
   `is_default`      BOOLEAN                                            DEFAULT NULL,
-  `link_man`        VARCHAR(32) COLLATE utf8_bin                       DEFAULT NULL,
-  `mobile`          VARCHAR(32) COLLATE utf8_bin                       DEFAULT NULL,
-
-  `status`          BOOLEAN                                            DEFAULT NULL,
+  `link_man`        VARCHAR(32) COLLATE utf8_bin NOT NULL,
+  `mobile`          VARCHAR(32) COLLATE utf8_bin NOT NULL,
+  `is_remove`       BOOLEAN                                            DEFAULT NULL,
 
   KEY `fk_user_address_user` (`username`),
   PRIMARY KEY (`id`),
@@ -606,22 +611,15 @@ CREATE TABLE `orders` (
   `orders_id`      VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
   `username`       VARCHAR(64) COLLATE utf8_bin NOT NULL,
   `status`         VARCHAR(64) COLLATE utf8_bin          DEFAULT NULL,
-  `transport_id`   VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
-  `coupon_id`      VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
   `original_price` DOUBLE                                DEFAULT NULL,
+  `discount`       DOUBLE                                DEFAULT NULL,
   `actual_price`   DOUBLE                                DEFAULT NULL,
   `remark`         VARCHAR(64) COLLATE utf8_bin          DEFAULT NULL,
+  `order_type`     VARCHAR(64) COLLATE utf8_bin          DEFAULT NULL,
 
   PRIMARY KEY (`id`),
   KEY `fk_orders_user` (`username`),
-  CONSTRAINT `fk_orders_user` FOREIGN KEY (`username`) REFERENCES `user_info` (`user_name`),
-
-  KEY `fk_orders_transport_id` (`transport_id`),
-  CONSTRAINT `fk_orders_transport_id` FOREIGN KEY (`transport_id`) REFERENCES `order_transport` (`transport_id`),
-
-  KEY `fk_order_coupon_id` (`coupon_id`),
-  CONSTRAINT `fk_order_coupon_id` FOREIGN KEY (`coupon_id`) REFERENCES `coupons` (`coupon_id`)
-
+  CONSTRAINT `fk_orders_user` FOREIGN KEY (`username`) REFERENCES `user_info` (`user_name`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8

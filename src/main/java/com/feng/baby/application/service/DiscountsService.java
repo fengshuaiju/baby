@@ -67,7 +67,7 @@ public class DiscountsService {
                 .values(openId, couponId, new Byte("0"), couponsRecord.getCouponName(), couponsRecord.getPicUrl(),
                         LocalDateTime.now().plusDays(couponsRecord.getValidityDay()),couponsRecord.getRemarks(),
                         couponsRecord.getAmountOfMoney(), couponsRecord.getRequirementConsumption())
-//                .onDuplicateKeyIgnore()
+                .onDuplicateKeyIgnore()
                 .execute();
     }
 

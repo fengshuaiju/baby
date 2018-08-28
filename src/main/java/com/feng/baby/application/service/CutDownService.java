@@ -8,6 +8,7 @@ import com.feng.baby.support.utils.Validate;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sprout.jooq.generate.tables.records.GoodsCutDownInfoRecord;
@@ -17,9 +18,7 @@ import sprout.jooq.generate.tables.records.GoodsRecord;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static sprout.jooq.generate.Tables.*;
 
@@ -39,7 +38,7 @@ public class CutDownService {
     private final DSLContext jooq;
 
 
-    public Map<String, Object> establishCutDown(String goodsId, String username) {
+    public Map<String, Object> newCutDown(String goodsId, String username, String propertyChildIds, String goodsLabel) {
         //查找砍价配置信息 goods_cut_down;
         //验证该商品是可以砍价的商品
         GoodsCutDownInfoRecord goodsCutDownInfo = jooq.selectFrom(GOODS_CUT_DOWN_INFO)
@@ -50,6 +49,7 @@ public class CutDownService {
         //检验砍价表中是否已存在该用户发起的该商品的砍价
         String isExistCutDownId = jooq.selectFrom(GOODS_CUT_DOWNS)
                 .where(GOODS_CUT_DOWNS.GOODS_ID.eq(goodsId)).and(GOODS_CUT_DOWNS.INITIATOR.eq(username))
+                .and(GOODS_CUT_DOWNS.FINISHED.isFalse())
                 .fetchOptional(GOODS_CUT_DOWNS.CUT_DOWN_ID).orElse(null);
         if (isExistCutDownId != null) {
             return ImmutableMap.of("cutDownId", isExistCutDownId, "isNew", false);
@@ -69,6 +69,8 @@ public class CutDownService {
                 .set(GOODS_CUT_DOWNS.INITIATOR, username)
                 .set(GOODS_CUT_DOWNS.CURRENT_PRICE, goodsRecord.getMinPrice())
                 .set(GOODS_CUT_DOWNS.ORIGINAL_PRICE, goodsRecord.getMinPrice())
+                .set(GOODS_CUT_DOWNS.PROPERTIES_JOINT, propertyChildIds)
+                .set(GOODS_CUT_DOWNS.GOODS_LABEL, goodsLabel)
                 .set(GOODS_CUT_DOWNS.BASE_PRICE, goodsRecord.getMinPrice() - goodsCutDownInfo.getMaxCutDown())
                 .set(GOODS_CUT_DOWNS.CUT_TOTAL_AMOUNT, 0.0)
                 .set(GOODS_CUT_DOWNS.HELPER_NUMBER, 0)
@@ -193,5 +195,20 @@ public class CutDownService {
         ).from(GOODS_CUT_DOWN_HELPER.leftJoin(USER_INFO).on(GOODS_CUT_DOWN_HELPER.PARTICIPANT.eq(USER_INFO.USER_NAME)))
                 .where(GOODS_CUT_DOWN_HELPER.CUT_DOWN_ID.eq(cutDownId))
                 .fetchInto(GoodsCutDownHelper.class);
+    }
+
+    public Map<String, Object> checkExist(String username, String goodsId) {
+        Map<String, Object> returnDate = new HashMap<>();
+
+        jooq.select(GOODS_CUT_DOWNS.CUT_DOWN_ID)
+                .from(GOODS_CUT_DOWNS)
+                .where(GOODS_CUT_DOWNS.GOODS_ID.eq(goodsId))
+                .and(GOODS_CUT_DOWNS.INITIATOR.eq(username))
+                .fetchOptional().ifPresent(recored -> {
+                    returnDate.put("exist", true);
+                    returnDate.put("cutDownId", recored.value1());
+                });
+
+        return returnDate;
     }
 }

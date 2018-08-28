@@ -1,7 +1,6 @@
 package com.feng.baby.application.service;
 
 import com.feng.baby.application.representation.*;
-import com.feng.baby.model.GoodPriceType;
 import com.feng.baby.support.utils.ResourceNotFoundException;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import sprout.jooq.generate.tables.records.PropertiesRecord;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -129,14 +129,13 @@ public class GoodsService {
         return new PageImpl<>(basicInfos, pageable, count);
     }
 
-    public Map<String, Double> getPrice(String goodsId, String propertyChildIds, GoodPriceType shopType) {
-
-        Double price = jooq.selectFrom(GOODS_PRICE)
+    public Map<String, Double> getPrice(String goodsId, String propertyChildIds) {
+        Map<String, Double> prices = new HashMap<>();
+        jooq.select(GOODS_PRICE.TYPE, GOODS_PRICE.PRICE)
+                .from(GOODS_PRICE)
                 .where(GOODS_PRICE.GOODS_ID.eq(goodsId))
-                .and(GOODS_PRICE.TYPE.like( "%" + shopType.name() + "%"))
                 .and(GOODS_PRICE.PROPERTIES_JOINT.eq(propertyChildIds))
-                .fetchOptional(GOODS_PRICE.PRICE).orElse(999.00);
-
-        return ImmutableMap.of("price", price);
+                .fetchStream().forEach(price -> prices.put(price.value1(), price.value2()));
+        return prices;
     }
 }

@@ -22,11 +22,5 @@ public class UserService {
     }
 
 
-    public Address defaultAddress(String username) {
-        return jooq.selectFrom(USER_ADDRESS)
-                .where(USER_ADDRESS.USERNAME.eq(username))
-                .and(USER_ADDRESS.IS_DEFAULT.isTrue())
-                .fetchOptionalInto(Address.class)
-        .orElse(null);
-    }
+
 }
