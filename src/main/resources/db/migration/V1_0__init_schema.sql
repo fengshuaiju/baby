@@ -145,26 +145,22 @@ CREATE TABLE `function_menus` (
 -- ----------------------------
 DROP TABLE IF EXISTS `goods`;
 CREATE TABLE `goods` (
-  `id`                 INT(11)                      NOT NULL AUTO_INCREMENT,
-  `created_at`         TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `goods_id`           VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
-  `category_id`        INT(11)                               DEFAULT NULL,
-  `name`               VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `characteristic`     VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `main_pic`           VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `original_price`     DOUBLE                                DEFAULT NULL,
-  `min_price`          DOUBLE                                DEFAULT NULL,
-  `pingtuan_price`     DOUBLE                                DEFAULT NULL,
-  `concessional_price` DOUBLE                                DEFAULT NULL,
-  `number_orders`      INT(11)                               DEFAULT NULL,
-  `status`             TINYINT(1)                            DEFAULT NULL,
-  `pingtuan`           TINYINT(1)                            DEFAULT NULL,
-  `content`            TEXT COLLATE utf8_bin,
-  `views`              INT(11)                               DEFAULT NULL,
-  `number_fav`         INT(11)                               DEFAULT NULL,
-  `number_reputation`  INT(11)                               DEFAULT NULL,
-  `stores`             INT(11)                               DEFAULT NULL,
-  `remark`             VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `id`                INT(11)                      NOT NULL AUTO_INCREMENT,
+  `created_at`        TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `goods_id`          VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
+  `category_id`       INT(11)                               DEFAULT NULL,
+  `name`              VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `characteristic`    VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `main_pic`          VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `number_orders`     INT(11)                               DEFAULT NULL,
+  `status`            TINYINT(1)                            DEFAULT NULL,
+  `pingtuan`          TINYINT(1)                            DEFAULT NULL,
+  `content`           TEXT COLLATE utf8_bin,
+  `views`             INT(11)                               DEFAULT NULL,
+  `number_fav`        INT(11)                               DEFAULT NULL,
+  `number_reputation` INT(11)                               DEFAULT NULL,
+  `stores`            INT(11)                               DEFAULT NULL,
+  `remark`            VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -497,13 +493,15 @@ CREATE TABLE `goods_cut_downs` (
   `goods_pic`        VARCHAR(255) COLLATE utf8_bin                             DEFAULT NULL,
   # 商品名称
   `goods_name`       VARCHAR(255) COLLATE utf8_bin                             DEFAULT NULL,
+  # 购买的数量
+  `buy_number`       INT(11)                                                   DEFAULT NULL,
 
   `goods_id`         VARCHAR(64) COLLATE utf8_bin                              DEFAULT NULL,
   `properties_joint` VARCHAR(128) COLLATE utf8_bin                             DEFAULT NULL,
   # 颜色+尺寸
   `goods_label`      VARCHAR(128) COLLATE utf8_bin                             DEFAULT NULL,
 
-  `finished`         BOOLEAN                                                   DEFAULT FALSE,
+  `status`           VARCHAR(64) COLLATE utf8_bin                              DEFAULT NULL,
 
   KEY `fk_goods_cut_downs_goods` (`goods_id`),
   CONSTRAINT `fk_goods_cut_downs_goods` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`goods_id`),
@@ -638,7 +636,7 @@ CREATE TABLE `order_detail` (
   `orders_id`   VARCHAR(64) COLLATE utf8_bin NOT NULL,
   `goods_name`  VARCHAR(64) COLLATE utf8_bin          DEFAULT NULL,
   `goods_label` VARCHAR(64) COLLATE utf8_bin          DEFAULT NULL,
-  `number`      INT(11)                               DEFAULT NULL,
+  `buy_number`  INT(11)                               DEFAULT NULL,
   `unit_price`  DOUBLE                                DEFAULT NULL,
   `amount`      DOUBLE                                DEFAULT NULL,
   `goods_id`    VARCHAR(64) COLLATE utf8_bin NOT NULL,

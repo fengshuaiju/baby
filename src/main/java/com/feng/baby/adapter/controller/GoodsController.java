@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by fengshuaiju on 2018-06-29.
@@ -50,30 +48,7 @@ public class GoodsController {
         return JSONObject.parseObject(JSON.toJSONString(goodsService.goodsDetails(goodsId)));
     }
 
-    //计算价格
-    @GetMapping("/price")
-    public Map<String, Double> price(@RequestParam String goodsId, @RequestParam String propertyChildIds) {
-        propertyChildIds = Arrays.stream(propertyChildIds.split(":")).sorted(String::compareTo).collect(Collectors.joining(":"));
-        return goodsService.getPrice(goodsId, propertyChildIds);
-        //return JSONObject.parseObject("{\"goodsId\":30164,\"id\":491964,\"originalPrice\":1999,\"pingtuanPrice\":789,\"price\":799,\"propertyChildIds\":\"5420:18212,3688:12332,\",\"score\":0,\"stores\":98,\"userId\":797}");
-    }
 
-
-    //获取物流费用接口
-    //参数名	数据类型	备注	必填
-    //templateId	int	运费模板编号，可通过商品列表、商品详情接口获取	Y
-    //type	int	快递方式：0 快递 1 EMS 2 平邮	Y
-    //provinceId	int	用户省份编号	X
-    //cityId	int	用户城市编号	X
-    //districtId	int	用户区县编号	X
-    @GetMapping("/price/freight")
-    public String freight(@RequestParam int templateId,
-                          @RequestParam int type,
-                          @RequestParam(required = false) int provinceId,
-                          @RequestParam(required = false) int cityId,
-                          @RequestParam(required = false) int districtId) {
-        return "{\"code\":0,\"data\":{\"firstNumber\":9,\"addAmount\":12,\"firstAmount\":10,\"addNumber\":11},\"msg\":\"success\"}";
-    }
 
     //商品评价
     //    参数名	数据类型	备注	必填

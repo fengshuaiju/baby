@@ -19,6 +19,7 @@ public class CutDownInfo {
     private Double originalPrice;
     private Double basePrice;
     private Integer helperNumber;
+    private Integer buyNumber;
 
     private String goodsId;
     private String goodsPic;
@@ -30,7 +31,7 @@ public class CutDownInfo {
     private LocalDateTime createdAt;
     private LocalDateTime expiryTimeAt;
 
-    private boolean finished;
+    private String status;
 
     private Long leftSecond;
 }

@@ -25,7 +25,8 @@ public class CutDownController {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public Map<String, Object> newCutDown(@RequestBody CreateCutDown createCutDown) {
-        return cutDownService.newCutDown(createCutDown.getGoodsId(), createCutDown.getUsername(), createCutDown.getPropertyChildIds(), createCutDown.getGoodsLabel());
+        return cutDownService.newCutDown(createCutDown.getGoodsId(), createCutDown.getUsername(),
+                createCutDown.getPropertyChildIds(), createCutDown.getGoodsLabel(), createCutDown.getBuyNumber());
     }
 
     //获取已被砍信息，砍价发起者，砍价过期时间等

@@ -1,6 +1,7 @@
 package com.feng.baby.application.service;
 
 import com.feng.baby.application.command.CreateOrderGoodsInfo;
+import com.feng.baby.model.CutDownStatus;
 import com.feng.baby.model.GroupBookingStatus;
 import com.feng.baby.model.OrderStatus;
 import com.feng.baby.model.OrderType;
@@ -12,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,8 +72,10 @@ public class OrderService {
                         .fetchOptional()
                         .ifPresent(cutDown -> {
                             discount[0] = discount[0] + cutDown.getCutTotalAmount();
+                            discount[0] = new BigDecimal(discount[0]).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                             jooq.update(GOODS_CUT_DOWNS)
-                                    .set(GOODS_CUT_DOWNS.FINISHED, new Byte("1"))
+                                    .set(GOODS_CUT_DOWNS.STATUS, CutDownStatus.FINISH.name())
+                                    .where(GOODS_CUT_DOWNS.CUT_DOWN_ID.eq(cutDownId))
                                     .execute();
                         });
             }
@@ -100,11 +106,12 @@ public class OrderService {
 
         //更新总订单中的折扣金额
         jooq.update(ORDERS)
-                .set(ORDERS.ORIGINAL_PRICE, totalAmount[0])
-                .set(ORDERS.DISCOUNT, discount[0])
-                .set(ORDERS.ACTUAL_PRICE, totalAmount[0] - discount[0]) //TODO discount = 红包 or 砍价 实际金额应该还要考虑运费等
+                .set(ORDERS.ORIGINAL_PRICE, new BigDecimal(totalAmount[0]).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue())
+                .set(ORDERS.DISCOUNT, new BigDecimal(discount[0]).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue())
+                //TODO discount = 红包 or 砍价 实际金额应该还要考虑运费等
+                .set(ORDERS.ACTUAL_PRICE, new BigDecimal(totalAmount[0] - discount[0]).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue())
+                .where(ORDERS.ORDERS_ID.eq(orderId))
                 .execute();
-
 
         log.error("total0 ->" + totalAmount[0] + "discount0 ->" + discount[0]);
 
@@ -135,21 +142,21 @@ public class OrderService {
         String goodsLabel = result.value4();
         String goodsId = result.value5();
 
-        Double totalAmount = unitPrice * goods.getNumber();
+        Double totalAmount = unitPrice * goods.getBuyNumber();
 
         jooq.insertInto(ORDER_DETAIL)
                 .set(ORDER_DETAIL.DETAIL_ID, detailId)
                 .set(ORDER_DETAIL.ORDERS_ID, orderId)
                 .set(ORDER_DETAIL.GOODS_NAME, goodsName)
                 .set(ORDER_DETAIL.GOODS_LABEL, goodsLabel)
-                .set(ORDER_DETAIL.NUMBER, goods.getNumber())
+                .set(ORDER_DETAIL.BUY_NUMBER, goods.getBuyNumber())
                 .set(ORDER_DETAIL.UNIT_PRICE, unitPrice)
                 .set(ORDER_DETAIL.AMOUNT, totalAmount)
                 .set(ORDER_DETAIL.GOODS_ID, goodsId)
                 .set(ORDER_DETAIL.GOODS_PIC, goodsPic)
                 .execute();
 
-        log.error("total ->" + totalAmount + "unitPrice ->" + unitPrice +  "number ->" + goods.getNumber());
+        log.error("total ->" + totalAmount + "unitPrice ->" + unitPrice + "number ->" + goods.getBuyNumber());
 
         return totalAmount;
     }

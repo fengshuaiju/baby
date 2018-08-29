@@ -4,7 +4,10 @@ import com.feng.baby.application.representation.*;
 import com.feng.baby.support.utils.ResourceNotFoundException;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.DSLContext;
+import org.jooq.Record10;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -12,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import sprout.jooq.generate.tables.records.PropertiesRecord;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,11 +32,17 @@ public class GoodsService {
         this.jooq = jooq;
     }
 
+    @Autowired
+    private GoodsPriceService goodsPriceService;
 
     public GoodsInfo goodsDetails(String goodsId) {
         //查找主信息
         BasicInfo basicInfo = jooq.selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOptionalInto(BasicInfo.class)
                 .orElseThrow(ResourceNotFoundException::new);
+
+        //查找商品价格
+        Map<String, Object> priceInfo = goodsPriceService.getPriceInfo(goodsId);
+        basicInfo.setPrice(priceInfo);
 
         //查找类型信息(尺寸、颜色...)
         Result<Record10<Integer, String, Integer, String, Integer, String, String, Integer, String, String>> result = jooq.select(
@@ -91,6 +99,9 @@ public class GoodsService {
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetchInto(BasicInfo.class);
 
+        basicInfos.forEach(basicInfo -> basicInfo.setPrice(goodsPriceService.getPriceInfo(basicInfo.getGoodsId())));
+
+
         return new PageImpl<>(basicInfos, pageable, count);
     }
 
@@ -101,6 +112,8 @@ public class GoodsService {
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetchInto(BasicInfo.class);
 
+        basicInfos.forEach(basicInfo -> basicInfo.setPrice(goodsPriceService.getPriceInfo(basicInfo.getGoodsId())));
+
         return new PageImpl<>(basicInfos, pageable, count);
     }
 
@@ -110,6 +123,8 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.selectFrom(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetchInto(BasicInfo.class);
+
+        basicInfos.forEach(basicInfo -> basicInfo.setPrice(goodsPriceService.getPriceInfo(basicInfo.getGoodsId())));
 
         return new PageImpl<>(basicInfos, pageable, count);
     }
@@ -126,16 +141,9 @@ public class GoodsService {
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetchInto(BasicInfo.class);
 
+        basicInfos.forEach(basicInfo -> basicInfo.setPrice(goodsPriceService.getPriceInfo(basicInfo.getGoodsId())));
+
         return new PageImpl<>(basicInfos, pageable, count);
     }
 
-    public Map<String, Double> getPrice(String goodsId, String propertyChildIds) {
-        Map<String, Double> prices = new HashMap<>();
-        jooq.select(GOODS_PRICE.TYPE, GOODS_PRICE.PRICE)
-                .from(GOODS_PRICE)
-                .where(GOODS_PRICE.GOODS_ID.eq(goodsId))
-                .and(GOODS_PRICE.PROPERTIES_JOINT.eq(propertyChildIds))
-                .fetchStream().forEach(price -> prices.put(price.value1(), price.value2()));
-        return prices;
-    }
 }

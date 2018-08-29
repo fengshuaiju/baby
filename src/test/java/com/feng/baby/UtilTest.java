@@ -15,6 +15,9 @@ import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class UtilTest {
@@ -52,6 +55,17 @@ public class UtilTest {
 
     @Test
     public void pathTest(){
-        System.err.println(UploadFile.class.getResource("/").getPath());
+        //System.err.println(UploadFile.class.getResource("/").getPath());
+List<String> list = new ArrayList<>();
+        list.add("1");
+        list.add("2");
+        list.add("3");
+        list.add("4");
+        list.add("5");
+
+
+        boolean strings = list.removeAll(list.subList(1,3));
+
+        System.err.println(list);
     }
 }

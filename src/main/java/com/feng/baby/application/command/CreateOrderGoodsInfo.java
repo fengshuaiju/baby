@@ -7,7 +7,7 @@ import lombok.NonNull;
 public class CreateOrderGoodsInfo {
     @NonNull
     private String goodsId;
-    private Integer number;
+    private Integer buyNumber;
     private String propertyChildIds;
     private String goodsLabel;
     private String inviterId;
