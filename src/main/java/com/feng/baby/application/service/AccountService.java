@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sprout.jooq.generate.tables.records.UserInfoRecord;
 
+import static sprout.jooq.generate.Tables.USER_ACCOUNT;
 import static sprout.jooq.generate.Tables.USER_INFO;
 
 @Slf4j
@@ -26,9 +27,17 @@ public class AccountService {
     @Transactional
     public void createAccount(String userName, String nickName) {
 
+        //创建用户信息
         jooq.insertInto(USER_INFO).set(USER_INFO.USER_NAME, userName)
                 .set(USER_INFO.NICK_NAME, nickName)
                 .set(USER_INFO.WECHAT_OPEN_ID, userName)
+                .execute();
+
+        //创建用户账户信息
+        jooq.insertInto(USER_ACCOUNT)
+                .set(USER_ACCOUNT.USERNAME, userName)
+                .set(USER_ACCOUNT.SCORE, 0)
+                .set(USER_ACCOUNT.ACCOUNT, 0.0)
                 .execute();
         log.info("create account success, userName :{}", userName);
     }

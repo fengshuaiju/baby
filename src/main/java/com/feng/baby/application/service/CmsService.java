@@ -2,6 +2,7 @@ package com.feng.baby.application.service;
 
 
 import com.feng.baby.application.representation.CmsRepresentation;
+import com.feng.baby.model.CmsType;
 import com.feng.baby.support.utils.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Condition;
@@ -28,8 +29,12 @@ public class CmsService {
         this.jooq = jooq;
     }
 
+    public CmsRepresentation detail(String cmsId) {
+        return jooq.selectFrom(CMS).where(CMS.CMS_ID.eq(cmsId)).fetchOptionalInto(CmsRepresentation.class)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
 
-    public Page<CmsRepresentation> topic(Pageable pageable) {
+    public Page<CmsRepresentation> newsList(CmsType cmsType, Pageable pageable) {
 
         Condition condition = CMS.IS_RECOMMEND.isTrue();
         int count = jooq.fetchCount(CMS, condition);
@@ -45,11 +50,5 @@ public class CmsService {
                 .fetchInto(CmsRepresentation.class);
 
         return new PageImpl<>(cmsRepresentations, pageable, count);
-    }
-
-
-    public CmsRepresentation detail(String cmsId) {
-        return jooq.selectFrom(CMS).where(CMS.CMS_ID.eq(cmsId)).fetchOptionalInto(CmsRepresentation.class)
-                .orElseThrow(ResourceNotFoundException::new);
     }
 }

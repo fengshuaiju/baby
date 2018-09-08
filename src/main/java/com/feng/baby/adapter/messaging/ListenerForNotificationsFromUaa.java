@@ -1,6 +1,9 @@
 package com.feng.baby.adapter.messaging;
 
+import com.alibaba.fastjson.JSON;
+import com.feng.baby.application.command.UserInfoUpdated;
 import com.feng.baby.application.service.AccountService;
+import com.feng.baby.application.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -15,6 +18,9 @@ public class ListenerForNotificationsFromUaa {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private UserService userService;
 
     @StreamListener(InputChannels.INPUT_FROM_UAA)
     public void handleNotificationsFromSelf(Notification notification) {
@@ -36,7 +42,12 @@ public class ListenerForNotificationsFromUaa {
                     log.info("get content info > chineseName :{}", chineseName);
                     break;
                 }
-
+                case "com.feng.accounts.model.event.UserInfoUpdated": {
+                    UserInfoUpdated userInfoUpdated = JSON.parseObject(notification.getContent(), UserInfoUpdated.class);
+                    userService.updateUserInfo(userInfoUpdated);
+                    log.info("update user info", notification.getContent());
+                    break;
+                }
                 default:
                     log.debug("Unhandled notification: {}", notification.getTypeName());
                     break;

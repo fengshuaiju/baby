@@ -1,16 +1,22 @@
 package com.feng.baby.application.service;
 
+import com.feng.baby.application.representation.BasicInfo;
 import com.feng.baby.application.representation.CutDownInfo;
 import com.feng.baby.application.representation.GoodsCutDownHelper;
 import com.feng.baby.application.representation.UserInfo;
 import com.feng.baby.model.CutDownStatus;
+import com.feng.baby.model.OrderPriceType;
 import com.feng.baby.model.OrderType;
 import com.feng.baby.support.utils.ResourceNotFoundException;
 import com.feng.baby.support.utils.Validate;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import sprout.jooq.generate.tables.records.GoodsCutDownInfoRecord;
 import sprout.jooq.generate.tables.records.GoodsCutDownsRecord;
@@ -20,10 +26,7 @@ import sprout.jooq.generate.tables.records.GoodsRecord;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static sprout.jooq.generate.Tables.*;
 
@@ -34,6 +37,9 @@ public class CutDownService {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private GoodsPriceService goodsPriceService;
+
 
     @Autowired
     CutDownService(DSLContext jooq) {
@@ -41,6 +47,24 @@ public class CutDownService {
     }
 
     private final DSLContext jooq;
+
+
+    public Page<BasicInfo> cutdown(Pageable pageable) {
+        int count = jooq.fetchCount(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)));
+
+        List<BasicInfo> basicInfos = jooq.select(
+                GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
+                GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
+                GOODS.PINGTUAN, GOODS.STATUS, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
+        ).from(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)))
+                .offset(pageable.getOffset()).limit(pageable.getPageSize())
+                .fetchInto(BasicInfo.class);
+
+        basicInfos.forEach(basicInfo -> basicInfo.setPrice(goodsPriceService.getPriceInfo(basicInfo.getGoodsId())));
+
+        return new PageImpl<>(basicInfos, pageable, count);
+    }
 
 
     public Map<String, Object> newCutDown(String goodsId, String username, String propertyChildIds, String goodsLabel, Integer buyNumber) {
@@ -69,7 +93,7 @@ public class CutDownService {
         GoodsPriceRecord price = jooq.selectFrom(GOODS_PRICE)
                 .where(GOODS_PRICE.GOODS_ID.eq(goodsId))
                 .and(GOODS_PRICE.PROPERTIES_JOINT.eq(propertyChildIds))
-                .and(GOODS_PRICE.TYPE.eq(OrderType.CUT_DOWN.name()))
+                .and(GOODS_PRICE.TYPE.eq(OrderPriceType.CUT_DOWN.name()))
                 .fetchOptional()
                 .orElseThrow(ResourceNotFoundException::new);
 
@@ -171,17 +195,15 @@ public class CutDownService {
         Double maxAmountPerCut = goodsCutDownInfo.getMaxAmountPerCut();
         Double minAmountPerCut = goodsCutDownInfo.getMinAmountPerCut();
 
-        double currentCutDown = new BigDecimal
-                (Math.random() * (maxAmountPerCut - minAmountPerCut) + minAmountPerCut)
-                .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        double currentCutDown = Math.random() * (maxAmountPerCut - minAmountPerCut) + minAmountPerCut;
 
         if ((cutTotalAmount + currentCutDown) > canMaxCutDown) {
             currentCutDown = canMaxCutDown - currentCutDown;
             jooq.update(GOODS_CUT_DOWNS)
                     .set(GOODS_CUT_DOWNS.STATUS, CutDownStatus.SUCCESS.name())
                     .set(GOODS_CUT_DOWNS.HELPER_NUMBER, goodsCutDown.getHelperNumber() + 1)
-                    .set(GOODS_CUT_DOWNS.CUT_TOTAL_AMOUNT, goodsCutDown.getCutTotalAmount() + currentCutDown)
-                    .set(GOODS_CUT_DOWNS.CURRENT_PRICE, goodsCutDown.getOriginalPrice() - currentCutDown - goodsCutDown.getCutTotalAmount())
+                    .set(GOODS_CUT_DOWNS.CUT_TOTAL_AMOUNT, new BigDecimal(goodsCutDown.getCutTotalAmount() + currentCutDown).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue())
+                    .set(GOODS_CUT_DOWNS.CURRENT_PRICE, new BigDecimal(goodsCutDown.getOriginalPrice() - currentCutDown - goodsCutDown.getCutTotalAmount()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue())
                     .where(GOODS_CUT_DOWNS.CUT_DOWN_ID.eq(cutDownId))
                     .execute();
         }
@@ -189,15 +211,14 @@ public class CutDownService {
         //插入此次砍价的记录
         jooq.insertInto(GOODS_CUT_DOWN_HELPER)
                 .set(GOODS_CUT_DOWN_HELPER.PARTICIPANT, participant)
-                .set(GOODS_CUT_DOWN_HELPER.CUT_DOWN_PRICE, currentCutDown)
+                .set(GOODS_CUT_DOWN_HELPER.CUT_DOWN_PRICE, new BigDecimal(currentCutDown).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue())
                 .set(GOODS_CUT_DOWN_HELPER.CUT_DOWN_ID, cutDownId)
                 .execute();
 
         jooq.update(GOODS_CUT_DOWNS)
                 .set(GOODS_CUT_DOWNS.HELPER_NUMBER, goodsCutDown.getHelperNumber() + 1)
-                .set(GOODS_CUT_DOWNS.CUT_TOTAL_AMOUNT, new BigDecimal(goodsCutDown.getCutTotalAmount() + currentCutDown)
-                        .setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue())
-                .set(GOODS_CUT_DOWNS.CURRENT_PRICE, goodsCutDown.getOriginalPrice() - currentCutDown - goodsCutDown.getCutTotalAmount())
+                .set(GOODS_CUT_DOWNS.CUT_TOTAL_AMOUNT, new BigDecimal(goodsCutDown.getCutTotalAmount() + currentCutDown).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue())
+                .set(GOODS_CUT_DOWNS.CURRENT_PRICE, new BigDecimal(goodsCutDown.getOriginalPrice() - currentCutDown - goodsCutDown.getCutTotalAmount()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue())
                 .set(GOODS_CUT_DOWNS.STATUS, CutDownStatus.IN_PROGRESS.name())
                 .where(GOODS_CUT_DOWNS.CUT_DOWN_ID.eq(cutDownId))
                 .execute();
@@ -228,5 +249,23 @@ public class CutDownService {
                 });
 
         return returnDate;
+    }
+
+    public Page<CutDownInfo> myCutList(String username, Pageable pageable) {
+
+        Condition condition = GOODS_CUT_DOWNS.INITIATOR.eq(username);
+
+        int count = jooq.fetchCount(GOODS_CUT_DOWNS, condition);
+
+        List<CutDownInfo> cutDownInfos = jooq.selectFrom(GOODS_CUT_DOWNS)
+                .where(condition)
+                .offset(pageable.getOffset()).limit(pageable.getPageSize())
+                .fetchInto(CutDownInfo.class);
+        cutDownInfos.forEach(info -> {
+            info.setDesc(info.getStatus());
+            info.setLeftSecond(Duration.between(LocalDateTime.now(), info.getExpiryTimeAt()).getSeconds());
+        });
+
+        return new PageImpl<>(cutDownInfos, pageable, count);
     }
 }

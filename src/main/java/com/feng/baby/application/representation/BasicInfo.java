@@ -9,7 +9,7 @@ public class BasicInfo {
 
     private Integer id;
     private String goodsId;
-    private Integer categoryId;
+    private String categoryId;
     private String name;
     private String characteristic;
     private String mainPic;

@@ -1,13 +1,12 @@
 package com.feng.baby.adapter.controller;
 
+import com.feng.baby.application.representation.UserAccountInfo;
 import com.feng.baby.application.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by fengshuaiju on 2018-06-29.
@@ -21,9 +20,10 @@ public class UserController {
     private UserService userService;
 
 
-    @GetMapping("/amount")
-    public void amount(){
-
+    @GetMapping("/account")
+    @ResponseStatus(HttpStatus.OK)
+    public UserAccountInfo amount(@RequestParam String username){
+        return userService.getAccount(username);
     }
 
     @GetMapping("/detail")

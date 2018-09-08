@@ -2,6 +2,7 @@ package com.feng.baby.application.service;
 
 import com.feng.baby.application.representation.FunctionMenus;
 import com.feng.baby.application.representation.SlideContainer;
+import com.feng.baby.model.SlideContainerType;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,8 @@ public class BannerService {
         this.jooq = jooq;
     }
 
-    public List<SlideContainer> slideContainer() {
-        Condition condition = SLIDE_CONTAINER.STATUS.isTrue();
+    public List<SlideContainer> slideContainer(SlideContainerType type) {
+        Condition condition = SLIDE_CONTAINER.STATUS.isTrue().and(SLIDE_CONTAINER.TYPE.eq(type.name()));
         return jooq.selectFrom(SLIDE_CONTAINER)
                 .where(condition).fetchInto(SlideContainer.class);
     }

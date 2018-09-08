@@ -18,4 +18,5 @@ public class CmsRepresentation {
     private Double minPrice;
     private Integer views;
 
+    private String type;
 }

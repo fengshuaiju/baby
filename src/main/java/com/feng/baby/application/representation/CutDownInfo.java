@@ -1,5 +1,6 @@
 package com.feng.baby.application.representation;
 
+import com.feng.baby.model.CutDownStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -32,6 +33,12 @@ public class CutDownInfo {
     private LocalDateTime expiryTimeAt;
 
     private String status;
+    private String statusDesc;
 
     private Long leftSecond;
+
+    public CutDownInfo setDesc(String status){
+        this.statusDesc = CutDownStatus.valueOf(status).getDesc();
+        return this;
+    }
 }

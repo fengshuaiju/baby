@@ -11,6 +11,7 @@ import com.feng.baby.application.service.BannerService;
 import com.feng.baby.application.service.CmsService;
 import com.feng.baby.application.service.DiscountsService;
 import com.feng.baby.application.service.GoodsService;
+import com.feng.baby.model.SlideContainerType;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,6 @@ public class BannerController {
 
     @Autowired
     private GoodsService goodsService;
-
-    @Autowired
-    private CmsService cmsService;
 
     //key
     @GetMapping("/list")
@@ -79,20 +77,14 @@ public class BannerController {
 
     //滚动图片
     @GetMapping("/slide-container")
-    public List<SlideContainer> slideContainer(){
-        return bannerService.slideContainer();
+    public List<SlideContainer> slideContainer(@RequestParam SlideContainerType type){
+        return bannerService.slideContainer(type);
     }
 
     //签到、礼券按钮栏
     @GetMapping("/function-menus")
     public List<FunctionMenus> functionMenus(){
         return bannerService.functionMenus();
-    }
-
-    //新人红包
-    @GetMapping("/newcoupons")
-    public Coupons availableNewCoupons(@RequestParam String openId){
-        return discountsService.availableNewCoupons(openId);
     }
 
     //人气推荐商品
@@ -106,18 +98,5 @@ public class BannerController {
     public Page<BasicInfo> toptuan(Pageable pageable){
         return goodsService.toptuan(pageable);
     }
-
-    //全民砍价
-    @GetMapping("/cutdown")
-    public Page<BasicInfo> cutdown(Pageable pageable){
-        return goodsService.cutdown(pageable);
-    }
-
-    //精选主题
-    @GetMapping("/toptopic")
-    public Page<CmsRepresentation> topic(Pageable pageable){
-        return cmsService.topic(pageable);
-    }
-
 
 }

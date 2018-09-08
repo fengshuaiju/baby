@@ -1,11 +1,10 @@
 package com.feng.baby.application.service;
 
 import com.feng.baby.application.command.CreateOrderGoodsInfo;
-import com.feng.baby.model.CutDownStatus;
-import com.feng.baby.model.GroupBookingStatus;
-import com.feng.baby.model.OrderStatus;
-import com.feng.baby.model.OrderType;
+import com.feng.baby.application.representation.ShopCar;
+import com.feng.baby.model.*;
 import com.feng.baby.support.utils.ResourceNotFoundException;
+import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.jooq.Record5;
@@ -17,7 +16,9 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static sprout.jooq.generate.Tables.*;
 
@@ -32,6 +33,8 @@ public class OrderService {
         this.jooq = jooq;
     }
 
+    @Autowired
+    private GoodsService goodsService;
 
     @Transactional
     public void createOrder(String username, List<CreateOrderGoodsInfo> goodsInfos, String addressId, String couponId,
@@ -84,6 +87,13 @@ public class OrderService {
                 jooq.update(GROUP_BOOKING).set(GROUP_BOOKING.STATUS, GroupBookingStatus.WAITING_GROUP.name())
                         .where(GROUP_BOOKING.GROUP_BOOKING_ID.eq(groupBookingId)).execute();
             }
+            case SHOPPING_CART: {//删除购物车数据
+                jooq.deleteFrom(SHOPPING_CART)
+                        .where(SHOPPING_CART.SHOPPING_CART_ID.in(
+                                goodsInfos.stream().map(CreateOrderGoodsInfo::getShoppingCartId).collect(Collectors.toSet())
+                        )).and(SHOPPING_CART.USERNAME.eq(username)).execute();
+                break;
+            }
             default: {
                 log.info("nothing to do");
             }
@@ -133,7 +143,7 @@ public class OrderService {
                 .leftJoin(GOODS_PRICE).on(GOODS.GOODS_ID.eq(GOODS_PRICE.GOODS_ID))
                 .where(GOODS.GOODS_ID.eq(goods.getGoodsId()))
                 .and(GOODS_PRICE.PROPERTIES_JOINT.eq(goods.getPropertyChildIds()))
-                .and(GOODS_PRICE.TYPE.eq(orderType.name()))
+                .and(GOODS_PRICE.TYPE.eq(OrderPriceType.valueOf(orderType.getPriceType()).name()))
                 .fetchOptional().orElseThrow(ResourceNotFoundException::new);
 
         String goodsName = result.value1();
@@ -159,5 +169,19 @@ public class OrderService {
         log.error("total ->" + totalAmount + "unitPrice ->" + unitPrice + "number ->" + goods.getBuyNumber());
 
         return totalAmount;
+    }
+
+    public Map<String, Object> statistics(String username) {
+        //查询购物车中商品数量
+        Integer shopCarNumber = goodsService.getShopCarBuyNumber(username);
+
+        //查询待支付订单数量
+        return ImmutableMap.of(
+                "shopCarNumber", shopCarNumber,
+                "count_id_no_transfer", 0,
+                "count_id_no_pay", 8,
+                "count_id_no_confirm", 0,
+                "count_id_success", 4
+        );
     }
 }

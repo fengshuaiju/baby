@@ -13,4 +13,5 @@ public class CreateOrderGoodsInfo {
     private String inviterId;
     private String groupBookingId;
     private String cutDownId;
+    private String shoppingCartId;
 }

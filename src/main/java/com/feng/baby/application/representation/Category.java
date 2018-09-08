@@ -4,10 +4,10 @@ import lombok.Data;
 
 @Data
 public class Category {
-    private Integer id;
+    private String categoryId;
     private Integer level;
     private String name;
-    private Integer pid;
+    private String pid;
     private Boolean isUse;
     private String icon;
     private Integer indexs;

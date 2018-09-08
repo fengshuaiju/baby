@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by fengshuaiju on 2018-06-03.
@@ -21,7 +22,6 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
-
 
     //获取用户所有的订单列表
     //参数名	数据类型	备注	必填
@@ -82,8 +82,10 @@ public class OrderController {
     //订单数据统计接口
     //统计每种订单状态的订单数量
     @GetMapping("/statistics")
-    public String statistics(){
-        return "{\"code\":0,\"data\":{\"count_id_no_transfer\":0,\"count_id_no_pay\":9,\"count_id_no_confirm\":0,\"count_id_success\":4},\"msg\":\"success\"}";
+    @ResponseStatus(HttpStatus.OK)
+    public Map<String, Object> statistics(@RequestParam String username){
+        return orderService.statistics(username);
+//        return "{\"code\":0,\"data\":{\"count_id_no_transfer\":0,\"count_id_no_pay\":9,\"count_id_no_confirm\":0,\"count_id_success\":4},\"msg\":\"success\"}";
     }
 
 

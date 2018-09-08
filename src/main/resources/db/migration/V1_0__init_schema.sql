@@ -7,15 +7,15 @@ SET GLOBAL TIME_ZONE = '+8:00';
 -- ----------------------------
 DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category` (
-  `id`         INT(11)   NOT NULL            AUTO_INCREMENT,
-  `created_at` TIMESTAMP NOT NULL            DEFAULT CURRENT_TIMESTAMP,
-  `level`      INT(11)                       DEFAULT NULL,
-  `name`       VARCHAR(64) COLLATE utf8_bin  DEFAULT NULL,
-  `pid`        INT(11)                       DEFAULT NULL,
-  `is_use`     TINYINT(1)                    DEFAULT NULL,
-  `icon`       VARCHAR(255) COLLATE utf8_bin DEFAULT NULL,
-  `indexs`     INT(11)                       DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `category_id` VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
+  `created_at`  TIMESTAMP                    NOT NULL            DEFAULT CURRENT_TIMESTAMP,
+  `level`       INT(11)                                          DEFAULT NULL,
+  `name`        VARCHAR(64) COLLATE utf8_bin                     DEFAULT NULL,
+  `pid`         VARCHAR(64) COLLATE utf8_bin                     DEFAULT NULL,
+  `is_use`      TINYINT(1)                                       DEFAULT NULL,
+  `icon`        VARCHAR(255) COLLATE utf8_bin                    DEFAULT NULL,
+  `indexs`      INT(11)                                          DEFAULT NULL,
+  PRIMARY KEY (`category_id`)
 )
   ENGINE = InnoDB
   AUTO_INCREMENT = 1
@@ -148,7 +148,7 @@ CREATE TABLE `goods` (
   `id`                INT(11)                      NOT NULL AUTO_INCREMENT,
   `created_at`        TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `goods_id`          VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
-  `category_id`       INT(11)                               DEFAULT NULL,
+  `category_id`       VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
   `name`              VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
   `characteristic`    VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
   `main_pic`          VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
@@ -178,10 +178,10 @@ CREATE TABLE `goods_category` (
   `icon`        VARCHAR(255) COLLATE utf8_bin DEFAULT NULL,
   `is_use`      TINYINT(1)                    DEFAULT NULL,
   `name`        VARCHAR(64) COLLATE utf8_bin  DEFAULT NULL,
-  `category_id` INT(11) NOT NULL,
+  `category_id` VARCHAR(64) COLLATE utf8_bin  DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_category_goods` (`category_id`),
-  CONSTRAINT `fk_category_goods` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`)
+  CONSTRAINT `fk_category_goods` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`)
 )
   ENGINE = InnoDB
   AUTO_INCREMENT = 1
@@ -201,7 +201,8 @@ CREATE TABLE `goods_fav` (
   KEY `fk_goods_fav_goods` (`goods_id`),
   KEY `fk_goods_fav_user` (`username`),
   CONSTRAINT `fk_goods_fav_goods` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`goods_id`),
-  CONSTRAINT `fk_goods_fav_user` FOREIGN KEY (`username`) REFERENCES `user_info` (`user_name`)
+  CONSTRAINT `fk_goods_fav_user` FOREIGN KEY (`username`) REFERENCES `user_info` (`user_name`),
+  UNIQUE KEY `username_goods_id` (goods_id, username)
 )
   ENGINE = InnoDB
   AUTO_INCREMENT = 1
@@ -374,10 +375,11 @@ DROP TABLE IF EXISTS `slide_container`;
 CREATE TABLE `slide_container` (
   `id`         INT(11)   NOT NULL            AUTO_INCREMENT,
   `created_at` TIMESTAMP NOT NULL            DEFAULT CURRENT_TIMESTAMP,
-  `goods_id`   BIGINT(11)                    DEFAULT NULL,
+  `goods_id`   VARCHAR(64) COLLATE utf8_bin  DEFAULT NULL,
   `pic_url`    VARCHAR(255) COLLATE utf8_bin DEFAULT NULL,
   `status`     TINYINT(1)                    DEFAULT NULL,
   `orders`     INT(11)                       DEFAULT NULL,
+  `type`       VARCHAR(32)                   DEFAULT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -586,13 +588,13 @@ CREATE TABLE `cms` (
   `content`        TEXT COLLATE utf8_bin,
   `is_recommend`   TINYINT(1)                            DEFAULT NULL,
   `comment_number` INT(11)                      NOT NULL,
-  `category_id`    INT(11)                      NOT NULL,
+  `category_id`    VARCHAR(64) COLLATE utf8_bin          DEFAULT NULL,
   `min_price`      DOUBLE                                DEFAULT NULL,
   `views`          INT(11)                               DEFAULT NULL,
 
   PRIMARY KEY (`id`),
   KEY `fk_category_cms` (`category_id`),
-  CONSTRAINT `fk_category_cms` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`)
+  CONSTRAINT `fk_category_cms` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8
@@ -671,6 +673,69 @@ CREATE TABLE `order_transport` (
   KEY `fk_order_transport_orders` (`orders_id`),
   CONSTRAINT `fk_order_transport_orders` FOREIGN KEY (`orders_id`) REFERENCES `orders` (`orders_id`)
 
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
+-- ----------------------------
+-- Table structure for shopping_cart
+-- ----------------------------
+DROP TABLE IF EXISTS `shopping_cart`;
+CREATE TABLE `shopping_cart` (
+  `shopping_cart_id` VARCHAR(64) COLLATE utf8_bin UNIQUE NOT NULL,
+  `created_at`       TIMESTAMP                           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `goods_id`         VARCHAR(64) COLLATE utf8_bin        NOT NULL,
+  `username`         VARCHAR(64) COLLATE utf8_bin        NOT NULL,
+  `properties_joint` VARCHAR(128) COLLATE utf8_bin       NOT NULL,
+  `buy_number`       INT(11)                                      DEFAULT NULL,
+  PRIMARY KEY (`shopping_cart_id`),
+  KEY `fk_shopping_cart_goods` (`goods_id`),
+  KEY `fk_shopping_cart_user` (`username`),
+  CONSTRAINT `fk_shopping_cart_goods` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`goods_id`),
+  CONSTRAINT `fk_shopping_cart_user` FOREIGN KEY (`username`) REFERENCES `user_info` (`user_name`),
+  UNIQUE KEY `username_shopping_cart` (goods_id, username, properties_joint)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
+-- ----------------------------
+-- Table structure for user_account
+-- ----------------------------
+DROP TABLE IF EXISTS `user_account`;
+CREATE TABLE `user_account` (
+  `created_at` TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `score`      INT(11)                               DEFAULT NULL,
+  `account`    DOUBLE                                DEFAULT NULL,
+  `username`   VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
+
+  KEY `fk_user_account_user` (`username`),
+  CONSTRAINT `fk_user_account_user` FOREIGN KEY (`username`) REFERENCES `user_info` (`user_name`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
+-- ----------------------------
+-- Table structure for user_score_record
+-- ----------------------------
+DROP TABLE IF EXISTS `user_score_record`;
+CREATE TABLE `user_score_record` (
+  `user_score_record_id` VARCHAR(64) COLLATE utf8_bin UNIQUE NOT NULL,
+  `created_at`           TIMESTAMP                           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_sign_day`        VARCHAR(64) COLLATE utf8_bin                 DEFAULT NULL,
+  `continued_days`       INT(11)                                      DEFAULT 0,
+  `username`             VARCHAR(64) COLLATE utf8_bin        NOT NULL,
+
+  `score_to_day`         INT(11)                                      DEFAULT NULL,
+  `source_after`         INT(11)                                      DEFAULT NULL,
+
+  `source`               VARCHAR(64) COLLATE utf8_bin                 DEFAULT NULL,
+
+  PRIMARY KEY (`user_score_record_id`),
+  KEY `fk_user_score_record_user` (`username`),
+  CONSTRAINT `fk_user_score_record_user` FOREIGN KEY (`username`) REFERENCES `user_info` (`user_name`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8
