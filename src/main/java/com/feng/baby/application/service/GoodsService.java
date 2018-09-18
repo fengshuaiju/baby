@@ -102,7 +102,7 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.PINGTUAN, GOODS.STATUS, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_PINGTUAN, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GOODS_RECOMMEND).on(GOODS.GOODS_ID.eq(GOODS_RECOMMEND.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
@@ -120,7 +120,7 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.PINGTUAN, GOODS.STATUS, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_PINGTUAN, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GROUP_BOOKING).on(GOODS.GOODS_ID.eq(GROUP_BOOKING.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
@@ -141,7 +141,7 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.PINGTUAN, GOODS.STATUS, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_PINGTUAN, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)))
                 .where(condition)
@@ -190,7 +190,7 @@ public class GoodsService {
 
     public Page<BasicInfo> search(String keyWord, String categoryId, Pageable pageable) {
 
-        Condition condition = GOODS.STATUS.isTrue();
+        Condition condition = GOODS.IS_REMOVE.isFalse();
 
         if (StringUtils.isNotEmpty(keyWord)) {
             condition = condition.and(GOODS.NAME.likeIgnoreCase("%" + keyWord + "%")
@@ -206,7 +206,7 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.PINGTUAN, GOODS.STATUS, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_PINGTUAN, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         )
                 .from(GOODS)
@@ -289,7 +289,7 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.PINGTUAN, GOODS.STATUS, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_PINGTUAN, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())

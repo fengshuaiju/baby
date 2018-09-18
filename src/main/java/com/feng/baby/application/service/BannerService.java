@@ -24,7 +24,7 @@ public class BannerService {
     }
 
     public List<SlideContainer> slideContainer(SlideContainerType type) {
-        Condition condition = SLIDE_CONTAINER.STATUS.isTrue().and(SLIDE_CONTAINER.TYPE.eq(type.name()));
+        Condition condition = SLIDE_CONTAINER.IS_REMOVE.isFalse().and(SLIDE_CONTAINER.TYPE.eq(type.name()));
         return jooq.selectFrom(SLIDE_CONTAINER)
                 .where(condition).fetchInto(SlideContainer.class);
     }

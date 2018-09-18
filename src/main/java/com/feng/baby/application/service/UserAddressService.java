@@ -1,6 +1,5 @@
 package com.feng.baby.application.service;
 
-
 import com.feng.baby.application.command.UserAddressAddOrUpdate;
 import com.feng.baby.application.representation.Address;
 import com.feng.baby.support.utils.ResourceNotFoundException;
@@ -45,7 +44,7 @@ public class UserAddressService {
 
     public void delete(String userAddressId, String username) {
         jooq.update(USER_ADDRESS)
-                .set(USER_ADDRESS.IS_REMOVE, new Byte("1"))
+                .set(USER_ADDRESS.IS_REMOVE, true)
                 .where(USER_ADDRESS.USER_ADDRESS_ID.eq(userAddressId))
                 .and(USER_ADDRESS.USERNAME.eq(username))
                 .execute();
@@ -71,10 +70,10 @@ public class UserAddressService {
                 .set(USER_ADDRESS.AREA, userAddressAddOrUpdate.getArea())
                 .set(USER_ADDRESS.AREA_CODE, userAddressAddOrUpdate.getAreaCode())
                 .set(USER_ADDRESS.ADDRESS, userAddressAddOrUpdate.getAddress())
-                .set(USER_ADDRESS.IS_DEFAULT, new Byte("1"))
+                .set(USER_ADDRESS.IS_DEFAULT, true)
                 .set(USER_ADDRESS.LINK_MAN, userAddressAddOrUpdate.getLinkMan())
                 .set(USER_ADDRESS.MOBILE, userAddressAddOrUpdate.getMobile())
-                .set(USER_ADDRESS.IS_REMOVE, new Byte("0"))
+                .set(USER_ADDRESS.IS_REMOVE, false)
                 .set(USER_ADDRESS.POSTAL_CODE, userAddressAddOrUpdate.getAreaCode())
                 .onDuplicateKeyUpdate()
                 .set(USER_ADDRESS.USERNAME, username)
@@ -85,10 +84,10 @@ public class UserAddressService {
                 .set(USER_ADDRESS.AREA, userAddressAddOrUpdate.getArea())
                 .set(USER_ADDRESS.AREA_CODE, userAddressAddOrUpdate.getAreaCode())
                 .set(USER_ADDRESS.ADDRESS, userAddressAddOrUpdate.getAddress())
-                .set(USER_ADDRESS.IS_DEFAULT, new Byte("1"))
+                .set(USER_ADDRESS.IS_DEFAULT, true)
                 .set(USER_ADDRESS.LINK_MAN, userAddressAddOrUpdate.getLinkMan())
                 .set(USER_ADDRESS.MOBILE, userAddressAddOrUpdate.getMobile())
-                .set(USER_ADDRESS.IS_REMOVE, new Byte("0"))
+                .set(USER_ADDRESS.IS_REMOVE, false)
                 .set(USER_ADDRESS.POSTAL_CODE, userAddressAddOrUpdate.getPostalCode())
                 .execute();
     }

@@ -1,20 +1,22 @@
 package com.feng.baby.application.service;
 
 import com.feng.baby.application.command.CreateOrderGoodsInfo;
-import com.feng.baby.application.representation.ShopCar;
+import com.feng.baby.application.representation.EvaluateRepresentation;
 import com.feng.baby.model.*;
 import com.feng.baby.support.utils.ResourceNotFoundException;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -57,12 +59,12 @@ public class OrderService {
         jooq.selectFrom(COUPONS_USERS)
                 .where(COUPONS_USERS.USER_NAME.eq(username))
                 .and(COUPONS_USERS.COUPON_ID.eq(couponId))
-                .and(COUPONS_USERS.USED.isFalse())
+                .and(COUPONS_USERS.IS_USED.isFalse())
                 .fetchOptional().ifPresent(coupon -> {
             discount[0] = coupon.getAmountOfMoney();
             jooq.update(COUPONS_USERS)
                     .set(COUPONS_USERS.ORDERS_ID, orderId)
-                    .set(COUPONS_USERS.USED, new Byte("1"))
+                    .set(COUPONS_USERS.IS_USED, true)
                     .execute();
         });
 
@@ -183,5 +185,71 @@ public class OrderService {
                 "count_id_no_confirm", 0,
                 "count_id_success", 4
         );
+    }
+
+    @Transactional
+    public void makeEvaluate(String score, String pics, String username, String objectId, EvaluateType type, String content, String label) {
+        jooq.insertInto(EVALUATE)
+                .set(EVALUATE.EVALUATE_ID, UUID.randomUUID().toString())
+                .set(EVALUATE.USERNAME, username)
+                .set(EVALUATE.EVALUATE_SCORE, score)
+                .set(EVALUATE.PICS, pics)
+                .set(EVALUATE.OBJECT_ID, objectId)
+                .set(EVALUATE.OBJECT_TYPE, type.name())
+                .set(EVALUATE.CONTENT, content)
+                .set(EVALUATE.LABEL, label)
+                .execute();
+    }
+
+
+    public Page<EvaluateRepresentation> evaluates(String orderId, EvaluateType evaluateType, Pageable pageable) {
+
+        Condition condition = EVALUATE.OBJECT_ID.eq(orderId).and(EVALUATE.OBJECT_TYPE.eq(evaluateType.name()));
+
+        int count = jooq.fetchCount(EVALUATE, condition);
+
+        List<EvaluateRepresentation> evaluateRepresentations = jooq.select(
+                USER_INFO.USER_NAME, USER_INFO.AVATAR_URL, USER_INFO.NICK_NAME,
+                EVALUATE.CREATED_AT, EVALUATE.EVALUATE_ID, EVALUATE.CONTENT, EVALUATE.PICS,
+                EVALUATE.EVALUATE_SCORE, EVALUATE.LABEL, EVALUATE.IS_REPLY)
+                .from(EVALUATE)
+                .leftJoin(USER_INFO).on(USER_INFO.USER_NAME.eq(EVALUATE.USERNAME))
+                .where(condition)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchInto(EvaluateRepresentation.class);
+
+        evaluateRepresentations.stream().filter(EvaluateRepresentation::isHasReply).forEach(evaluate -> {
+            List<EvaluateRepresentation> replys = jooq.select(USER_INFO.USER_NAME, USER_INFO.AVATAR_URL, USER_INFO.NICK_NAME, EVALUATE.CREATED_AT, EVALUATE.CONTENT)
+                    .from(EVALUATE)
+                    .leftJoin(USER_INFO).on(USER_INFO.USER_NAME.eq(EVALUATE.USERNAME))
+                    .where(EVALUATE.OBJECT_ID.eq(evaluate.getEvaluateId()).and(EVALUATE.OBJECT_TYPE.eq(EvaluateType.REPLY.name())))
+                    .fetchInto(EvaluateRepresentation.class);
+            evaluate.setReply(replys);
+        });
+
+
+        return new PageImpl<>(evaluateRepresentations, pageable, count);
+    }
+
+    @Transactional
+    public void deleteEvaluate(String evaluateId) {
+        jooq.selectFrom(EVALUATE).where(EVALUATE.EVALUATE_ID.eq(evaluateId)).fetchOptional().ifPresent(evaluate -> {
+            if(evaluate.getIsReply()){
+                jooq.deleteFrom(EVALUATE).where(EVALUATE.OBJECT_ID.eq(evaluateId)).and(EVALUATE.OBJECT_TYPE.eq(EvaluateType.REPLY.name())).execute();
+            }
+            evaluate.delete();
+        });
+    }
+
+    @Transactional
+    public void reply(String objectId, String content) {
+        jooq.update(EVALUATE).set(EVALUATE.IS_REPLY, true).where(EVALUATE.EVALUATE_ID.eq(objectId)).execute();
+        jooq.insertInto(EVALUATE)
+                .set(EVALUATE.USERNAME, "admin")
+                .set(EVALUATE.OBJECT_TYPE, EvaluateType.REPLY.name())
+                .set(EVALUATE.OBJECT_ID, objectId)
+                .set(EVALUATE.CONTENT, content)
+                .execute();
     }
 }

@@ -1,7 +1,7 @@
-package com.feng.baby.support.utils;
+package com.feng.baby.support.persistence;
 
 import javax.persistence.AttributeConverter;
-import java.util.Set;
+import java.util.Collection;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -10,14 +10,14 @@ import static java.util.stream.Collectors.toSet;
 /**
  * Created by minggaoxi on 09/11/2017.
  */
-public class CollectsConverter implements AttributeConverter<Set<String>, String> {
+public class CollectsConverter implements AttributeConverter<Collection<String>, String> {
     @Override
-    public String convertToDatabaseColumn(Set<String> attribute) {
+    public String convertToDatabaseColumn(Collection<String> attribute) {
         return attribute.stream().collect(joining(";"));
     }
 
     @Override
-    public Set<String> convertToEntityAttribute(String dbData) {
+    public Collection<String> convertToEntityAttribute(String dbData) {
         if (dbData == null) {
             return null;
         }

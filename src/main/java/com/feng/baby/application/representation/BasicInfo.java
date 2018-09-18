@@ -14,8 +14,8 @@ public class BasicInfo {
     private String characteristic;
     private String mainPic;
 
-    private boolean status;
-    private boolean pingtuan;
+    private boolean is_remove;
+    private boolean is_support_pingtuan;
     private String content;
     private Integer views;
     private Integer numberFav;

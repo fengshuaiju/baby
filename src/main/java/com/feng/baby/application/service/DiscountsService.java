@@ -45,7 +45,7 @@ public class DiscountsService {
 
         List<Coupons> coupons = jooq.selectFrom(COUPONS)
                 .where(
-                        COUPONS.AVAILABLE.isTrue()
+                        COUPONS.IS_AVAILABLE.isTrue()
                                 .and(COUPONS.EXPIRY_TIME_AT.gt(LocalDateTime.now()))
                                 .and(COUPONS.COUPON_ID.notIn(couponids))
                 ).fetchInto(Coupons.class);
@@ -58,14 +58,14 @@ public class DiscountsService {
         CouponsRecord couponsRecord = jooq.selectFrom(COUPONS)
                 .where(COUPONS.COUPON_ID.eq(couponId))
                 .and(COUPONS.EXPIRY_TIME_AT.gt(LocalDateTime.now()))
-                .and(COUPONS.AVAILABLE.isTrue()).fetchOptionalInto(COUPONS)
+                .and(COUPONS.IS_AVAILABLE.isTrue()).fetchOptionalInto(COUPONS)
                 .orElseThrow(ResourceNotFoundException::new);
 
         jooq.insertInto(COUPONS_USERS, COUPONS_USERS.USER_NAME, COUPONS_USERS.COUPON_ID,
-                COUPONS_USERS.USED, COUPONS_USERS.COUPON_NAME, COUPONS_USERS.PIC_URL,
+                COUPONS_USERS.IS_USED, COUPONS_USERS.COUPON_NAME, COUPONS_USERS.PIC_URL,
                 COUPONS_USERS.EXPIRY_TIME_AT, COUPONS_USERS.REMARKS, COUPONS_USERS.AMOUNT_OF_MONEY,
                 COUPONS_USERS.REQUIREMENT_CONSUMPTION)
-                .values(username, couponId, new Byte("0"), couponsRecord.getCouponName(), couponsRecord.getPicUrl(),
+                .values(username, couponId, false, couponsRecord.getCouponName(), couponsRecord.getPicUrl(),
                         LocalDateTime.now().plusDays(couponsRecord.getValidityDay()), couponsRecord.getRemarks(),
                         couponsRecord.getAmountOfMoney(), couponsRecord.getRequirementConsumption())
                 .onDuplicateKeyIgnore()
@@ -76,7 +76,7 @@ public class DiscountsService {
         return jooq.selectFrom(COUPONS_USERS)
                 .where(COUPONS_USERS.USER_NAME.eq(username))
                 .and(COUPONS_USERS.EXPIRY_TIME_AT.gt(LocalDateTime.now()))
-                .and(COUPONS_USERS.USED.isFalse())
+                .and(COUPONS_USERS.IS_USED.isFalse())
                 .fetchInto(MyCoupon.class);
     }
 

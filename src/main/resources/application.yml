@@ -63,6 +63,10 @@ secretId: AKIDNaYIn4btRmtlPoHuc5KK6dz6xYt2NYv2
 secretKey: 2pNgngLn13rRoyud8QVM0RffT1IK5apo
 tencent.file.path: https://fengshuaiju-1252541513.cos.ap-beijing.myqcloud.com
 
+
+logging:
+  file: ${user.home}/logs/baby.log
+
 ---
 spring:
   profiles: staging

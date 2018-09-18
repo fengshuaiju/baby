@@ -20,7 +20,7 @@ public class Address {
     private Boolean isDefault;
     private String linkMan;
     private String mobile;
-    private Boolean status;
+    private Boolean is_remove;
 
     private String postalCode;
 }

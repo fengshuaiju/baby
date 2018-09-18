@@ -12,7 +12,7 @@ CREATE TABLE `category` (
   `level`       INT(11)                                          DEFAULT NULL,
   `name`        VARCHAR(64) COLLATE utf8_bin                     DEFAULT NULL,
   `pid`         VARCHAR(64) COLLATE utf8_bin                     DEFAULT NULL,
-  `is_use`      TINYINT(1)                                       DEFAULT NULL,
+  `is_used`     BOOLEAN                                          DEFAULT NULL,
   `icon`        VARCHAR(255) COLLATE utf8_bin                    DEFAULT NULL,
   `indexs`      INT(11)                                          DEFAULT NULL,
   PRIMARY KEY (`category_id`)
@@ -39,7 +39,7 @@ CREATE TABLE `coupons` (
   `expiry_time_at`          TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `validity_day`            INT(11)                               DEFAULT NULL,
   `remarks`                 VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `available`               BOOLEAN                               DEFAULT NULL,
+  `is_available`            BOOLEAN                               DEFAULT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -55,7 +55,7 @@ CREATE TABLE `coupons_users` (
   `user_name`               VARCHAR(255) COLLATE utf8_bin NOT NULL,
   `coupon_id`               VARCHAR(64) COLLATE utf8_bin  NOT NULL,
   `orders_id`               VARCHAR(64) COLLATE utf8_bin           DEFAULT NULL,
-  `used`                    BOOLEAN                                DEFAULT NULL,
+  `is_used`                 BOOLEAN                                DEFAULT NULL,
   `coupon_name`             VARCHAR(64) COLLATE utf8_bin           DEFAULT NULL,
   `pic_url`                 VARCHAR(255) COLLATE utf8_bin          DEFAULT NULL,
   `expiry_time_at`          TIMESTAMP                     NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -132,7 +132,7 @@ CREATE TABLE `function_menus` (
   `pic_url`    VARCHAR(255) COLLATE utf8_bin DEFAULT NULL,
   `orders`     INT(11)                       DEFAULT NULL,
   `title`      VARCHAR(16) COLLATE utf8_bin  DEFAULT NULL,
-  `status`     TINYINT(1)                    DEFAULT NULL,
+  `is_remove`  BOOLEAN                       DEFAULT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -145,22 +145,22 @@ CREATE TABLE `function_menus` (
 -- ----------------------------
 DROP TABLE IF EXISTS `goods`;
 CREATE TABLE `goods` (
-  `id`                INT(11)                      NOT NULL AUTO_INCREMENT,
-  `created_at`        TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `goods_id`          VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
-  `category_id`       VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `name`              VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `characteristic`    VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `main_pic`          VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `number_orders`     INT(11)                               DEFAULT NULL,
-  `status`            TINYINT(1)                            DEFAULT NULL,
-  `pingtuan`          TINYINT(1)                            DEFAULT NULL,
-  `content`           TEXT COLLATE utf8_bin,
-  `views`             INT(11)                               DEFAULT NULL,
-  `number_fav`        INT(11)                               DEFAULT NULL,
-  `number_reputation` INT(11)                               DEFAULT NULL,
-  `stores`            INT(11)                               DEFAULT NULL,
-  `remark`            VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `id`                  INT(11)                      NOT NULL AUTO_INCREMENT,
+  `created_at`          TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `goods_id`            VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
+  `category_id`         VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `name`                VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `characteristic`      VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `main_pic`            VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `number_orders`       INT(11)                               DEFAULT NULL,
+  `is_remove`           BOOLEAN                               DEFAULT NULL,
+  `is_support_pingtuan` BOOLEAN                               DEFAULT NULL,
+  `content`             TEXT COLLATE utf8_bin,
+  `views`               INT(11)                               DEFAULT NULL,
+  `number_fav`          INT(11)                               DEFAULT NULL,
+  `number_reputation`   INT(11)                               DEFAULT NULL,
+  `stores`              INT(11)                               DEFAULT NULL,
+  `remark`              VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -176,7 +176,7 @@ DROP TABLE IF EXISTS `goods_category`;
 CREATE TABLE `goods_category` (
   `id`          INT(11) NOT NULL              AUTO_INCREMENT,
   `icon`        VARCHAR(255) COLLATE utf8_bin DEFAULT NULL,
-  `is_use`      TINYINT(1)                    DEFAULT NULL,
+  `is_used`     BOOLEAN                       DEFAULT NULL,
   `name`        VARCHAR(64) COLLATE utf8_bin  DEFAULT NULL,
   `category_id` VARCHAR(64) COLLATE utf8_bin  DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -237,7 +237,7 @@ CREATE TABLE `group_booking_properties` (
   `goods_id`       VARCHAR(64) COLLATE utf8_bin NOT NULL,
   `number_require` INT(11)                                          DEFAULT NULL,
   `timeout_hours`  INT(11)                                          DEFAULT NULL,
-  `status`         BOOLEAN                                          DEFAULT NULL,
+  `is_remove`      BOOLEAN                                          DEFAULT NULL,
   # 已经拼成的单数
   `number_success` INT(11)                                          DEFAULT NULL,
 
@@ -377,7 +377,7 @@ CREATE TABLE `slide_container` (
   `created_at` TIMESTAMP NOT NULL            DEFAULT CURRENT_TIMESTAMP,
   `goods_id`   VARCHAR(64) COLLATE utf8_bin  DEFAULT NULL,
   `pic_url`    VARCHAR(255) COLLATE utf8_bin DEFAULT NULL,
-  `status`     TINYINT(1)                    DEFAULT NULL,
+  `is_remove`  BOOLEAN                       DEFAULT NULL,
   `orders`     INT(11)                       DEFAULT NULL,
   `type`       VARCHAR(32)                   DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -586,7 +586,7 @@ CREATE TABLE `cms` (
   `title`          VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
   `descript`       VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
   `content`        TEXT COLLATE utf8_bin,
-  `is_recommend`   TINYINT(1)                            DEFAULT NULL,
+  `is_recommend`   BOOLEAN                               DEFAULT NULL,
   `comment_number` INT(11)                      NOT NULL,
   `category_id`    VARCHAR(64) COLLATE utf8_bin          DEFAULT NULL,
   `min_price`      DOUBLE                                DEFAULT NULL,
@@ -736,6 +736,30 @@ CREATE TABLE `user_score_record` (
   PRIMARY KEY (`user_score_record_id`),
   KEY `fk_user_score_record_user` (`username`),
   CONSTRAINT `fk_user_score_record_user` FOREIGN KEY (`username`) REFERENCES `user_info` (`user_name`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_bin;
+
+-- ----------------------------
+-- Table structure for evaluate
+-- ----------------------------
+DROP TABLE IF EXISTS `evaluate`;
+CREATE TABLE `evaluate` (
+  `evaluate_id`    VARCHAR(64) COLLATE utf8_bin UNIQUE  NOT NULL,
+  `created_at`     TIMESTAMP                            NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `evaluate_score` VARCHAR(255) COLLATE utf8_bin                 DEFAULT NULL,
+  `pics`           TEXT COLLATE utf8_bin,
+  `object_id`      VARCHAR(64) COLLATE utf8_bin         NOT NULL,
+  `object_type`    VARCHAR(16) COLLATE utf8_bin         NOT NULL,
+  `label`          VARCHAR(64) COLLATE utf8_bin                  DEFAULT NULL,
+  `content`        VARCHAR(255) COLLATE utf8_bin                 DEFAULT NULL,
+  `username`       VARCHAR(64) COLLATE utf8_bin         NOT NULL,
+  `is_reply`       BOOLEAN                                       DEFAULT FALSE,
+
+  PRIMARY KEY (`evaluate_id`),
+  KEY `fk_evaluate_user` (`username`),
+  CONSTRAINT `fk_evaluate_user` FOREIGN KEY (`username`) REFERENCES `user_info` (`user_name`)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8

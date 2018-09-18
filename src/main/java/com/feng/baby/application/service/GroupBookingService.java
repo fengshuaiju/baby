@@ -36,7 +36,7 @@ public class GroupBookingService {
     public GroupBookingInfo groupBookingInfo(String goodsId) {
         return jooq.selectFrom(GROUP_BOOKING_PROPERTIES)
                 .where(GROUP_BOOKING_PROPERTIES.GOODS_ID.eq(goodsId))
-                .and(GROUP_BOOKING_PROPERTIES.STATUS.isTrue())
+                .and(GROUP_BOOKING_PROPERTIES.IS_REMOVE.isTrue())
                 .fetchOptionalInto(GroupBookingInfo.class).
                         orElseThrow(ResourceNotFoundException::new);
     }
@@ -61,8 +61,8 @@ public class GroupBookingService {
 
     public Map<String, String> open(String goodsId, String username) {
         //检查该商品是否支持开团
-        Boolean isSupportGrouping = jooq.select(GOODS.PINGTUAN).from(GOODS)
-                .where(GOODS.GOODS_ID.eq(goodsId)).and(GOODS.STATUS.isTrue())
+        Boolean isSupportGrouping = jooq.select(GOODS.IS_SUPPORT_PINGTUAN).from(GOODS)
+                .where(GOODS.GOODS_ID.eq(goodsId)).and(GOODS.IS_REMOVE.isTrue())
                 .fetchOptionalInto(Boolean.TYPE)
                 .orElseThrow(ResourceNotFoundException::new);
 
@@ -71,7 +71,7 @@ public class GroupBookingService {
         //查找商品开团配置信息
         GroupBookingPropertiesRecord groupBookingProperties = jooq.selectFrom(GROUP_BOOKING_PROPERTIES)
                 .where(GROUP_BOOKING_PROPERTIES.GOODS_ID.eq(goodsId))
-                .and(GROUP_BOOKING_PROPERTIES.STATUS.isTrue())
+                .and(GROUP_BOOKING_PROPERTIES.IS_REMOVE.isTrue())
                 .fetchOptionalInto(GROUP_BOOKING_PROPERTIES)
                 .orElseThrow(ResourceNotFoundException::new);
 

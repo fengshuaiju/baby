@@ -3,9 +3,18 @@ package com.feng.baby.adapter.controller;
 import com.alibaba.fastjson.JSON;
 import com.feng.baby.application.command.CreateOrderCommand;
 import com.feng.baby.application.command.CreateOrderGoodsInfo;
+import com.feng.baby.application.command.EvaluateCommand;
+import com.feng.baby.application.command.ReplyCommand;
+import com.feng.baby.application.representation.EvaluateRepresentation;
 import com.feng.baby.application.service.OrderService;
+import com.feng.baby.model.EvaluateType;
+import com.feng.baby.support.persistence.MapToStringConverter;
+import com.feng.baby.support.utils.CollectsConverterUtils;
+import com.feng.baby.support.utils.MapToStringConverterUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -109,10 +118,37 @@ public class OrderController {
         return "{\"code\":0,\"msg\":\"success\"}";
     }
 
-    //
-    @GetMapping("/reputation")
-    public void reputation(){
 
+
+    //创建评论
+    @PostMapping("/evaluate")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void evaluate(@RequestBody EvaluateCommand command){
+        orderService.makeEvaluate(MapToStringConverterUtils.convertToDatabaseColumn(command.getEvaluateScore()),
+                CollectsConverterUtils.convertToDatabaseColumn(command.getPics()), command.getUsername(),
+                command.getObjectId(), command.getType(), command.getContent(), command.getLabel());
     }
+
+    //获取订单评论
+    @GetMapping("/evaluate/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<EvaluateRepresentation> evaluates(@PathVariable String orderId, Pageable pageable){
+        return orderService.evaluates(orderId, EvaluateType.ORDER, pageable);
+    }
+
+    //删除某条评论
+    @DeleteMapping("/evaluate/{evaluateId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteEvaluate(@PathVariable String evaluateId){
+        orderService.deleteEvaluate(evaluateId);
+    }
+
+    //管理员对某条评论进行回复
+    @PostMapping("/evaluate/reply")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void reply(@RequestBody ReplyCommand command){
+        orderService.reply(command.getObjectId(), command.getContent());
+    }
+
 
 }

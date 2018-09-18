@@ -6,7 +6,6 @@ import com.feng.baby.application.representation.GoodsCutDownHelper;
 import com.feng.baby.application.representation.UserInfo;
 import com.feng.baby.model.CutDownStatus;
 import com.feng.baby.model.OrderPriceType;
-import com.feng.baby.model.OrderType;
 import com.feng.baby.support.utils.ResourceNotFoundException;
 import com.feng.baby.support.utils.Validate;
 import com.google.common.collect.ImmutableMap;
@@ -26,7 +25,10 @@ import sprout.jooq.generate.tables.records.GoodsRecord;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import static sprout.jooq.generate.Tables.*;
 
@@ -55,7 +57,7 @@ public class CutDownService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.PINGTUAN, GOODS.STATUS, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_PINGTUAN, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
