@@ -1,5 +1,6 @@
 package com.feng.baby.adapter.controller;
 
+import com.feng.baby.application.command.AddNewCouponCommand;
 import com.feng.baby.application.command.Coupons;
 import com.feng.baby.application.command.FetchCoupons;
 import com.feng.baby.application.representation.MyCoupon;
@@ -19,8 +20,20 @@ import java.util.List;
 @RequestMapping("/discounts")
 public class DiscountsController {
 
+    private final DiscountsService discountsService;
+
     @Autowired
-    private DiscountsService discountsService;
+    public DiscountsController(DiscountsService discountsService) {
+        this.discountsService = discountsService;
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void addNewCoupon(@RequestBody AddNewCouponCommand command){
+        discountsService.addNewCoupon(command.getPicUrl(), command.getLinkUrl(), command.getCouponName(),
+                command.getType(), command.getAmountOfMoney(), command.getRequirementConsumption(),
+                command.getValidityDay(), command.getRemarks());
+    }
 
     @GetMapping("/newcoupons")
     public Coupons availableNewCoupons(@RequestParam String openId){

@@ -23,7 +23,7 @@
  *
  */
 
-package com.feng.baby.support.utils;
+package com.feng.baby.support.exception;
 
 /**
  * Thrown to indicate that a method has been passed an illegal or

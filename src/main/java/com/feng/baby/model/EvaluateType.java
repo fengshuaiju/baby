@@ -1,7 +1,7 @@
 package com.feng.baby.model;
 
 public enum EvaluateType {
-    ORDER,
+    GOODS,
     ARTICLE,
     REPLY
 }

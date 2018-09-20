@@ -23,7 +23,9 @@
  *
  */
 
-package com.feng.baby.support.utils;
+package com.feng.baby.support.exception;
+
+import com.feng.baby.support.exception.ValidationException;
 
 /**
  * Thrown when an application attempts to use {@code null} in a

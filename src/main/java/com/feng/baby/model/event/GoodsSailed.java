@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class GoodsSaled extends DomainEvent{
+public class GoodsSailed extends DomainEvent{
 
     private String name;
     private String code;

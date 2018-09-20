@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.feng.baby.application.service.ConfigureService;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMultimap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,8 +19,19 @@ import java.util.Map;
 @RequestMapping("/open/config")
 public class ConfigureController {
 
+    private final ConfigureService configureService;
+
     @Autowired
-    private ConfigureService configureService;
+    public ConfigureController(ConfigureService configureService) {
+        this.configureService = configureService;
+    }
+
+    //显示log
+    @GetMapping("/top-logo")
+    public Map<String, String> topLogo(){
+        return ImmutableMap.of("picUrl", "https://cdn.it120.cc/apifactory/2018/05/09/6b5df91e8a1eadae5dd9009ed18edde3.png");
+    }
+
 
     @GetMapping("/get-value")
     @ResponseStatus(HttpStatus.OK)
@@ -32,7 +42,7 @@ public class ConfigureController {
         }
 
         if("toptuan".equals(key)){
-            return JSON.parseObject("{\"creatAt\":\"2018-05-10 22:58:11\",\"dateType\":0,\"dateUpdate\":\"2018-07-12 09:58:46\",\"id\":3685,\"key\":\"toptuan\",\"remark\":\"/pages/pingtuan-list/index\",\"updateAt\":\"2018-05-10 22:58:11\",\"userId\":797,\"value\":\"拼团特惠\"}");
+            return JSON.parseObject("{\"creatAt\":\"2018-05-10 22:58:11\",\"dateType\":0,\"dateUpdate\":\"2018-07-12 09:58:46\",\"id\":3685,\"key\":\"toptuan\",\"remark\":\"/pages/group-list/index\",\"updateAt\":\"2018-05-10 22:58:11\",\"userId\":797,\"value\":\"拼团特惠\"}");
         }
 
 //        if("topgoods".equals(key)){

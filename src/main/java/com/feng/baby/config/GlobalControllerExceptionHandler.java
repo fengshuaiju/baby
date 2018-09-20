@@ -1,6 +1,6 @@
 package com.feng.baby.config;
 
-import com.feng.baby.support.utils.ValidationException;
+import com.feng.baby.support.exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -17,8 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class GlobalControllerExceptionHandler {
 
+    private final MessageSource messageSource;
+
     @Autowired
-    private MessageSource messageSource;
+    public GlobalControllerExceptionHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

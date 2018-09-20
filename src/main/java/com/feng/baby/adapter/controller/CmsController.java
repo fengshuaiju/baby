@@ -24,8 +24,12 @@ import java.util.List;
 @RequestMapping("/cms")
 public class CmsController {
 
+    private final CmsService cmsService;
+
     @Autowired
-    private CmsService cmsService;
+    public CmsController(CmsService cmsService) {
+        this.cmsService = cmsService;
+    }
 
     @GetMapping("/category/list")
     public JSON categoryList(){

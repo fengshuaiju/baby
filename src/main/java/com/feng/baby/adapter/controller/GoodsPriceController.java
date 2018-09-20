@@ -15,8 +15,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/shop/goods")
 public class GoodsPriceController {
 
+    private final GoodsPriceService goodsPriceService;
+
     @Autowired
-    private GoodsPriceService goodsPriceService;
+    public GoodsPriceController(GoodsPriceService goodsPriceService) {
+        this.goodsPriceService = goodsPriceService;
+    }
 
     //选中商品类型后 计算价格
     @GetMapping("/price")

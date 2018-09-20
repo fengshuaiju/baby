@@ -2,7 +2,7 @@ package com.feng.baby.application.service;
 
 import com.feng.baby.application.command.UserInfoUpdated;
 import com.feng.baby.application.representation.UserAccountInfo;
-import com.feng.baby.support.utils.ResourceNotFoundException;
+import com.feng.baby.support.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;

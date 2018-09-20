@@ -2,7 +2,7 @@ package com.feng.baby.application.service;
 
 import com.feng.baby.application.command.UserAddressAddOrUpdate;
 import com.feng.baby.application.representation.Address;
-import com.feng.baby.support.utils.ResourceNotFoundException;
+import com.feng.baby.support.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;

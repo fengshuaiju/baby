@@ -2,15 +2,16 @@ package com.feng.baby.adapter.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.feng.baby.application.command.AddShopCar;
-import com.feng.baby.application.command.GoodFavChanged;
-import com.feng.baby.application.command.ShopCarDel;
-import com.feng.baby.application.command.ShopCarUpdate;
+import com.feng.baby.application.command.*;
 import com.feng.baby.application.representation.BasicInfo;
 import com.feng.baby.application.representation.Category;
+import com.feng.baby.application.representation.EvaluateRepresentation;
 import com.feng.baby.application.representation.GoodsFav;
 import com.feng.baby.application.service.CategoryService;
 import com.feng.baby.application.service.GoodsService;
+import com.feng.baby.model.EvaluateType;
+import com.feng.baby.support.utils.CollectsConverterUtils;
+import com.feng.baby.support.utils.MapToStringConverterUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,12 +30,34 @@ import java.util.Map;
 @RequestMapping("/shop/goods")
 public class GoodsController {
 
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
+    private final GoodsService goodsService;
 
     @Autowired
-    private GoodsService goodsService;
+    public GoodsController(CategoryService categoryService, GoodsService goodsService) {
+        this.categoryService = categoryService;
+        this.goodsService = goodsService;
+    }
 
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createGoods(@RequestBody CreateGoodsCommand command){
+        goodsService.createGoods(command.getCategoryId(), command.getName(), command.getCharacteristic(),
+                command.getMainPic(), command.isSupportGroup(), command.getContent(), command.getProperties());
+    }
+
+    @PutMapping("/add-price/{goodsId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addPrice(@PathVariable String goodsId, @RequestBody AddPriceCommand command){
+        goodsService.addPrice(goodsId, command.getPrices());
+    }
+
+    @PutMapping("/add-media/{goodsId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addPrice(@PathVariable String goodsId, @RequestBody AddMediaCommand command){
+        goodsService.addMedia(goodsId, command.getMedias());
+    }
 
     @GetMapping("/search")
     public Page<BasicInfo> search(@RequestParam(required = false) String keyWord,
@@ -139,6 +162,37 @@ public class GoodsController {
     @ResponseStatus(HttpStatus.OK)
     public Page<BasicInfo> guessLike(@RequestParam String username, Pageable pageable) {
         return goodsService.guessLike(username, pageable);
+    }
+
+
+    //创建评论
+    @PostMapping("/evaluate")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void evaluate(@RequestBody EvaluateCommand command){
+        goodsService.makeEvaluate(MapToStringConverterUtils.convertToDatabaseColumn(command.getEvaluateScore()),
+                CollectsConverterUtils.convertToDatabaseColumn(command.getPics()), command.getUsername(),
+                command.getObjectId(), command.getType(), command.getContent(), command.getLabel());
+    }
+
+    //获取商品评论
+    @GetMapping("/evaluate/{goodsId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Page<EvaluateRepresentation> evaluates(@PathVariable String goodsId, Pageable pageable){
+        return goodsService.evaluates(goodsId, EvaluateType.GOODS, pageable);
+    }
+
+    //删除某条评论
+    @DeleteMapping("/evaluate/{evaluateId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteEvaluate(@PathVariable String evaluateId){
+        goodsService.deleteEvaluate(evaluateId);
+    }
+
+    //管理员对某条评论进行回复
+    @PostMapping("/evaluate/reply")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void reply(@RequestBody ReplyCommand command){
+        goodsService.reply(command.getObjectId(), command.getContent());
     }
 
 

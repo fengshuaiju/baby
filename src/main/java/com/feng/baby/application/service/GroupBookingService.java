@@ -3,11 +3,10 @@ package com.feng.baby.application.service;
 import com.feng.baby.application.representation.GroupBookingInfo;
 import com.feng.baby.application.representation.GroupBookingJoiner;
 import com.feng.baby.model.GroupBookingStatus;
-import com.feng.baby.support.utils.ResourceNotFoundException;
-import com.feng.baby.support.utils.Validate;
+import com.feng.baby.support.exception.ResourceNotFoundException;
+import com.feng.baby.support.exception.Validate;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.persister.walking.spi.CollectionElementDefinition;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,7 +60,7 @@ public class GroupBookingService {
 
     public Map<String, String> open(String goodsId, String username) {
         //检查该商品是否支持开团
-        Boolean isSupportGrouping = jooq.select(GOODS.IS_SUPPORT_PINGTUAN).from(GOODS)
+        Boolean isSupportGrouping = jooq.select(GOODS.IS_SUPPORT_GROUP).from(GOODS)
                 .where(GOODS.GOODS_ID.eq(goodsId)).and(GOODS.IS_REMOVE.isTrue())
                 .fetchOptionalInto(Boolean.TYPE)
                 .orElseThrow(ResourceNotFoundException::new);
@@ -96,5 +95,15 @@ public class GroupBookingService {
 
         return ImmutableMap.of("groupBookingId", groupBookingId);
 
+    }
+
+    public void newGroupProperties(String goodsId, Integer numberRequire, Integer timeoutHours) {
+        jooq.insertInto(GROUP_BOOKING_PROPERTIES)
+                .set(GROUP_BOOKING_PROPERTIES.GOODS_ID, goodsId)
+                .set(GROUP_BOOKING_PROPERTIES.IS_REMOVE, Boolean.FALSE)
+                .set(GROUP_BOOKING_PROPERTIES.NUMBER_REQUIRE, numberRequire)
+                .set(GROUP_BOOKING_PROPERTIES.NUMBER_SUCCESS, 0)
+                .set(GROUP_BOOKING_PROPERTIES.TIMEOUT_HOURS, timeoutHours)
+                .execute();
     }
 }

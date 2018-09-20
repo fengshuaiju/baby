@@ -145,22 +145,22 @@ CREATE TABLE `function_menus` (
 -- ----------------------------
 DROP TABLE IF EXISTS `goods`;
 CREATE TABLE `goods` (
-  `id`                  INT(11)                      NOT NULL AUTO_INCREMENT,
-  `created_at`          TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `goods_id`            VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
-  `category_id`         VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `name`                VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `characteristic`      VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `main_pic`            VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
-  `number_orders`       INT(11)                               DEFAULT NULL,
-  `is_remove`           BOOLEAN                               DEFAULT NULL,
-  `is_support_pingtuan` BOOLEAN                               DEFAULT NULL,
-  `content`             TEXT COLLATE utf8_bin,
-  `views`               INT(11)                               DEFAULT NULL,
-  `number_fav`          INT(11)                               DEFAULT NULL,
-  `number_reputation`   INT(11)                               DEFAULT NULL,
-  `stores`              INT(11)                               DEFAULT NULL,
-  `remark`              VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `id`                INT(11)                      NOT NULL AUTO_INCREMENT,
+  `created_at`        TIMESTAMP                    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `goods_id`          VARCHAR(64) COLLATE utf8_bin NOT NULL UNIQUE,
+  `category_id`       VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `name`              VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `characteristic`    VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `main_pic`          VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
+  `number_orders`     INT(11)                               DEFAULT NULL,
+  `is_remove`         BOOLEAN                               DEFAULT FALSE,
+  `is_support_group`  BOOLEAN                               DEFAULT NULL,
+  `content`           TEXT COLLATE utf8_bin,
+  `views`             INT(11)                               DEFAULT NULL,
+  `number_fav`        INT(11)                               DEFAULT NULL,
+  `number_reputation` INT(11)                               DEFAULT NULL,
+  `stores`            INT(11)                               DEFAULT NULL,
+  `remark`            VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
   PRIMARY KEY (`id`)
 )
   ENGINE = InnoDB
@@ -378,7 +378,7 @@ CREATE TABLE `slide_container` (
   `goods_id`   VARCHAR(64) COLLATE utf8_bin  DEFAULT NULL,
   `pic_url`    VARCHAR(255) COLLATE utf8_bin DEFAULT NULL,
   `is_remove`  BOOLEAN                       DEFAULT NULL,
-  `orders`     INT(11)                       DEFAULT NULL,
+  `indexs`     INT(11)                       DEFAULT NULL,
   `type`       VARCHAR(32)                   DEFAULT NULL,
   PRIMARY KEY (`id`)
 )

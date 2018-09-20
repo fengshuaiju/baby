@@ -250,7 +250,7 @@
                                 <forcedType>
                                     <userType>java.lang.Boolean</userType>
                                     <converter>com.feng.baby.support.persistence.JooqByteToBooleanConverter</converter>
-                                    <expressions>.*\.IS_.*</expressions>
+                                    <expression>.*\.IS_.*</expression>
                                     <types>.*</types>
                                 </forcedType>
 

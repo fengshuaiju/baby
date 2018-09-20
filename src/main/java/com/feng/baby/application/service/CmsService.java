@@ -3,7 +3,7 @@ package com.feng.baby.application.service;
 
 import com.feng.baby.application.representation.CmsRepresentation;
 import com.feng.baby.model.CmsType;
-import com.feng.baby.support.utils.ResourceNotFoundException;
+import com.feng.baby.support.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Condition;
 import org.jooq.DSLContext;

@@ -16,8 +16,12 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserAddressController {
 
+    private final UserAddressService userAddressService;
+
     @Autowired
-    private UserAddressService userAddressService;
+    public UserAddressController(UserAddressService userAddressService) {
+        this.userAddressService = userAddressService;
+    }
 
 
     //获取用户所有的收货地址

@@ -1,29 +1,4 @@
-/*
- * Copyright (c) 1996, 2003, Oracle and/or its affiliates. All rights reserved.
- * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
-
-package com.feng.baby.support.utils;
+package com.feng.baby.support.exception;
 
 /**
  * Signals that a method has been invoked at an illegal or

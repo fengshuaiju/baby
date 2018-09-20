@@ -23,7 +23,7 @@
  *
  */
 
-package com.feng.baby.support.utils;
+package com.feng.baby.support.exception;
 
 /**
  * Thrown to indicate that an index of some sort (such as to an array, to a

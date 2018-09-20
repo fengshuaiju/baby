@@ -3,7 +3,7 @@ package com.feng.baby.application.service;
 import com.feng.baby.application.command.Coupons;
 import com.feng.baby.application.representation.MyCoupon;
 import com.feng.baby.model.CouponsType;
-import com.feng.baby.support.utils.ResourceNotFoundException;
+import com.feng.baby.support.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,7 @@ import sprout.jooq.generate.tables.records.CouponsRecord;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static sprout.jooq.generate.Tables.COUPONS;
 import static sprout.jooq.generate.Tables.COUPONS_USERS;
@@ -87,5 +88,22 @@ public class DiscountsService {
                 ))
                 .and(COUPONS.EXPIRY_TIME_AT.gt(LocalDateTime.now()))
                 .fetchInto(Coupons.class);
+    }
+
+    public void addNewCoupon(String picUrl, String linkUrl, String couponName, CouponsType type,
+                             Double amountOfMoney, Double requirementConsumption, Integer validityDay, String remarks) {
+        jooq.insertInto(COUPONS)
+                .set(COUPONS.COUPON_ID, UUID.randomUUID().toString())
+                .set(COUPONS.PIC_URL, picUrl)
+                .set(COUPONS.LINK_URL, linkUrl)
+                .set(COUPONS.COUPON_NAME, couponName)
+                .set(COUPONS.TYPE, type.name())
+                .set(COUPONS.AMOUNT_OF_MONEY, amountOfMoney)
+                .set(COUPONS.REQUIREMENT_CONSUMPTION, requirementConsumption)
+                .set(COUPONS.EXPIRY_TIME_AT, LocalDateTime.now().plusDays(validityDay))
+                .set(COUPONS.VALIDITY_DAY, validityDay)
+                .set(COUPONS.REMARKS, remarks)
+                .set(COUPONS.IS_AVAILABLE, true)
+                .execute();
     }
 }

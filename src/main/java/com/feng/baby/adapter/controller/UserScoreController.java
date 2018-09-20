@@ -20,8 +20,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/score")
 public class UserScoreController {
 
+    private final UserScoreService userScoreService;
+
     @Autowired
-    private UserScoreService userScoreService;
+    public UserScoreController(UserScoreService userScoreService) {
+        this.userScoreService = userScoreService;
+    }
 
     //今日是否签到
     @GetMapping("/today-signed")

@@ -2,17 +2,13 @@ package com.feng.baby.adapter.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.feng.baby.application.command.Coupons;
+import com.feng.baby.application.command.CreateBannerCommand;
 import com.feng.baby.application.representation.BasicInfo;
-import com.feng.baby.application.representation.CmsRepresentation;
 import com.feng.baby.application.representation.FunctionMenus;
 import com.feng.baby.application.representation.SlideContainer;
 import com.feng.baby.application.service.BannerService;
-import com.feng.baby.application.service.CmsService;
-import com.feng.baby.application.service.DiscountsService;
 import com.feng.baby.application.service.GoodsService;
 import com.feng.baby.model.SlideContainerType;
-import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by fengshuaiju on 2018-06-29.
@@ -31,14 +26,15 @@ import java.util.Map;
 @RequestMapping("/banner")
 public class BannerController {
 
-    @Autowired
-    private BannerService bannerService;
+    private final BannerService bannerService;
+
+    private final GoodsService goodsService;
 
     @Autowired
-    private DiscountsService discountsService;
-
-    @Autowired
-    private GoodsService goodsService;
+    public BannerController(BannerService bannerService, GoodsService goodsService) {
+        this.bannerService = bannerService;
+        this.goodsService = goodsService;
+    }
 
     //key
     @GetMapping("/list")
@@ -69,12 +65,6 @@ public class BannerController {
     }
 
 
-    //显示log
-    @GetMapping("/top-logo")
-    public Map<String, String> topLogo(){
-        return ImmutableMap.of("picUrl", "https://cdn.it120.cc/apifactory/2018/05/09/6b5df91e8a1eadae5dd9009ed18edde3.png");
-    }
-
     //滚动图片
     @GetMapping("/slide-container")
     public List<SlideContainer> slideContainer(@RequestParam SlideContainerType type){
@@ -97,6 +87,12 @@ public class BannerController {
     @GetMapping("/toptuan")
     public Page<BasicInfo> toptuan(Pageable pageable){
         return goodsService.toptuan(pageable);
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createBanner(@RequestBody CreateBannerCommand command){
+        bannerService.createBanner(command.getGoodsId(), command.getIndex(), command.getPicUrl(), command.getType());
     }
 
 }

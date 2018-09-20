@@ -1,8 +1,12 @@
 package com.feng.baby.application.service;
 
+import com.feng.baby.application.command.AddMediaCommand;
+import com.feng.baby.application.command.AddPriceCommand;
+import com.feng.baby.application.command.CreateGoodsCommand;
 import com.feng.baby.application.representation.*;
+import com.feng.baby.model.EvaluateType;
 import com.feng.baby.model.OrderPriceType;
-import com.feng.baby.support.utils.ResourceNotFoundException;
+import com.feng.baby.support.exception.ResourceNotFoundException;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sprout.jooq.generate.tables.records.GoodsRecord;
 import sprout.jooq.generate.tables.records.PropertiesRecord;
 
 import java.util.List;
@@ -32,14 +37,17 @@ public class GoodsService {
     private final DSLContext jooq;
 
     @Autowired
-    GoodsService(DSLContext jooq) {
+    GoodsService(DSLContext jooq, GoodsPriceService goodsPriceService) {
         this.jooq = jooq;
+        this.goodsPriceService = goodsPriceService;
     }
 
-    @Autowired
-    private GoodsPriceService goodsPriceService;
+    private final GoodsPriceService goodsPriceService;
 
     public GoodsInfo goodsDetails(String goodsId) {
+
+        GoodsRecord goodsRecord = jooq.selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOptional().get();
+
         //查找主信息
         BasicInfo basicInfo = jooq.selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOptionalInto(BasicInfo.class)
                 .orElseThrow(ResourceNotFoundException::new);
@@ -102,7 +110,7 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.IS_SUPPORT_PINGTUAN, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_GROUP, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GOODS_RECOMMEND).on(GOODS.GOODS_ID.eq(GOODS_RECOMMEND.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
@@ -120,7 +128,7 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.IS_SUPPORT_PINGTUAN, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_GROUP, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GROUP_BOOKING).on(GOODS.GOODS_ID.eq(GROUP_BOOKING.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
@@ -141,7 +149,7 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.IS_SUPPORT_PINGTUAN, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_GROUP, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)))
                 .where(condition)
@@ -206,7 +214,7 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.IS_SUPPORT_PINGTUAN, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_GROUP, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         )
                 .from(GOODS)
@@ -289,7 +297,7 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.IS_SUPPORT_PINGTUAN, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_GROUP, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
@@ -298,5 +306,131 @@ public class GoodsService {
         basicInfos.forEach(basicInfo -> basicInfo.setPrice(goodsPriceService.getPriceInfo(basicInfo.getGoodsId())));
 
         return new PageImpl<>(basicInfos, pageable, count);
+    }
+
+    @Transactional
+    public void createGoods(String categoryId, String name, String characteristic, String mainPic,
+                            boolean supportGroup, String content, List<CreateGoodsCommand.GoodsProperties> properties) {
+        String goodsId = UUID.randomUUID().toString();
+
+        jooq.selectFrom(GOODS_CATEGORY).where(GOODS_CATEGORY.CATEGORY_ID.eq(categoryId)).fetchOptional().orElseThrow(ResourceNotFoundException::new);
+
+        jooq.insertInto(GOODS)
+                .set(GOODS.GOODS_ID, goodsId)
+                .set(GOODS.CATEGORY_ID, categoryId)
+                .set(GOODS.NAME, name)
+                .set(GOODS.CHARACTERISTIC, characteristic)
+                .set(GOODS.MAIN_PIC, mainPic)
+                .set(GOODS.IS_SUPPORT_GROUP, supportGroup)
+                .set(GOODS.CONTENT, content)
+                .execute();
+
+        properties.forEach(property -> {
+            String propertyId = UUID.randomUUID().toString();
+
+            jooq.insertInto(PROPERTIES)
+                    .set(PROPERTIES.PROPERTIES_ID, propertyId)
+                    .set(PROPERTIES.INDEXS, property.getIndex())
+                    .set(PROPERTIES.NAME, property.getName())
+                    .execute();
+
+            property.getDetails().forEach(detail -> jooq.insertInto(PROPERTIES_DETAIL)
+                    .set(PROPERTIES_DETAIL.PROPERTIES_ID, propertyId)
+                    .set(PROPERTIES_DETAIL.INDEXS, detail.getIndex())
+                    .set(PROPERTIES_DETAIL.NAME, detail.getName())
+                    .set(PROPERTIES_DETAIL.REMARK, detail.getRemarks())
+                    .execute());
+        });
+
+    }
+
+    @Transactional
+    public void addPrice(String goodsId, List<AddPriceCommand.Price> prices) {
+        jooq.selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOptional().orElseThrow(ResourceNotFoundException::new);
+
+        prices.forEach(price -> price.getPrice().forEach((k, v) -> {
+            jooq.insertInto(GOODS_PRICE)
+                    .set(GOODS_PRICE.GOODS_ID, goodsId)
+                    .set(GOODS_PRICE.PROPERTIES_JOINT, price.getPropertiesJoint())
+                    .set(GOODS_PRICE.GOODS_LABEL, price.getGoodsLabel())
+                    .set(GOODS_PRICE.TYPE, k)
+                    .set(GOODS_PRICE.PRICE, v)
+                    .execute();
+        }));
+    }
+
+
+    @Transactional
+    public void makeEvaluate(String score, String pics, String username, String objectId, EvaluateType type, String content, String label) {
+        jooq.insertInto(EVALUATE)
+                .set(EVALUATE.EVALUATE_ID, UUID.randomUUID().toString())
+                .set(EVALUATE.USERNAME, username)
+                .set(EVALUATE.EVALUATE_SCORE, score)
+                .set(EVALUATE.PICS, pics)
+                .set(EVALUATE.OBJECT_ID, objectId)
+                .set(EVALUATE.OBJECT_TYPE, type.name())
+                .set(EVALUATE.CONTENT, content)
+                .set(EVALUATE.LABEL, label)
+                .execute();
+    }
+
+
+    public Page<EvaluateRepresentation> evaluates(String goodsId, EvaluateType evaluateType, Pageable pageable) {
+
+        Condition condition = EVALUATE.OBJECT_ID.eq(goodsId).and(EVALUATE.OBJECT_TYPE.eq(evaluateType.name()));
+
+        int count = jooq.fetchCount(EVALUATE, condition);
+
+        List<EvaluateRepresentation> evaluateRepresentations = jooq.select(
+                USER_INFO.USER_NAME, USER_INFO.AVATAR_URL, USER_INFO.NICK_NAME,
+                EVALUATE.CREATED_AT, EVALUATE.EVALUATE_ID, EVALUATE.CONTENT, EVALUATE.PICS,
+                EVALUATE.EVALUATE_SCORE, EVALUATE.LABEL, EVALUATE.IS_REPLY)
+                .from(EVALUATE)
+                .leftJoin(USER_INFO).on(USER_INFO.USER_NAME.eq(EVALUATE.USERNAME))
+                .where(condition)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchInto(EvaluateRepresentation.class);
+
+        evaluateRepresentations.stream().filter(EvaluateRepresentation::isHasReply).forEach(evaluate -> {
+            List<EvaluateRepresentation> replies = jooq.select(USER_INFO.USER_NAME, USER_INFO.AVATAR_URL, USER_INFO.NICK_NAME, EVALUATE.CREATED_AT, EVALUATE.CONTENT)
+                    .from(EVALUATE)
+                    .leftJoin(USER_INFO).on(USER_INFO.USER_NAME.eq(EVALUATE.USERNAME))
+                    .where(EVALUATE.OBJECT_ID.eq(evaluate.getEvaluateId()).and(EVALUATE.OBJECT_TYPE.eq(EvaluateType.REPLY.name())))
+                    .fetchInto(EvaluateRepresentation.class);
+            evaluate.setReply(replies);
+        });
+
+
+        return new PageImpl<>(evaluateRepresentations, pageable, count);
+    }
+
+    @Transactional
+    public void deleteEvaluate(String evaluateId) {
+        jooq.selectFrom(EVALUATE).where(EVALUATE.EVALUATE_ID.eq(evaluateId)).fetchOptional().ifPresent(evaluate -> {
+            if(evaluate.getIsReply()){
+                jooq.deleteFrom(EVALUATE).where(EVALUATE.OBJECT_ID.eq(evaluateId)).and(EVALUATE.OBJECT_TYPE.eq(EvaluateType.REPLY.name())).execute();
+            }
+            evaluate.delete();
+        });
+    }
+
+    @Transactional
+    public void reply(String objectId, String content) {
+        jooq.update(EVALUATE).set(EVALUATE.IS_REPLY, true).where(EVALUATE.EVALUATE_ID.eq(objectId)).execute();
+        jooq.insertInto(EVALUATE)
+                .set(EVALUATE.USERNAME, "admin")
+                .set(EVALUATE.OBJECT_TYPE, EvaluateType.REPLY.name())
+                .set(EVALUATE.OBJECT_ID, objectId)
+                .set(EVALUATE.CONTENT, content)
+                .execute();
+    }
+
+    public void addMedia(String goodsId, List<AddMediaCommand.Media> medias) {
+        medias.forEach(media -> jooq.insertInto(GOODS_MEDIA)
+                .set(GOODS_MEDIA.GOODS_ID, goodsId)
+                .set(GOODS_MEDIA.URL, media.getUrl())
+                .set(GOODS_MEDIA.TYPE, media.getType())
+                .execute());
     }
 }

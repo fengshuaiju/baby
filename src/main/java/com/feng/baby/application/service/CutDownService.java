@@ -6,8 +6,8 @@ import com.feng.baby.application.representation.GoodsCutDownHelper;
 import com.feng.baby.application.representation.UserInfo;
 import com.feng.baby.model.CutDownStatus;
 import com.feng.baby.model.OrderPriceType;
-import com.feng.baby.support.utils.ResourceNotFoundException;
-import com.feng.baby.support.utils.Validate;
+import com.feng.baby.support.exception.ResourceNotFoundException;
+import com.feng.baby.support.exception.Validate;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Condition;
@@ -36,19 +36,16 @@ import static sprout.jooq.generate.Tables.*;
 @Service
 public class CutDownService {
 
-    @Autowired
-    private AccountService accountService;
-
-    @Autowired
-    private GoodsPriceService goodsPriceService;
-
-
-    @Autowired
-    CutDownService(DSLContext jooq) {
-        this.jooq = jooq;
-    }
-
     private final DSLContext jooq;
+    private final AccountService accountService;
+    private final GoodsPriceService goodsPriceService;
+
+    @Autowired
+    CutDownService(DSLContext jooq, AccountService accountService, GoodsPriceService goodsPriceService) {
+        this.jooq = jooq;
+        this.accountService = accountService;
+        this.goodsPriceService = goodsPriceService;
+    }
 
 
     public Page<BasicInfo> cutdown(Pageable pageable) {
@@ -57,7 +54,7 @@ public class CutDownService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.IS_SUPPORT_PINGTUAN, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_GROUP, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
@@ -269,5 +266,17 @@ public class CutDownService {
         });
 
         return new PageImpl<>(cutDownInfos, pageable, count);
+    }
+
+    public void addCutDownInfo(String goodsId, Integer effectiveTime, Double maxAmountPerCut,
+                               Double minAmountPerCut, Double maxCutDown, Integer maxHelper) {
+        jooq.insertInto(GOODS_CUT_DOWN_INFO)
+                .set(GOODS_CUT_DOWN_INFO.GOODS_ID, goodsId)
+                .set(GOODS_CUT_DOWN_INFO.EFFECTIVE_TIME, effectiveTime)
+                .set(GOODS_CUT_DOWN_INFO.MAX_AMOUNT_PER_CUT, maxAmountPerCut)
+                .set(GOODS_CUT_DOWN_INFO.MIN_AMOUNT_PER_CUT, minAmountPerCut)
+                .set(GOODS_CUT_DOWN_INFO.MAX_CUT_DOWN, maxCutDown)
+                .set(GOODS_CUT_DOWN_INFO.MAX_HELPER, maxHelper)
+                .execute();
     }
 }

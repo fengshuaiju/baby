@@ -1,5 +1,6 @@
 package com.feng.baby.adapter.controller;
 
+import com.feng.baby.application.command.AddCutDownInfoCommand;
 import com.feng.baby.application.command.CreateCutDown;
 import com.feng.baby.application.command.HelpCutDown;
 import com.feng.baby.application.representation.BasicInfo;
@@ -21,8 +22,20 @@ import java.util.Map;
 @RequestMapping("/cutdown")
 public class CutDownController {
 
+    private final CutDownService cutDownService;
+
     @Autowired
-    private CutDownService cutDownService;
+    public CutDownController(CutDownService cutDownService) {
+        this.cutDownService = cutDownService;
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addCutDownInfo(@RequestBody AddCutDownInfoCommand command){
+        cutDownService.addCutDownInfo(command.getGoodsId(), command.getEffectiveTime(), command.getMaxAmountPerCut(),
+                command.getMinAmountPerCut(), command.getMaxCutDown(), command.getMaxHelper());
+    }
+
 
     //砍价列表
     @GetMapping

@@ -21,24 +21,24 @@ INSERT INTO user_account (username, score, account)
 VALUES ('olIcM5KAax4vDCGbc-6R5Oyuvv_I', 0, 0.0);
 
 # 主页滚动图片
-INSERT INTO slide_container (goods_id, pic_url, is_remove, orders, type)
+INSERT INTO slide_container (goods_id, pic_url, is_remove, indexs, type)
 VALUES ('30164', 'https://cdn.it120.cc/apifactory/2018/05/09/2e8638183135b207c97490ed95fb44ba.jpg', FALSE, 1, 'HOME');
 
-INSERT INTO slide_container (goods_id, pic_url, is_remove, orders, type)
+INSERT INTO slide_container (goods_id, pic_url, is_remove, indexs, type)
 VALUES ('30164', 'https://cdn.it120.cc/apifactory/2018/05/09/d1cbc05833c4fa09b1fae15593df1b63.jpg', FALSE, 1, 'HOME');
 
-INSERT INTO slide_container (goods_id, pic_url, is_remove, orders, type)
+INSERT INTO slide_container (goods_id, pic_url, is_remove, indexs, type)
 VALUES ('30164', 'https://cdn.it120.cc/apifactory/2018/05/09/dc11f00add7f97ee549b41b97134fe65.jpg', FALSE, 1, 'HOME');
 
-INSERT INTO slide_container (goods_id, pic_url, is_remove, orders, type)
+INSERT INTO slide_container (goods_id, pic_url, is_remove, indexs, type)
 VALUES ('30164', 'https://cdn.it120.cc/apifactory/2018/05/09/62c5fb354ced6e13c06d554cde479679.jpg', FALSE, 1, 'HOME');
 
 
 
-INSERT INTO slide_container (goods_id, pic_url, is_remove, orders, type)
+INSERT INTO slide_container (goods_id, pic_url, is_remove, indexs, type)
 VALUES ('30164', 'https://cdn.it120.cc/apifactory/2018/07/04/c98865950e4684c9f793574db58c814d.jpg', FALSE, 1, 'MENU');
 
-INSERT INTO slide_container (goods_id, pic_url, is_remove, orders, type)
+INSERT INTO slide_container (goods_id, pic_url, is_remove, indexs, type)
 VALUES ('30164', 'https://cdn.it120.cc/apifactory/2018/07/04/aa0f5223d156185bff69b47a0ba4189e.jpg', FALSE, 1, 'MENU');
 
 
@@ -149,7 +149,7 @@ VALUES ('63ff9a09-758b-44e1-a7eb-f84bf8dd3cc6',2, '内裤', 'b37bcf75-ae1c-4d29-
 
 # 商品信息
 INSERT INTO goods (
-  goods_id, category_id, name, characteristic, main_pic,  is_remove, is_support_pingtuan, remark, content, views, number_fav, number_reputation, stores, number_orders
+  goods_id, category_id, name, characteristic, main_pic,  is_remove, is_support_group, remark, content, views, number_fav, number_reputation, stores, number_orders
 ) VALUES (
   '30164', '43274803-428e-450a-9dc5-176ccbdfb53d', '清欢严选商城小程序端模版（API工厂授权版）', '全场模版使用优惠券立减88元',
            'https://cdn.it120.cc/apifactory/2018/05/19/84833eee6df34fa550cd7644b2242cf5.png', FALSE, FALSE ,
@@ -159,7 +159,7 @@ INSERT INTO goods (
 );
 
 INSERT INTO goods (
-  goods_id, category_id, name, characteristic, main_pic, is_remove, is_support_pingtuan, remark, content, views, number_fav, number_reputation, stores, number_orders
+  goods_id, category_id, name, characteristic, main_pic, is_remove, is_support_group, remark, content, views, number_fav, number_reputation, stores, number_orders
 ) VALUES (
   '36888', '43274803-428e-450a-9dc5-176ccbdfb53d', '唤自然 仲夏椰香四件套', '100%全棉，椰林自然设计',
            'https://cdn.it120.cc/apifactory/2018/04/02/0eaf91e4696b51e326313efaec5e9b11.jpg', FALSE,
@@ -169,7 +169,7 @@ INSERT INTO goods (
 );
 
 INSERT INTO goods (
-  goods_id, category_id, name, characteristic, main_pic, is_remove, is_support_pingtuan, remark, content, views, number_fav, number_reputation, stores, number_orders
+  goods_id, category_id, name, characteristic, main_pic, is_remove, is_support_group, remark, content, views, number_fav, number_reputation, stores, number_orders
 ) VALUES (
   '40601', 'ee922d51-9323-4abe-aaf6-e037211c91f2', '清欢食光机Plus小程序端模版（API工厂授权版）', '全场模版使用优惠券立减88元',
            'https://cdn.it120.cc/apifactory/2018/04/12/42c001a698072b3bae9ac71f65ca2cfc.jpg', FALSE,
@@ -179,7 +179,7 @@ INSERT INTO goods (
 );
 
 INSERT INTO goods (
-  goods_id, category_id, name, characteristic, main_pic, is_remove, is_support_pingtuan, remark, content, views, number_fav, number_reputation, stores, number_orders
+  goods_id, category_id, name, characteristic, main_pic, is_remove, is_support_group, remark, content, views, number_fav, number_reputation, stores, number_orders
 ) VALUES (
   '43223', 'ced892ca-1a8f-4c27-beb3-396a46f94f50', '清欢素雅小程序端模版（API工厂授权版）', '全场模版使用优惠券立减88元',
            'https://cdn.it120.cc/apifactory/2018/04/18/14569682d80bf52cd8ff4c3c116758a7.png', FALSE,
