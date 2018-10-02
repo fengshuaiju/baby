@@ -1,6 +1,5 @@
 package com.feng.baby.application.service;
 
-
 import com.feng.baby.application.representation.CmsRepresentation;
 import com.feng.baby.model.CmsType;
 import com.feng.baby.support.exception.ResourceNotFoundException;
@@ -50,5 +49,10 @@ public class CmsService {
                 .fetchInto(CmsRepresentation.class);
 
         return new PageImpl<>(cmsRepresentations, pageable, count);
+    }
+
+    public void addNewCms(String author, String categoryId, String content, boolean recommend,
+                          String describe, String indexs, String minPrice, String pic, String title) {
+
     }
 }

@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.feng.baby.application.command.*;
 import com.feng.baby.application.representation.BasicInfo;
-import com.feng.baby.application.representation.Category;
 import com.feng.baby.application.representation.EvaluateRepresentation;
 import com.feng.baby.application.representation.GoodsFav;
 import com.feng.baby.application.service.CategoryService;
@@ -19,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -108,14 +106,6 @@ public class GoodsController {
     public void deleteShopCar(@RequestBody ShopCarDel shopCarDel) {
         goodsService.deleteShopCar(shopCarDel.getUsername(), shopCarDel.getGoodsIds());
     }
-
-
-    //商品类别无限级接口
-    @GetMapping("/category/all")
-    public List<Category> categoryAll() {
-        return categoryService.allTypes();
-    }
-
 
     /////////////收藏///////////
 

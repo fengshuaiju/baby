@@ -2,12 +2,18 @@ package com.feng.baby.application.service;
 
 import com.feng.baby.application.command.UserInfoUpdated;
 import com.feng.baby.application.representation.UserAccountInfo;
+import com.feng.baby.application.representation.UserInfo;
 import com.feng.baby.support.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static sprout.jooq.generate.Tables.USER_ACCOUNT;
 import static sprout.jooq.generate.Tables.USER_INFO;
@@ -41,5 +47,16 @@ public class UserService {
             user.setCountry(userInfoUpdated.getCountry());
             user.update();
         });
+    }
+
+    public Page<UserInfo> userList(Pageable pageable) {
+        int count = jooq.fetchCount(USER_INFO);
+
+        List<UserInfo> userInfos = jooq.selectFrom(USER_INFO)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchInto(UserInfo.class);
+
+        return new PageImpl<>(userInfos, pageable, count);
     }
 }

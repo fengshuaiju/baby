@@ -10,7 +10,7 @@ public class CmsRepresentation {
     private String author;
     private String pic;
     private String title;
-    private String descript;
+    private String describe;
     private String content;
     private boolean isRecommend;
     private Integer commentNumber;

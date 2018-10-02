@@ -1,11 +1,14 @@
 package com.feng.baby.adapter.controller;
 
 import com.feng.baby.application.representation.UserAccountInfo;
+import com.feng.baby.application.representation.UserInfo;
 import com.feng.baby.application.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -33,6 +36,13 @@ public class UserController {
     @GetMapping("/detail")
     public void detail(){
 
+    }
+
+    @GetMapping("/list")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("#oauth2.hasAnyScope('user', 'platform')")
+    public Page<UserInfo> userList(Pageable pageable){
+        return userService.userList(pageable);
     }
 
 
