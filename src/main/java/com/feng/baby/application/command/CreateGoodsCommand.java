@@ -10,24 +10,26 @@ public class CreateGoodsCommand {
     private String categoryId;
     private String name;
     private String characteristic;
-    private String mainPic;
-    private boolean isSupportGroup;
+    private String imagePath;
+    private Boolean isSupportGroup;
+    private Boolean isSupportCutDown;
+    private String remark;
+
     private String content;
 
     private List<GoodsProperties> properties;
 
     @Data
-    public class GoodsProperties{
+    public static class GoodsProperties{
         private Integer index;
         private String name;
-        private List<PropertiesDetail> details;
-    }
+        private String[] label;
 
-    @Data
-    public class PropertiesDetail{
-        private Integer index;
-        private String name;
-        private String remarks;
+        public GoodsProperties(String name, String[] label){
+            this.index = 1;
+            this.name = name;
+            this.label = label;
+        }
     }
 
 }

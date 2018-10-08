@@ -5,6 +5,7 @@ import com.feng.baby.application.representation.MyCoupon;
 import com.feng.baby.model.CouponsType;
 import com.feng.baby.support.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,6 +93,7 @@ public class DiscountsService {
 
     public void addNewCoupon(String picUrl, String linkUrl, String couponName, CouponsType type,
                              Double amountOfMoney, Double requirementConsumption, Integer validityDay, String remarks) {
+        linkUrl = StringUtils.isBlank(linkUrl) ? picUrl : linkUrl;
         jooq.insertInto(COUPONS)
                 .set(COUPONS.COUPON_ID, UUID.randomUUID().toString())
                 .set(COUPONS.PIC_URL, picUrl)

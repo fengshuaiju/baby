@@ -20,9 +20,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sprout.jooq.generate.tables.records.GoodsCategoryRecord;
 import sprout.jooq.generate.tables.records.GoodsRecord;
 import sprout.jooq.generate.tables.records.PropertiesRecord;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -310,10 +312,10 @@ public class GoodsService {
 
     @Transactional
     public void createGoods(String categoryId, String name, String characteristic, String mainPic,
-                            boolean supportGroup, String content, List<CreateGoodsCommand.GoodsProperties> properties) {
+                            boolean supportGroup, String remark, String content, List<CreateGoodsCommand.GoodsProperties> properties) {
         String goodsId = UUID.randomUUID().toString();
 
-        jooq.selectFrom(GOODS_CATEGORY).where(GOODS_CATEGORY.CATEGORY_ID.eq(categoryId)).fetchOptional().orElseThrow(ResourceNotFoundException::new);
+        jooq.selectFrom(CATEGORY).where(CATEGORY.CATEGORY_ID.eq(categoryId)).fetchOptional().orElseThrow(ResourceNotFoundException::new);
 
         jooq.insertInto(GOODS)
                 .set(GOODS.GOODS_ID, goodsId)
@@ -323,6 +325,14 @@ public class GoodsService {
                 .set(GOODS.MAIN_PIC, mainPic)
                 .set(GOODS.IS_SUPPORT_GROUP, supportGroup)
                 .set(GOODS.CONTENT, content)
+                .set(GOODS.REMARK, remark)
+
+                .set(GOODS.NUMBER_ORDERS, 0)
+                .set(GOODS.VIEWS, 0)
+                .set(GOODS.NUMBER_FAV, 0)
+                .set(GOODS.STORES, 0)
+                .set(GOODS.NUMBER_REPUTATION, 0)
+
                 .execute();
 
         properties.forEach(property -> {
@@ -334,13 +344,15 @@ public class GoodsService {
                     .set(PROPERTIES.NAME, property.getName())
                     .execute();
 
-            property.getDetails().forEach(detail -> jooq.insertInto(PROPERTIES_DETAIL)
+            Arrays.asList(property.getLabel()).forEach(detail -> jooq.insertInto(PROPERTIES_DETAIL)
+                    .set(PROPERTIES_DETAIL.DETAIL_ID, UUID.randomUUID().toString())
                     .set(PROPERTIES_DETAIL.PROPERTIES_ID, propertyId)
-                    .set(PROPERTIES_DETAIL.INDEXS, detail.getIndex())
-                    .set(PROPERTIES_DETAIL.NAME, detail.getName())
-                    .set(PROPERTIES_DETAIL.REMARK, detail.getRemarks())
+                    .set(PROPERTIES_DETAIL.INDEXS, 1)
+                    .set(PROPERTIES_DETAIL.NAME, detail)
                     .execute());
         });
+
+        //TODO 如果支持拼团和砍价  发送消息  创建拼团砍价信息
 
     }
 

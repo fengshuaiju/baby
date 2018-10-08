@@ -42,7 +42,7 @@ public class GoodsController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createGoods(@RequestBody CreateGoodsCommand command){
         goodsService.createGoods(command.getCategoryId(), command.getName(), command.getCharacteristic(),
-                command.getMainPic(), command.isSupportGroup(), command.getContent(), command.getProperties());
+                command.getImagePath(), command.getIsSupportGroup(), command.getRemark(), command.getContent(), command.getProperties());
     }
 
     @PutMapping("/add-price/{goodsId}")

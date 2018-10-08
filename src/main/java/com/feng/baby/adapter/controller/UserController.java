@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 /**
  * Created by fengshuaiju on 2018-06-29.
  */
@@ -41,8 +43,10 @@ public class UserController {
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("#oauth2.hasAnyScope('user', 'platform')")
-    public Page<UserInfo> userList(Pageable pageable){
-        return userService.userList(pageable);
+    public Page<UserInfo> userList(@RequestParam(required = false) String date,
+                                   @RequestParam(required = false) String phone,
+                                   Pageable pageable){
+        return userService.userList(phone, date, pageable);
     }
 
 

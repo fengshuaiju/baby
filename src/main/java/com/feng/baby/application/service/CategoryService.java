@@ -24,7 +24,7 @@ public class CategoryService {
 
 
     public List<Category> allTypes() {
-        return jooq.selectFrom(CATEGORY).fetchInto(Category.class);
+        return jooq.selectFrom(CATEGORY).where(CATEGORY.LEVEL.eq(2)).fetchInto(Category.class);
     }
 
 

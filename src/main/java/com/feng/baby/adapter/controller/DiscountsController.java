@@ -28,7 +28,7 @@ public class DiscountsController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void addNewCoupon(@RequestBody AddNewCouponCommand command){
         discountsService.addNewCoupon(command.getPicUrl(), command.getLinkUrl(), command.getCouponName(),
                 command.getType(), command.getAmountOfMoney(), command.getRequirementConsumption(),
