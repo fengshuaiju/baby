@@ -6,6 +6,8 @@ import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,14 +32,16 @@ public class UserScoreController {
     //今日是否签到
     @GetMapping("/today-signed")
     @ResponseStatus(HttpStatus.OK)
-    public Map<String, Object> todaySigned(@RequestParam String username) {
+    @PreAuthorize("#oauth2.hasAnyScope('user') and isAuthenticated()")
+    public Map<String, Object> todaySigned(@AuthenticationPrincipal(expression = "username") String username) {
         return userScoreService.todaySigned(username);
     }
 
     //签到
     @GetMapping("/sign")
     @ResponseStatus(HttpStatus.CREATED)
-    public Map<String, Object> sign(@RequestParam String username) {
+    @PreAuthorize("#oauth2.hasAnyScope('user') and isAuthenticated()")
+    public Map<String, Object> sign(@AuthenticationPrincipal(expression = "username") String username) {
         return userScoreService.sign(username);
     }
 

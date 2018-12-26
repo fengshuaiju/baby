@@ -4,6 +4,7 @@ import com.feng.baby.application.command.AddMediaCommand;
 import com.feng.baby.application.command.AddPriceCommand;
 import com.feng.baby.application.command.CreateGoodsCommand;
 import com.feng.baby.application.representation.*;
+import com.feng.baby.application.representation.Properties;
 import com.feng.baby.model.EvaluateType;
 import com.feng.baby.model.OrderPriceType;
 import com.feng.baby.support.exception.ResourceNotFoundException;
@@ -20,14 +21,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sprout.jooq.generate.tables.records.GoodsCategoryRecord;
 import sprout.jooq.generate.tables.records.GoodsRecord;
 import sprout.jooq.generate.tables.records.PropertiesRecord;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static sprout.jooq.generate.Tables.*;
@@ -112,7 +109,7 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.IS_SUPPORT_GROUP, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_GROUP, GOODS.IS_SALES, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GOODS_RECOMMEND).on(GOODS.GOODS_ID.eq(GOODS_RECOMMEND.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
@@ -130,7 +127,7 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.IS_SUPPORT_GROUP, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_GROUP, GOODS.IS_SALES, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GROUP_BOOKING).on(GOODS.GOODS_ID.eq(GROUP_BOOKING.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
@@ -151,7 +148,7 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.IS_SUPPORT_GROUP, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_GROUP, GOODS.IS_SALES, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)))
                 .where(condition)
@@ -200,7 +197,7 @@ public class GoodsService {
 
     public Page<BasicInfo> search(String keyWord, String categoryId, Pageable pageable) {
 
-        Condition condition = GOODS.IS_REMOVE.isFalse();
+        Condition condition = GOODS.IS_SALES.isTrue();
 
         if (StringUtils.isNotEmpty(keyWord)) {
             condition = condition.and(GOODS.NAME.likeIgnoreCase("%" + keyWord + "%")
@@ -216,7 +213,38 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.IS_SUPPORT_GROUP, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_GROUP, GOODS.IS_SALES, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
+        )
+                .from(GOODS)
+                .where(condition)
+                .offset(pageable.getOffset()).limit(pageable.getPageSize())
+                .fetchInto(BasicInfo.class);
+
+        basicInfos.forEach(basicInfo -> basicInfo.setPrice(goodsPriceService.getPriceInfo(basicInfo.getGoodsId())));
+
+        return new PageImpl<>(basicInfos, pageable, count);
+    }
+
+    public Page<BasicInfo> platformSearch(String keyWord, String categoryId, Pageable pageable) {
+
+        Condition condition = GOODS.IS_SALES.isFalse().or(GOODS.IS_SALES.isTrue());
+
+        if (StringUtils.isNotEmpty(keyWord)) {
+            condition = condition.and(GOODS.NAME.likeIgnoreCase("%" + keyWord + "%")
+                    .or(GOODS.CHARACTERISTIC.likeIgnoreCase("%" + keyWord + "%")));
+        }
+
+        if (StringUtils.isNotEmpty(categoryId)) {
+            condition = condition.and(GOODS.CATEGORY_ID.eq(categoryId));
+        }
+
+        int count = jooq.fetchCount(GOODS, condition);
+
+        List<BasicInfo> basicInfos = jooq.select(
+                GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
+                GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
+                GOODS.IS_SUPPORT_GROUP, GOODS.IS_SALES, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         )
                 .from(GOODS)
@@ -299,7 +327,7 @@ public class GoodsService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.IS_SUPPORT_GROUP, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_GROUP, GOODS.IS_SALES, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
@@ -420,7 +448,7 @@ public class GoodsService {
     @Transactional
     public void deleteEvaluate(String evaluateId) {
         jooq.selectFrom(EVALUATE).where(EVALUATE.EVALUATE_ID.eq(evaluateId)).fetchOptional().ifPresent(evaluate -> {
-            if(evaluate.getIsReply()){
+            if (evaluate.getIsReply()) {
                 jooq.deleteFrom(EVALUATE).where(EVALUATE.OBJECT_ID.eq(evaluateId)).and(EVALUATE.OBJECT_TYPE.eq(EvaluateType.REPLY.name())).execute();
             }
             evaluate.delete();
@@ -444,5 +472,21 @@ public class GoodsService {
                 .set(GOODS_MEDIA.URL, media.getUrl())
                 .set(GOODS_MEDIA.TYPE, media.getType())
                 .execute());
+    }
+
+    public void pullOnOff(String goodsId, Boolean status) {
+        Optional<GoodsRecord> goodsRecord = jooq.selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOptional();
+        goodsRecord.ifPresent(goods -> {
+            goods.setIsSales(status);
+            goods.update();
+        });
+    }
+
+    public void pullOnOffGrouping(String goodsId, Boolean grouping) {
+        Optional<GoodsRecord> goodsRecord = jooq.selectFrom(GOODS).where(GOODS.GOODS_ID.eq(goodsId)).fetchOptional();
+        goodsRecord.ifPresent(goods -> {
+            goods.setIsSupportGroup(grouping);
+            goods.update();
+        });
     }
 }

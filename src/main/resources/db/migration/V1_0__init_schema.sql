@@ -153,7 +153,7 @@ CREATE TABLE `goods` (
   `characteristic`    VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
   `main_pic`          VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
   `number_orders`     INT(11)                               DEFAULT NULL,
-  `is_remove`         BOOLEAN                               DEFAULT FALSE,
+  `is_sales`         BOOLEAN                               DEFAULT FALSE,
   `is_support_group`  BOOLEAN                               DEFAULT NULL,
   `content`           TEXT COLLATE utf8_bin,
   `views`             INT(11)                               DEFAULT NULL,

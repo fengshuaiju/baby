@@ -14,8 +14,8 @@ public class BasicInfo {
     private String characteristic;
     private String mainPic;
 
-    private Boolean isRemove;
-    private Boolean isSupportGroup;
+    private Boolean isSales;//是否销售
+    private Boolean isSupportGroup;//是否支持拼团
     private String content;
     private Integer views;
     private Integer numberFav;

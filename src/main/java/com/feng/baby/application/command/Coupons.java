@@ -1,5 +1,6 @@
 package com.feng.baby.application.command;
 
+import com.feng.baby.model.CouponsType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -14,7 +15,7 @@ public class Coupons {
     private String couponId;
     private String picUrl;
     private String linkUrl;
-    private Enum CouponsType;
+    private CouponsType type;
     private String couponName;
     private Double amountOfMoney;
     private Double requirementConsumption;
@@ -22,6 +23,6 @@ public class Coupons {
     private LocalDate expiryTimeAt;
     private String remarks;
 
-    private Boolean available;
+    private Boolean isAvailable;
 
 }

@@ -6,11 +6,16 @@ import com.feng.baby.model.CouponsType;
 import com.feng.baby.support.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import sprout.jooq.generate.tables.records.CouponsRecord;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +55,7 @@ public class DiscountsService {
                         COUPONS.IS_AVAILABLE.isTrue()
                                 .and(COUPONS.EXPIRY_TIME_AT.gt(LocalDateTime.now()))
                                 .and(COUPONS.COUPON_ID.notIn(couponids))
-                ).fetchInto(Coupons.class);
+                ).orderBy(COUPONS.EXPIRY_TIME_AT.asc()).fetchInto(Coupons.class);
 
         return coupons.stream().findFirst().orElse(null);
     }
@@ -107,5 +112,23 @@ public class DiscountsService {
                 .set(COUPONS.REMARKS, remarks)
                 .set(COUPONS.IS_AVAILABLE, true)
                 .execute();
+    }
+
+    public Page<Coupons> getAllCoupons(Boolean showAll, Pageable pageable) {
+        Condition condition;
+        if(!showAll){
+            condition = COUPONS.IS_AVAILABLE.isTrue().and(COUPONS.EXPIRY_TIME_AT.ge(LocalDateTime.now()));
+        }else {
+            condition = COUPONS.IS_AVAILABLE.isTrue().or(COUPONS.IS_AVAILABLE.isFalse()).and(COUPONS.EXPIRY_TIME_AT.ge(LocalDateTime.now()));
+        }
+
+        List<Coupons> coupons = jooq.selectFrom(COUPONS)
+                .where(condition)
+                .orderBy(COUPONS.IS_AVAILABLE.desc(), COUPONS.EXPIRY_TIME_AT.asc())
+                .fetchInto(Coupons.class);
+
+        int count = jooq.fetchCount(COUPONS, condition);
+
+        return new PageImpl<>(coupons, pageable, count);
     }
 }

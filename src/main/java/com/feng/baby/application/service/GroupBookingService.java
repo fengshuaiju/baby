@@ -61,7 +61,7 @@ public class GroupBookingService {
     public Map<String, String> open(String goodsId, String username) {
         //检查该商品是否支持开团
         Boolean isSupportGrouping = jooq.select(GOODS.IS_SUPPORT_GROUP).from(GOODS)
-                .where(GOODS.GOODS_ID.eq(goodsId)).and(GOODS.IS_REMOVE.isTrue())
+                .where(GOODS.GOODS_ID.eq(goodsId)).and(GOODS.IS_SALES.isTrue())
                 .fetchOptionalInto(Boolean.TYPE)
                 .orElseThrow(ResourceNotFoundException::new);
 

@@ -54,7 +54,7 @@ public class CutDownService {
         List<BasicInfo> basicInfos = jooq.select(
                 GOODS.ID, GOODS.GOODS_ID, GOODS.NAME,
                 GOODS.MAIN_PIC, GOODS.CATEGORY_ID, GOODS.CHARACTERISTIC,
-                GOODS.IS_SUPPORT_GROUP, GOODS.IS_REMOVE, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
+                GOODS.IS_SUPPORT_GROUP, GOODS.IS_SALES, GOODS.CREATED_AT, GOODS.NUMBER_FAV,
                 GOODS.NUMBER_ORDERS, GOODS.NUMBER_REPUTATION, GOODS.REMARK, GOODS.STORES, GOODS.VIEWS
         ).from(GOODS.leftJoin(GOODS_CUT_DOWN_INFO).on(GOODS.GOODS_ID.eq(GOODS_CUT_DOWN_INFO.GOODS_ID)))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
