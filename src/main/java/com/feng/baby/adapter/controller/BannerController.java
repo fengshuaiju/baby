@@ -67,7 +67,7 @@ public class BannerController {
 
     //滚动图片
     @GetMapping("/slide-container")
-    public List<SlideContainer> slideContainer(@RequestParam SlideContainerType type){
+    public List<SlideContainer> slideContainer(@RequestParam(required = false) SlideContainerType type){
         return bannerService.slideContainer(type);
     }
 

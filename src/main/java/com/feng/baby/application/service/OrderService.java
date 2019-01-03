@@ -139,7 +139,7 @@ public class OrderService {
                 .leftJoin(GOODS_PRICE).on(GOODS.GOODS_ID.eq(GOODS_PRICE.GOODS_ID))
                 .where(GOODS.GOODS_ID.eq(goods.getGoodsId()))
                 .and(GOODS_PRICE.PROPERTIES_JOINT.eq(goods.getPropertyChildIds()))
-                .and(GOODS_PRICE.TYPE.eq(OrderPriceType.valueOf(orderType.getPriceType()).name()))
+                .and(GOODS_PRICE.TYPE.eq(PriceType.valueOf(orderType.getPriceType()).name()))
                 .fetchOptional().orElseThrow(ResourceNotFoundException::new);
 
         String goodsName = result.value1();

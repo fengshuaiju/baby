@@ -153,7 +153,7 @@ CREATE TABLE `goods` (
   `characteristic`    VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
   `main_pic`          VARCHAR(255) COLLATE utf8_bin         DEFAULT NULL,
   `number_orders`     INT(11)                               DEFAULT NULL,
-  `is_sales`         BOOLEAN                               DEFAULT FALSE,
+  `is_sales`          BOOLEAN                               DEFAULT FALSE,
   `is_support_group`  BOOLEAN                               DEFAULT NULL,
   `content`           TEXT COLLATE utf8_bin,
   `views`             INT(11)                               DEFAULT NULL,
@@ -459,6 +459,8 @@ CREATE TABLE `goods_cut_down_info` (
 
   #   最高多少人帮忙砍
   `max_helper`         INT(11)                      DEFAULT NULL,
+  # 砍价信息是否设置，INIT 未设置， FINISH 设置过
+  `status`             VARCHAR(64) COLLATE utf8_bin DEFAULT NULL,
 
   KEY `fk_goods_cut_down_info_goods` (`goods_id`),
   CONSTRAINT `fk_goods_cut_down_info_goods` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`goods_id`),

@@ -30,10 +30,14 @@ public class CategoryController {
     }
 
     //商品类别无限级接口
-    @GetMapping("/all")
-    public List<Category> categoryAll() {
+    @GetMapping("/all-types")
+    public List<Category> allTypes() {
         return categoryService.allTypes();
     }
 
+    @GetMapping("/all")
+    public List<Category> categoryAll() {
+        return categoryService.all();
+    }
 
 }

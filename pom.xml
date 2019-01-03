@@ -174,40 +174,22 @@
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>5.1.4</version>
-
+                <!-- 在代码生成时候执行Flyway插件 -->
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>migrate</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <!-- 指定Flyway迁移脚本文件目录 -->
                 <configuration>
-                    <driver>com.mysql.jdbc.Driver</driver>
                     <url>jdbc:mysql://localhost:3306/baby?characterEncoding=utf-8</url>
                     <schemas>baby</schemas>
                     <user>root</user>
                     <password>fengshuaiju</password>
-                    <locations>
-                        <location>db.migration</location>
-                    </locations>
-                    <encoding>ISO-8859-1</encoding>
-                    <cleanOnValidationError>true</cleanOnValidationError>
-                    <placeholders>
-                        <email_type.primary>Primary</email_type.primary>
-                        <email_type.work>Work</email_type.work>
-                        <phone_type.home>Home</phone_type.home>
-                    </placeholders>
                 </configuration>
-
-                <!-- 在代码生成时候执行Flyway插件 -->
-                <executions>
-                    <execution>
-                        <id>flyway database migration</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>clean</goal>
-                            <goal>baseline</goal>
-                            <goal>migrate</goal>
-                            <goal>info</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
                 <dependencies>
                     <dependency>
                         <groupId>mysql</groupId>

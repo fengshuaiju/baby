@@ -513,14 +513,14 @@ INSERT INTO goods_recommend (goods_id) VALUES ('40601');
 INSERT INTO goods_recommend (goods_id) VALUES ('43223');
 
 # 砍价
-INSERT INTO goods_cut_down_info (goods_id, max_amount_per_cut, min_amount_per_cut, max_helper, effective_time, max_cut_down)
-VALUES ('30164', 5, 0.5, 100, 28, 120);
-INSERT INTO goods_cut_down_info (goods_id, max_amount_per_cut, min_amount_per_cut, max_helper, effective_time, max_cut_down)
-VALUES ('36888', 5, 0.5, 100, 28, 120);
-INSERT INTO goods_cut_down_info (goods_id, max_amount_per_cut, min_amount_per_cut, max_helper, effective_time, max_cut_down)
-VALUES ('40601', 5, 0.5, 100, 28, 120);
-INSERT INTO goods_cut_down_info (goods_id, max_amount_per_cut, min_amount_per_cut, max_helper, effective_time, max_cut_down)
-VALUES ('43223', 5, 0.5, 100, 28, 120);
+INSERT INTO goods_cut_down_info (goods_id, max_amount_per_cut, min_amount_per_cut, max_helper, effective_time, max_cut_down, `status`)
+VALUES ('30164', 5, 0.5, 100, 28, 120, 'FINISH');
+INSERT INTO goods_cut_down_info (goods_id, max_amount_per_cut, min_amount_per_cut, max_helper, effective_time, max_cut_down, `status`)
+VALUES ('36888', 5, 0.5, 100, 28, 120, 'FINISH');
+INSERT INTO goods_cut_down_info (goods_id, max_amount_per_cut, min_amount_per_cut, max_helper, effective_time, max_cut_down, `status`)
+VALUES ('40601', 5, 0.5, 100, 28, 120, 'FINISH');
+INSERT INTO goods_cut_down_info (goods_id, max_amount_per_cut, min_amount_per_cut, max_helper, effective_time, max_cut_down, `status`)
+VALUES ('43223', 5, 0.5, 100, 28, 120, 'FINISH');
 
 # 地址信息
 INSERT INTO user_address (

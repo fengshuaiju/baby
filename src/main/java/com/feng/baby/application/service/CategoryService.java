@@ -41,4 +41,8 @@ public class CategoryService {
                 .execute();
 
     }
+
+    public List<Category> all() {
+        return jooq.selectFrom(CATEGORY).fetchInto(Category.class);
+    }
 }

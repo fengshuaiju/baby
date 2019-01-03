@@ -45,7 +45,7 @@ public class GoodsPriceService {
 
         collect.forEach((key, value) -> {
 
-            switch (key) {//OrderPriceType
+            switch (key) {//PriceType
                 case "CUT_DOWN": {
                     Double min = value.stream().map(Record2::value2).min(Comparator.comparing(Double::doubleValue)).orElseThrow(IllegalArgumentException::new);
                     Double max = value.stream().map(Record2::value2).max(Comparator.comparing(Double::doubleValue)).orElseThrow(IllegalArgumentException::new);

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static sprout.jooq.generate.Tables.FUNCTION_MENUS;
+import static sprout.jooq.generate.Tables.GOODS;
 import static sprout.jooq.generate.Tables.SLIDE_CONTAINER;
 
 @Service
@@ -25,9 +26,22 @@ public class BannerService {
     }
 
     public List<SlideContainer> slideContainer(SlideContainerType type) {
-        Condition condition = SLIDE_CONTAINER.IS_REMOVE.isFalse().and(SLIDE_CONTAINER.TYPE.eq(type.name()));
-        return jooq.selectFrom(SLIDE_CONTAINER)
-                .where(condition).fetchInto(SlideContainer.class);
+        Condition condition = SLIDE_CONTAINER.IS_REMOVE.isFalse();
+        if (type != null) {
+            condition = condition.and(SLIDE_CONTAINER.TYPE.eq(type.name()));
+        }
+
+        return jooq.select(SLIDE_CONTAINER.ID,
+                SLIDE_CONTAINER.IS_REMOVE,
+                SLIDE_CONTAINER.TYPE,
+                SLIDE_CONTAINER.GOODS_ID,
+                SLIDE_CONTAINER.INDEXS,
+                SLIDE_CONTAINER.PIC_URL,
+                SLIDE_CONTAINER.CREATED_AT,
+                GOODS.NAME.as("goodsName")
+        ).from(SLIDE_CONTAINER.leftJoin(GOODS).on(SLIDE_CONTAINER.GOODS_ID.eq(GOODS.GOODS_ID)))
+                .where(condition)
+                .fetchInto(SlideContainer.class);
     }
 
     public List<FunctionMenus> functionMenus() {
@@ -42,6 +56,16 @@ public class BannerService {
                 .set(SLIDE_CONTAINER.IS_REMOVE, false)
                 .set(SLIDE_CONTAINER.PIC_URL, picUrl)
                 .set(SLIDE_CONTAINER.TYPE, type.name())
+                .execute();
+    }
+
+    public void createSlideContainer(String goodsId, String slideType, String picUrl) {
+        jooq.insertInto(SLIDE_CONTAINER)
+                .set(SLIDE_CONTAINER.GOODS_ID, goodsId)
+                .set(SLIDE_CONTAINER.PIC_URL, picUrl)
+                .set(SLIDE_CONTAINER.TYPE, slideType)
+                .set(SLIDE_CONTAINER.INDEXS, 1)
+                .set(SLIDE_CONTAINER.IS_REMOVE, false)
                 .execute();
     }
 }

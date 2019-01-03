@@ -5,16 +5,17 @@ import com.feng.baby.application.command.AddPriceCommand;
 import com.feng.baby.application.command.CreateGoodsCommand;
 import com.feng.baby.application.representation.*;
 import com.feng.baby.application.representation.Properties;
+import com.feng.baby.model.CutDownInfoStatus;
 import com.feng.baby.model.EvaluateType;
-import com.feng.baby.model.OrderPriceType;
+import com.feng.baby.model.PriceType;
+import com.feng.baby.model.event.CutDownGoodsCreated;
+import com.feng.baby.model.event.GroupingGoodsCreated;
+import com.feng.baby.support.domain.DomainEventPublisher;
 import com.feng.baby.support.exception.ResourceNotFoundException;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Record10;
-import org.jooq.Result;
+import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,8 +23,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sprout.jooq.generate.tables.records.GoodsRecord;
+import sprout.jooq.generate.tables.records.PropertiesDetailRecord;
 import sprout.jooq.generate.tables.records.PropertiesRecord;
 
+import java.sql.ResultSet;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -288,7 +291,7 @@ public class GoodsService {
                 .leftJoin(GOODS).on(SHOPPING_CART.GOODS_ID.eq(GOODS.GOODS_ID))
                 .leftJoin(GOODS_PRICE).on(GOODS_PRICE.PROPERTIES_JOINT.eq(SHOPPING_CART.PROPERTIES_JOINT))
                 .where(SHOPPING_CART.USERNAME.eq(username))
-                .and(GOODS_PRICE.TYPE.eq(OrderPriceType.CHEAP.name()))
+                .and(GOODS_PRICE.TYPE.eq(PriceType.CHEAP.name()))
                 .fetchInto(ShopCar.class);
 
         Integer buyNumber = shopCars.stream().map(ShopCar::getBuyNumber).reduce(Integer::sum).orElse(0);
@@ -340,7 +343,7 @@ public class GoodsService {
 
     @Transactional
     public void createGoods(String categoryId, String name, String characteristic, String mainPic,
-                            boolean supportGroup, String remark, String content, List<CreateGoodsCommand.GoodsProperties> properties) {
+                            boolean supportGroup, boolean supportCutDown, String remark, String content, List<CreateGoodsCommand.GoodsProperties> properties) {
         String goodsId = UUID.randomUUID().toString();
 
         jooq.selectFrom(CATEGORY).where(CATEGORY.CATEGORY_ID.eq(categoryId)).fetchOptional().orElseThrow(ResourceNotFoundException::new);
@@ -354,13 +357,11 @@ public class GoodsService {
                 .set(GOODS.IS_SUPPORT_GROUP, supportGroup)
                 .set(GOODS.CONTENT, content)
                 .set(GOODS.REMARK, remark)
-
                 .set(GOODS.NUMBER_ORDERS, 0)
                 .set(GOODS.VIEWS, 0)
                 .set(GOODS.NUMBER_FAV, 0)
                 .set(GOODS.STORES, 0)
                 .set(GOODS.NUMBER_REPUTATION, 0)
-
                 .execute();
 
         properties.forEach(property -> {
@@ -368,6 +369,7 @@ public class GoodsService {
 
             jooq.insertInto(PROPERTIES)
                     .set(PROPERTIES.PROPERTIES_ID, propertyId)
+                    .set(PROPERTIES.GOODS_ID, goodsId)
                     .set(PROPERTIES.INDEXS, property.getIndex())
                     .set(PROPERTIES.NAME, property.getName())
                     .execute();
@@ -381,6 +383,19 @@ public class GoodsService {
         });
 
         //TODO 如果支持拼团和砍价  发送消息  创建拼团砍价信息
+        //如果支持商品拼团，发送拼团信息
+        if (supportGroup) {
+            DomainEventPublisher.publish(
+                    CutDownGoodsCreated.builder().goodsId(goodsId).build()
+            );
+        }
+
+        //如果支持商品砍价，发送信息
+        if (supportCutDown) {
+            DomainEventPublisher.publish(
+                    GroupingGoodsCreated.builder().goodsId(goodsId).build()
+            );
+        }
 
     }
 
@@ -488,5 +503,127 @@ public class GoodsService {
             goods.setIsSupportGroup(grouping);
             goods.update();
         });
+    }
+
+    public List<GoodsPriceEdit> getPrice(String goodsId) {
+        return jooq.select(
+                GOODS_PRICE.ID.as("priceId"),
+                GOODS_PRICE.GOODS_ID,
+                GOODS_PRICE.PROPERTIES_JOINT.as("propertyId"),
+                GOODS_PRICE.GOODS_LABEL.as("propertyName"),
+                GOODS_PRICE.PRICE.as("price"),
+                GOODS_PRICE.TYPE.as("priceType")
+        ).from(GOODS_PRICE).where(GOODS_PRICE.GOODS_ID.eq(goodsId))
+                .orderBy(GOODS_PRICE.TYPE)
+                .fetchInto(GoodsPriceEdit.class);
+    }
+
+    public void updatePrice(Integer priceId, Double price) {
+        jooq.selectFrom(GOODS_PRICE)
+                .where(GOODS_PRICE.ID.eq(priceId))
+                .fetchOptional().ifPresent(p -> {
+            p.setPrice(price);
+            p.update();
+        });
+    }
+
+    public List<GoodsPriceEdit> showNewPriceProperty(String goodsId) {
+
+        Result<PropertiesDetailRecord> propertiesDetailRecords = jooq.select(PROPERTIES_DETAIL.PROPERTIES_ID, PROPERTIES_DETAIL.DETAIL_ID, PROPERTIES_DETAIL.NAME).from(
+                PROPERTIES_DETAIL.leftJoin(PROPERTIES).on(PROPERTIES_DETAIL.PROPERTIES_ID.eq(PROPERTIES.PROPERTIES_ID))
+        ).where(PROPERTIES.GOODS_ID.eq(goodsId)).orderBy(PROPERTIES_DETAIL.INDEXS).fetchInto(PROPERTIES_DETAIL);
+
+        Iterator<List<PropertiesDetailRecord>> iterator = propertiesDetailRecords.stream().collect(Collectors.groupingBy(PropertiesDetailRecord::getPropertiesId)).values().iterator();
+
+        List<GoodsPriceEdit> finalProperties = new ArrayList<>();
+        List<GoodsPriceEdit> tempProperties = new ArrayList<>();
+        boolean isFirstTime = true;
+        while (iterator.hasNext()) {
+            Iterator<PropertiesDetailRecord> detailRecordIterator = iterator.next().iterator();
+            while (detailRecordIterator.hasNext()) {
+                PropertiesDetailRecord record = detailRecordIterator.next();
+                if (isFirstTime) {
+                    finalProperties.add(new GoodsPriceEdit(goodsId, record.getDetailId(), record.getName()));
+                } else {
+                    for (GoodsPriceEdit property : finalProperties) {
+                        String propertyId = property.getPropertyId() + ":" + record.getDetailId();
+                        String propertyName = property.getPropertyName() + record.getName();
+                        tempProperties.add(new GoodsPriceEdit(property.getGoodsId(), propertyId, propertyName));
+                    }
+                }
+            }
+            if (!isFirstTime) {
+                finalProperties.clear();
+                finalProperties.addAll(tempProperties);
+                tempProperties.clear();
+            }
+            isFirstTime = false;
+        }
+
+        List<GoodsPriceEdit> finalPriceShow = new ArrayList<>();
+        for (PriceType priceType : PriceType.values()) {
+            for (GoodsPriceEdit edit : finalProperties) {
+                finalPriceShow.add(new GoodsPriceEdit(edit.getGoodsId(), edit.getPropertyId(), edit.getPropertyName(), priceType));
+            }
+        }
+
+        return finalPriceShow;
+    }
+
+    public void addNewPrice(List<GoodsPriceEdit> preToAddPrice) {
+        preToAddPrice.forEach(price -> jooq.insertInto(GOODS_PRICE)
+                .set(GOODS_PRICE.GOODS_ID, price.getGoodsId())
+                .set(GOODS_PRICE.PROPERTIES_JOINT, price.getPropertyId())
+                .set(GOODS_PRICE.GOODS_LABEL, price.getPropertyName())
+                .set(GOODS_PRICE.TYPE, price.getPriceType().name())
+                .set(GOODS_PRICE.PRICE, price.getPrice())
+                .execute());
+    }
+
+    public void createCutDownInfo(String goodsId) {
+        jooq.insertInto(GOODS_CUT_DOWN_INFO)
+                .set(GOODS_CUT_DOWN_INFO.GOODS_ID, goodsId)
+                .set(GOODS_CUT_DOWN_INFO.STATUS, CutDownInfoStatus.INIT.name())
+                .execute();
+    }
+
+    public Page<GoodsCutDownInfo> getCutDownsInfo(String name, Pageable pageable) {
+
+        Condition condition = GOODS.NAME.likeIgnoreCase("%" + name + "%");
+
+        List<GoodsCutDownInfo> goodsCutDownInfos = jooq.select(GOODS_CUT_DOWN_INFO.GOODS_ID,
+                GOODS.NAME.as("goodsName"),
+                GOODS_CUT_DOWN_INFO.MAX_AMOUNT_PER_CUT,
+                GOODS_CUT_DOWN_INFO.EFFECTIVE_TIME,
+                GOODS_CUT_DOWN_INFO.MAX_CUT_DOWN,
+                GOODS_CUT_DOWN_INFO.MAX_HELPER,
+                GOODS_CUT_DOWN_INFO.MIN_AMOUNT_PER_CUT,
+                GOODS_CUT_DOWN_INFO.STATUS
+        ).from(GOODS_CUT_DOWN_INFO.leftJoin(GOODS).on(GOODS_CUT_DOWN_INFO.ID.eq(GOODS.ID)))
+                .where(condition)
+                .offset(pageable.getOffset()).limit(pageable.getPageSize())
+                .fetchInto(GoodsCutDownInfo.class);
+
+        int count = jooq.fetchCount(GOODS_CUT_DOWN_INFO.leftJoin(GOODS).on(GOODS_CUT_DOWN_INFO.ID.eq(GOODS.ID)), condition);
+
+        return new PageImpl<>(goodsCutDownInfos, pageable, count);
+    }
+
+    public void updateCutDownGoodsInfo(String goodsId, double maxAmountPerCut, double minAmountPerCut, int effectiveTime, double maxCutDown, int maxHelper) {
+        jooq.selectFrom(GOODS_CUT_DOWN_INFO).where(GOODS_CUT_DOWN_INFO.GOODS_ID.eq(goodsId)).fetchOptional()
+                .ifPresent(info -> {
+                    info.setEffectiveTime(effectiveTime);
+                    info.setMaxAmountPerCut(maxAmountPerCut);
+                    info.setMinAmountPerCut(minAmountPerCut);
+                    info.setMaxCutDown(maxCutDown);
+                    info.setMaxHelper(maxHelper);
+                    info.setStatus(CutDownInfoStatus.FINISH.name());
+                    info.update();
+                });
+    }
+
+    public Map<String, String> getGoodsNames() {
+        Map<?, ?> map = jooq.select(GOODS.GOODS_ID, GOODS.NAME).from(GOODS).where(GOODS.IS_SALES.isTrue()).fetchMap(0, 1);
+        return (Map<String, String>) map;
     }
 }

@@ -5,7 +5,7 @@ import com.feng.baby.application.representation.CutDownInfo;
 import com.feng.baby.application.representation.GoodsCutDownHelper;
 import com.feng.baby.application.representation.UserInfo;
 import com.feng.baby.model.CutDownStatus;
-import com.feng.baby.model.OrderPriceType;
+import com.feng.baby.model.PriceType;
 import com.feng.baby.support.exception.ResourceNotFoundException;
 import com.feng.baby.support.exception.Validate;
 import com.google.common.collect.ImmutableMap;
@@ -92,7 +92,7 @@ public class CutDownService {
         GoodsPriceRecord price = jooq.selectFrom(GOODS_PRICE)
                 .where(GOODS_PRICE.GOODS_ID.eq(goodsId))
                 .and(GOODS_PRICE.PROPERTIES_JOINT.eq(propertyChildIds))
-                .and(GOODS_PRICE.TYPE.eq(OrderPriceType.CUT_DOWN.name()))
+                .and(GOODS_PRICE.TYPE.eq(PriceType.CUT_DOWN.name()))
                 .fetchOptional()
                 .orElseThrow(ResourceNotFoundException::new);
 
